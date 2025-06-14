@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.onetouchpromise"
-        minSdk = 25
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -50,6 +50,9 @@ dependencies {
 
     // NavHost
     implementation(libs.hilt.navigation)
+
+    // viewModelScope
+    implementation(libs.lifecycle.viewmodel.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
