@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">OneTouchPromise</string>
+    <string name="votes_due_date">투표 마감일:</string>
+    <string name="home_title">모여라!</string>
 </resources>

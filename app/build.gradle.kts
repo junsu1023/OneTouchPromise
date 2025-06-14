@@ -40,6 +40,11 @@ android {
 }
 
 dependencies {
+    // module dependencies
+    implementation(project(":core"))
+    implementation(project(":data"))
+    implementation(project(":domain"))
+
     // Compose navigation
     implementation(libs.androidx.navigation.compose)
 
