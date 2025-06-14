@@ -40,6 +40,11 @@ android {
 }
 
 dependencies {
+    // Compose navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // NavHost
+    implementation(libs.hilt.navigation)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
