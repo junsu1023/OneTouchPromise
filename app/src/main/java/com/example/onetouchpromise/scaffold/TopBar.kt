@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,22 +24,42 @@ fun TopBar(
     when(currentScreen) {
         OneTouchPromiseScreen.HOME -> {
             TopAppBar(
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp),
+                modifier = Modifier.padding(top = 16.dp),
                 title = {
                     Text(
                         text = stringResource(R.string.home_title),
-                        fontWeight = FontWeight.Black,
-                        fontSize = 30.sp
+                        style = TextStyle(
+                            fontWeight = FontWeight.Black,
+                            fontSize = 30.sp
+                        )
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White
                 )
             )
-        } else -> {
-        /*
-        TODO
-         */
-    }
+        }
+        OneTouchPromiseScreen.CREATE_MEETING -> {
+            TopAppBar(
+                modifier = Modifier.padding(top = 16.dp),
+                title = {
+                    Text(
+                        text = stringResource(R.string.create_meeting),
+                        style = TextStyle(
+                            fontWeight = FontWeight.Black,
+                            fontSize = 30.sp
+                        )
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                )
+            )
+        }
+        else -> {
+            /*
+                TODO
+            */
+        }
     }
 }

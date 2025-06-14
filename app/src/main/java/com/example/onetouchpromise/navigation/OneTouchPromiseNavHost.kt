@@ -7,14 +7,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.onetouchpromise.ui.CreateMeetingScreen
 import com.example.onetouchpromise.ui.HomeScreen
 
 @Composable
 fun OneTouchPromiseNavHost(
     navController: NavHostController
 ) {
-    val viewModelHostOwner = checkNotNull(LocalViewModelStoreOwner.current)
-
     NavHost(
         navController = navController,
         startDestination = OneTouchPromiseScreen.HOME
@@ -24,7 +23,7 @@ fun OneTouchPromiseNavHost(
         }
 
         composable(OneTouchPromiseScreen.CREATE_MEETING) {
-
+            CreateMeetingScreen(navController)
         }
 
         composable(

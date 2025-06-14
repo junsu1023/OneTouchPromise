@@ -27,7 +27,10 @@ fun OneTouchPromiseApp() {
             floatingActionButton = {
                 FloatingButton(
                     currentScreen = currentScreen,
-                    onClick = { navController.navigate(OneTouchPromiseScreen.CREATE_MEETING) }
+                    onClick = {
+                        navController.navigate(OneTouchPromiseScreen.CREATE_MEETING)
+                        BaseViewModel.setCurrentScreen(OneTouchPromiseScreen.CREATE_MEETING)
+                    }
                 )
             }
         ) { paddingValues ->

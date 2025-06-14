@@ -40,7 +40,7 @@ fun HomeScreen(
     }
 
     LazyColumn(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         items(mockMeetings) { meeting ->
             MeetingCard(
