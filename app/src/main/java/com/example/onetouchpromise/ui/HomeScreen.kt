@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.test.Meeting
+import com.example.onetouchpromise.util.basePadding
 
 @Composable
 fun HomeScreen(
@@ -48,7 +49,7 @@ fun HomeScreen(
     }
 
     LazyColumn(
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier.basePadding()
     ) {
         items(mockMeetings) { meeting ->
             MeetingCard(

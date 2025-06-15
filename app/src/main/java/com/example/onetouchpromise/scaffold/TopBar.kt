@@ -31,58 +31,41 @@ fun TopBar(
     currentScreen: String,
     onBackClick: () -> Unit
 ) {
-    when(currentScreen) {
-        OneTouchPromiseScreen.HOME -> {
-            TopAppBar(
-                modifier = Modifier.topBarPadding(),
-                title = {
-                    Text(
-                        text = stringResource(R.string.home_title),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Black,
-                            fontSize = 30.sp
-                        )
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                )
-            )
-        }
-        OneTouchPromiseScreen.CREATE_MEETING -> {
-            TopAppBar(
-                modifier = Modifier.topBarPadding(),
-                title = {
-                    Row(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            modifier = Modifier.clickable { onBackClick() },
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.go_back)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp) )
-
-                        Text(
-                            text = stringResource(R.string.create_meeting),
-                            style = TextStyle(
-                                fontWeight = FontWeight.Black,
-                                fontSize = 30.sp
-                            )
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                )
-            )
-        }
-        else -> {
-            /*
-                TODO
-            */
-        }
+    val title = when(currentScreen) {
+        OneTouchPromiseScreen.HOME -> stringResource(R.string.home_title)
+        OneTouchPromiseScreen.CREATE_MEETING -> stringResource(R.string.create_meeting)
+        OneTouchPromiseScreen.MEETING_DETAIL -> stringResource(R.string.meeting_detail)
+        else -> "TODO"
     }
+
+    TopAppBar(
+        modifier = Modifier.topBarPadding(),
+        title = {
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if(currentScreen != OneTouchPromiseScreen.HOME) {
+                    Icon(
+                        modifier = Modifier.clickable { onBackClick() },
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = stringResource(R.string.go_back)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp) )
+                }
+
+                Text(
+                    text = title,
+                    style = TextStyle(
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White
+        )
+    )
 }

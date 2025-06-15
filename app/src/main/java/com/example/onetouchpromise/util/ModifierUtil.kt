@@ -7,3 +7,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Modifier.topBarPadding(): Modifier = this.then(Modifier.padding(top = 16.dp))
+
+@Composable
+fun Modifier.basePadding(): Modifier = this.then(Modifier.padding(horizontal = 16.dp))
