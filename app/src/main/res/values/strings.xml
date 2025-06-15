@@ -11,4 +11,9 @@
     <string name="select_date">날짜 선택</string>
     <string name="complete_create_meeting">모임 생성하기</string>
     <string name="go_back">뒤로 가기</string>
+    <string name="meeting_detail">모임 상세</string>
+    <string name="how_many_votes_complete">명 투표 완료</string>
+    <string name="select_possible_date">참여 가능한 날짜를 선택해주세요.</string>
+    <string name="submit_vote">투표 제출하기</string>
+    <string name="view_voting_status">투표 현황 보기</string>
 </resources>

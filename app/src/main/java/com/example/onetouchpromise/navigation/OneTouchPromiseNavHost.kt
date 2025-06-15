@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.onetouchpromise.ui.CreateMeetingScreen
 import com.example.onetouchpromise.ui.HomeScreen
+import com.example.onetouchpromise.ui.MeetingDetailScreen
 
 @Composable
 fun OneTouchPromiseNavHost(
@@ -26,10 +27,11 @@ fun OneTouchPromiseNavHost(
         }
 
         composable(
-            route = OneTouchPromiseScreen.MEETING_DETAIL,
+            route = "${OneTouchPromiseScreen.MEETING_DETAIL}/{meetingId}",
             arguments = listOf(navArgument("meetingId") { type = NavType.StringType })
         ) { backStackEntry ->
             val meetingId = backStackEntry.arguments?.getString("meetingId") ?: ""
+            MeetingDetailScreen(navController, meetingId)
         }
 
         composable(
