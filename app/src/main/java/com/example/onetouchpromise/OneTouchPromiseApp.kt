@@ -20,9 +20,26 @@ fun OneTouchPromiseApp() {
     val navController = rememberNavController()
     val currentScreen by BaseViewModel.currentScreen.collectAsState(OneTouchPromiseScreen.HOME)
 
+    val onBackClick: () -> Unit = {
+        var prevScreen = OneTouchPromiseScreen.HOME
+
+        when(currentScreen) {
+            OneTouchPromiseScreen.CREATE_MEETING -> prevScreen = OneTouchPromiseScreen.HOME
+            else -> { /* TODO */ }
+        }
+
+        navController.navigate(prevScreen)
+        BaseViewModel.setCurrentScreen(prevScreen)
+    }
+
     OneTouchPromiseTheme {
         Scaffold(
-            topBar = { TopBar(currentScreen) },
+            topBar = {
+                TopBar(
+                    currentScreen = currentScreen,
+                    onBackClick = onBackClick
+                )
+            },
             bottomBar = { /* TODO */ },
             floatingActionButton = {
                 FloatingButton(
