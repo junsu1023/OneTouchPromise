@@ -2,9 +2,12 @@ package com.example.onetouchpromise.ui
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,45 +16,67 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.domain.model.MeetingModel
+import com.example.onetouchpromise.Contract.HomeUiState
 import com.example.onetouchpromise.R
-import com.example.onetouchpromise.test.Meeting
 import com.example.onetouchpromise.util.basePadding
+import com.example.onetouchpromise.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val uiState = viewModel.uiState
+
     BackHandler {
         (context as Activity).finish()
     }
 
-    val mockMeetings = remember {
-        listOf(
-            Meeting("1", "test1", "2025-06-14", 5, 10),
-            Meeting("2", "test2", "2025-06-15", 6, 10),
-            Meeting("3", "test3", "2025-06-16", 7, 10),
-            Meeting("4", "test3", "2025-06-16", 8, 10)
-        )
-    }
+    if(uiState.isLoading) HomeLoading()
+    else MeetingList(navController, uiState)
+}
 
-    LazyColumn(
-        modifier = Modifier.basePadding()
+@Composable
+fun HomeLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.Center
     ) {
-        items(mockMeetings) { meeting ->
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun MeetingList(
+    navController: NavHostController,
+    uiState: HomeUiState
+) {
+    LazyColumn(
+        modifier = Modifier
+            .basePadding()
+            .background(Color.White)
+    ) {
+        items(uiState.meetings) { meeting ->
             MeetingCard(
                 meeting = meeting,
                 onClick = {
@@ -66,7 +91,7 @@ fun HomeScreen(
 
 @Composable
 fun MeetingCard(
-    meeting: Meeting,
+    meeting: MeetingModel,
     onClick: () -> Unit
 ) {
     Card(
