@@ -22,10 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.core.viewmodel.BaseViewModel
+import com.example.domain.model.MeetingModel
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.component.DateChip
 import com.example.onetouchpromise.navigation.OneTouchPromiseScreen
-import com.example.onetouchpromise.test.Meeting
 import com.example.onetouchpromise.util.basePadding
 import java.time.LocalDate
 
@@ -40,7 +40,7 @@ fun MeetingDetailScreen(
     }
 
     val meeting = remember {
-        Meeting(
+        MeetingModel(
             id = meetingId,
             title = "임시 제목",
             dueDate = "2025-06-20",
