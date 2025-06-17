@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    // firebase
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -53,6 +55,10 @@ dependencies {
 
     // viewModelScope
     implementation(libs.lifecycle.viewmodel.ktx)
+
+    // firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
