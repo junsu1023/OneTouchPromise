@@ -101,13 +101,20 @@ fun SignUpScreen(
                 }
             }
 
-            state.errorMessage?.let {
-                Spacer(modifier = Modifier.height(16.dp))
+            val errorMessage = when(state.error) {
+                is AuthException.EmailFormatInvalid -> stringResource(R.string.invalid_email)
+                is AuthException.PasswordTooShort -> stringResource(R.string.password_too_short)
+                is AuthException.UserNotFound -> stringResource(R.string.user_not_found)
+                is AuthException.WrongPassword -> stringResource(R.string.wrong_password)
+                is AuthException.Unknown -> state.error.message ?: stringResource(R.string.unknown)
+                null -> null
+            }
 
+            errorMessage?.let {
                 Text(
                     text = it,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
