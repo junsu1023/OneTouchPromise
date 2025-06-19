@@ -67,6 +67,21 @@ fun SignUpScreen(
             OutlinedTextField(
                 value = state.email,
                 onValueChange = viewModel::onEmailChange,
+                label = { Text(text = stringResource(R.string.email)) },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                )
+            )
+
+            OutlinedTextField(
+                value = state.email,
+                onValueChange = viewModel::onEmailChange,
                 label = { Text(text = stringResource(R.string.password)) },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
@@ -81,44 +96,44 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-        }
 
-        Button(
-            onClick = { viewModel.signUp() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(12.dp),
-            enabled = !state.isLoading
-        ) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = Color.White,
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text(text = stringResource(R.string.accession))
+            Button(
+                onClick = { viewModel.signUp() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(12.dp),
+                enabled = !state.isLoading
+            ) {
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(text = stringResource(R.string.accession))
+                }
             }
-        }
 
-        state.errorMessage?.let {
-            Spacer(modifier = Modifier.height(16.dp))
+            state.errorMessage?.let {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
-        if (state.isSuccess) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.complete_signup),
-                color = colorResource(R.color.apple),
-                style = MaterialTheme.typography.bodyMedium
-            )
+            if (state.isSuccess) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.complete_signup),
+                    color = colorResource(R.color.apple),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }
