@@ -33,7 +33,7 @@ class AuthViewModel @Inject constructor(
             val result = signUpUseCase(uiState.email, uiState.password)
             uiState = when {
                 result.isSuccess -> uiState.copy(isSuccess = true, isLoading = false)
-                else -> uiState.copy(errorMessage = result.exceptionOrNull()?.message, isLoading = false)
+                else -> uiState.copy(errorMessage = result.exceptionOrNull()?.message ?: "알 수 없는 오류 발생", isLoading = false)
             }
         }
     }
