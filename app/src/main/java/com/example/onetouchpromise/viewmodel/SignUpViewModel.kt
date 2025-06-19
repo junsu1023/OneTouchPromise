@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(
+class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase
 ): ViewModel() {
     var uiState by mutableStateOf(AuthUiState())
