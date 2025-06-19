@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.domain.error.AuthException
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.viewmodel.AuthViewModel
 
@@ -43,6 +44,9 @@ fun SignUpScreen(
 
         if(state.isLoading) CircularProgressIndicator()
 
+        val errorMessage = when(state.error) {
+            is AuthException.EmailFormatInvalid ->
+        }
         state.errorMessage?.let { message ->
             Text(
                 text = "${stringResource(R.string.error)}: $message",
