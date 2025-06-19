@@ -31,17 +31,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.example.domain.model.MeetingModel
-import com.example.onetouchpromise.Contract.HomeUiState
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.util.basePadding
 import com.example.onetouchpromise.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onMeetingClick: (MeetingModel) -> Unit
 ) {
     val context = LocalContext.current
     val uiState = viewModel.uiState
@@ -50,8 +48,15 @@ fun HomeScreen(
         (context as Activity).finish()
     }
 
-    if(uiState.isLoading) HomeLoading()
-    else MeetingList(navController, uiState)
+    if(uiState.isLoading) {
+        HomeLoading()
+    }
+    else {
+        MeetingList(
+            meetings = uiState.meetings,
+            onItemClick = { meeting -> onMeetingClick(meeting) }
+        )
+    }
 }
 
 @Composable
@@ -68,23 +73,35 @@ fun HomeLoading() {
 
 @Composable
 fun MeetingList(
-    navController: NavHostController,
-    uiState: HomeUiState
+    meetings: List<MeetingModel>,
+    onItemClick: (MeetingModel) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .basePadding()
-            .background(Color.White)
-    ) {
-        items(uiState.meetings) { meeting ->
-            MeetingCard(
-                meeting = meeting,
-                onClick = {
-                    navController.navigate("meeting_detail/${meeting.id}")
-                }
+    if(meetings.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.is_blank_meeting),
+                style = MaterialTheme.typography.bodyMedium
             )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .basePadding()
+                .background(Color.White)
+        ) {
+            items(meetings) { meeting ->
+                MeetingCard(
+                    meeting = meeting,
+                    onClick = { onItemClick(meeting) }
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+            }
         }
     }
 }
@@ -118,7 +135,7 @@ fun MeetingCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             LinearProgressIndicator(
-                progress = { meeting.votedCount.toFloat() / meeting.totalCount },
+                progress = { if(meeting.totalCount == 0) 0f else meeting.votedCount.toFloat() / meeting.totalCount },
                 modifier = Modifier.fillMaxWidth(),
                 color = colorResource(R.color.dark_slate_gary),
                 trackColor = colorResource(R.color.philippine_silver)

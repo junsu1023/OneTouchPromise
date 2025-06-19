@@ -46,7 +46,11 @@ fun OneTouchPromiseNavHost(
         }
 
         composable(OneTouchPromiseScreen.HOME) {
-            HomeScreen(navController)
+            HomeScreen(
+                onMeetingClick = { meeting ->
+                    navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting.id}")
+                }
+            )
         }
 
         composable(OneTouchPromiseScreen.CREATE_MEETING) {
