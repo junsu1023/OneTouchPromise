@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -10,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 25
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -35,17 +33,6 @@ android {
 }
 
 dependencies {
-    // module dependencies
-    implementation(project(":domain"))
-
-    // hilt
-    implementation(libs.hilt.android)
-    implementation(libs.firebase.auth.ktx)
-    kapt(libs.hilt.compiler)
-
-    // firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.firestore.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
