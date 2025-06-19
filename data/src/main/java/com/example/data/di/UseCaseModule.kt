@@ -3,6 +3,7 @@ package com.example.data.di
 import com.example.domain.repository.AuthRepository
 import com.example.domain.repository.MeetingRepository
 import com.example.domain.usecase.GetMeetingsUseCase
+import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.SignUpUseCase
 import dagger.Module
 import dagger.Provides
@@ -23,4 +24,10 @@ object UseCaseModule {
     fun provideSignUpUseCase(
         authRepository: AuthRepository
     ): SignUpUseCase = SignUpUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideLoginUseCase(
+        authRepository: AuthRepository
+    ): LoginUseCase = LoginUseCase(authRepository)
 }
