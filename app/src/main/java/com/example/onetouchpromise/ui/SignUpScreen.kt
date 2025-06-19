@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,9 +34,16 @@ import com.example.onetouchpromise.viewmodel.AuthViewModel
 
 @Composable
 fun SignUpScreen(
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel(),
+    onSignUpSuccess: () -> Unit
 ) {
     val state = viewModel.uiState
+
+    LaunchedEffect(state.isSuccess) {
+        if(state.isSuccess) {
+            onSignUpSuccess()
+        }
+    }
 
     Box(
         modifier = Modifier
