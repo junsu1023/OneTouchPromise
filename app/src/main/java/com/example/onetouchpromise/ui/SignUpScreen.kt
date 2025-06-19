@@ -31,11 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.error.AuthException
 import com.example.onetouchpromise.R
-import com.example.onetouchpromise.viewmodel.AuthViewModel
+import com.example.onetouchpromise.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
+    viewModel: SignUpViewModel = hiltViewModel(),
     onSignUpSuccess: () -> Unit
 ) {
     val state = viewModel.uiState
@@ -77,6 +77,22 @@ fun SignUpScreen(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
+                )
+            )
+
+            OutlinedTextField(
+                value = state.email,
+                onValueChange = viewModel::onEmailChange,
+                label = { Text(text = stringResource(R.string.password)) },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
                 )
             )
 

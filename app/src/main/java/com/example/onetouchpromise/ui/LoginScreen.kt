@@ -2,10 +2,13 @@ package com.example.onetouchpromise.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -26,6 +29,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.domain.error.AuthException
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.viewmodel.LoginViewModel
 
@@ -48,11 +52,17 @@ fun LoginScreen(
         .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 text = stringResource(R.string.login),
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 32.dp)
             )
 
             OutlinedTextField(
@@ -62,7 +72,7 @@ fun LoginScreen(
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .padding(vertical = 8.dp),
                 shape = RoundedCornerShape(12.dp),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -78,7 +88,7 @@ fun LoginScreen(
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(vertical = 8.dp),
                 shape = RoundedCornerShape(12.dp),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -86,26 +96,46 @@ fun LoginScreen(
                 )
             )
 
+            Spacer(modifier = Modifier.height(24.dp))
+
             Button(
                 onClick = viewModel::login,
-                modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(12.dp),
                 enabled = !state.isLoading
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
-                        color = Color.White
+                        color = Color.White,
+                        strokeWidth = 2.dp
                     )
+                } else {
+                    Text(text = stringResource(R.string.login))
                 }
-                else Text("로그인")
             }
 
             TextButton(onClick = onNavigateToSignUp) {
-                Text("아직 회원이 아니신가요? 회원가입")
+                Text(text = stringResource(R.string.is_not_user))
             }
 
-            state.errorMessage?.let {
-                Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 16.dp))
+            val errorMessage = when(state.error) {
+                is AuthException.EmailFormatInvalid -> stringResource(R.string.invalid_email)
+                is AuthException.PasswordTooShort -> stringResource(R.string.password_too_short)
+                is AuthException.UserNotFound -> stringResource(R.string.user_not_found)
+                is AuthException.WrongPassword -> stringResource(R.string.wrong_password)
+                is AuthException.Unknown -> state.error.message ?: stringResource(R.string.unknown)
+                null -> null
+            }
+
+            errorMessage?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }
