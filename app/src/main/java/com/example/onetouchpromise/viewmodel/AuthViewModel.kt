@@ -18,6 +18,14 @@ class AuthViewModel @Inject constructor(
     var uiState by mutableStateOf(AuthUiState())
         private set
 
+    fun onEmailChange(email: String) {
+        uiState = uiState.copy(email = email)
+    }
+
+    fun onPasswordChange(password: String) {
+        uiState = uiState.copy(password = password)
+    }
+
     fun signUp() {
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true)
@@ -28,9 +36,5 @@ class AuthViewModel @Inject constructor(
                 else -> uiState.copy(errorMessage = result.exceptionOrNull()?.message, isLoading = false)
             }
         }
-    }
-
-    fun onPasswordChange(password: String) {
-        uiState = uiState.copy(password = password)
     }
 }

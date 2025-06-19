@@ -16,4 +16,9 @@
     <string name="select_possible_date">참여 가능한 날짜를 선택해주세요.</string>
     <string name="submit_vote">투표 제출하기</string>
     <string name="view_voting_status">투표 현황 보기</string>
+    <string name="email">이메일</string>
+    <string name="password">비밀번호</string>
+    <string name="signup">회원가입</string>
+    <string name="error">에러</string>
+    <string name="complete_signup">회원가입 성공!</string>
 </resources>
