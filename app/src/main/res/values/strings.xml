@@ -21,4 +21,8 @@
     <string name="signup">회원가입</string>
     <string name="error">에러</string>
     <string name="complete_signup">회원가입 성공!</string>
+    <string name="accession">가입하기</string>
+    <string name="login">로그인</string>
+    <string name="is_not_user">회원이 아니신가요?</string>
+    <string name="is_blank_meeting">표시할 모임이 없습니다.</string>
 </resources>

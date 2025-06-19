@@ -8,7 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.onetouchpromise.ui.CreateMeetingScreen
 import com.example.onetouchpromise.ui.HomeScreen
+import com.example.onetouchpromise.ui.LoginScreen
 import com.example.onetouchpromise.ui.MeetingDetailScreen
+import com.example.onetouchpromise.ui.SignUpScreen
 
 @Composable
 fun OneTouchPromiseNavHost(
@@ -16,10 +18,39 @@ fun OneTouchPromiseNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = OneTouchPromiseScreen.HOME
+        startDestination = OneTouchPromiseScreen.LOGIN
     ) {
+        composable(OneTouchPromiseScreen.LOGIN) {
+            LoginScreen(
+                onNavigateToSignUp = { navController.navigate(OneTouchPromiseScreen.SIGNUP) },
+                onLoginSuccess = {
+                    navController.navigate(OneTouchPromiseScreen.HOME) {
+                        popUpTo(OneTouchPromiseScreen.LOGIN) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(OneTouchPromiseScreen.SIGNUP) {
+            SignUpScreen(
+                onSignUpSuccess = {
+                    navController.navigate(OneTouchPromiseScreen.HOME) {
+                        popUpTo(OneTouchPromiseScreen.SIGNUP) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
         composable(OneTouchPromiseScreen.HOME) {
-            HomeScreen(navController)
+            HomeScreen(
+                onMeetingClick = { meeting ->
+                    navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting.id}")
+                }
+            )
         }
 
         composable(OneTouchPromiseScreen.CREATE_MEETING) {
