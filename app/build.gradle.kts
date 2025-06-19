@@ -2,9 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.services)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -13,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.onetouchpromise"
-        minSdk = 26
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -43,27 +40,6 @@ android {
 }
 
 dependencies {
-    // module dependencies
-    implementation(project(":core"))
-    implementation(project(":data"))
-    implementation(project(":domain"))
-
-    // Compose navigation
-    implementation(libs.androidx.navigation.compose)
-
-    // NavHost
-    implementation(libs.hilt.navigation)
-
-    // viewModelScope
-    implementation(libs.lifecycle.viewmodel.ktx)
-
-    // firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-
-    // hilt
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
