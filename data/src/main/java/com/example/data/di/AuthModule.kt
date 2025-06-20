@@ -2,6 +2,7 @@ package com.example.data.di
 
 import com.example.data.datasource.AuthDataSource
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,4 +17,7 @@ object AuthModule {
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
+
+    @Provides
+    fun provideFireStore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 }

@@ -1,8 +1,7 @@
 package com.example.data.repository
 
 import com.example.data.datasource.MeetingDataSource
-import com.example.data.entity.MeetingEntity
-import com.example.data.mapper.convertModel
+import com.example.data.mapper.toModel
 import com.example.domain.model.MeetingModel
 import com.example.domain.repository.MeetingRepository
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +11,6 @@ import javax.inject.Inject
 class MeetingRepositoryImpl @Inject constructor(
     private val meetingDataSource: MeetingDataSource
 ): MeetingRepository {
-    override suspend fun getMeetingListFlow(): Flow<List<MeetingModel>> =
-        meetingDataSource.getMeetingsFlow().map { list -> list.map { it.convertModel() } }
+    override suspend fun getMeeting(): Flow<List<MeetingModel>> =
+        meetingDataSource.getMeeting().map { list -> list.map { it.toModel() } }
 }

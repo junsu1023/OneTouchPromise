@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetMeetingsUseCase(
     private val meetingRepository: MeetingRepository
 ) {
-    suspend operator fun invoke(): Flow<List<MeetingModel>> = meetingRepository.getMeetingListFlow()
+    suspend operator fun invoke(): Flow<List<MeetingModel>> = meetingRepository.getMeeting()
 }
