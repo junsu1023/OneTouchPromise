@@ -1,8 +1,8 @@
 package com.example.domain.repository
 
-import com.example.domain.model.MeetingModel
+import com.example.domain.result.MeetingResult
 import kotlinx.coroutines.flow.Flow
 
 interface MeetingRepository {
-    suspend fun getMeetingListFlow(): Flow<List<MeetingModel>>
+    suspend fun getMeeting(): Flow<MeetingResult>
 }

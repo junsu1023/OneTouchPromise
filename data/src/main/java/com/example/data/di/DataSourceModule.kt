@@ -4,6 +4,7 @@ import com.example.data.datasource.AuthDataSource
 import com.example.data.datasource.MeetingDataSource
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import dagger.Module
 import dagger.Provides
@@ -15,7 +16,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DataSourceModule {
     @Provides
-    fun provideMeetingDatasource(): MeetingDataSource = MeetingDataSource(Firebase.firestore)
+    fun provideMeetingDatasource(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): MeetingDataSource = MeetingDataSource(firestore, auth)
 
     @Provides
     @Singleton
