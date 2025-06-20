@@ -22,10 +22,10 @@ class HomeViewModel @Inject constructor(
         private set
 
     init {
-        observeMeetings()
+        loadMeetings()
     }
 
-    private fun observeMeetings() {
+    private fun loadMeetings() {
         viewModelScope.launch {
             getMeetingsUseCase()
                 .onEach { meetings ->
@@ -38,7 +38,6 @@ class HomeViewModel @Inject constructor(
                     uiState = uiState.copy(
                         error = e.message,
                         isLoading = false
-
                     )
                 }
                 .collect()
