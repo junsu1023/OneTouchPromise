@@ -81,7 +81,7 @@ fun SignUpScreen(
             )
 
             OutlinedTextField(
-                value = state.email,
+                value = state.password,
                 onValueChange = viewModel::onEmailChange,
                 label = { Text(text = stringResource(R.string.password)) },
                 singleLine = true,
