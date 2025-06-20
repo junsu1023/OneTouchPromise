@@ -1,6 +1,5 @@
 package com.example.domain.usecase
 
-import android.util.Patterns
 import com.example.domain.error.AuthException
 import com.example.domain.model.UserModel
 import com.example.domain.repository.AuthRepository
