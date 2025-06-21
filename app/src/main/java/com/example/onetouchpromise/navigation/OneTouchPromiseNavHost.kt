@@ -11,6 +11,7 @@ import com.example.onetouchpromise.ui.HomeScreen
 import com.example.onetouchpromise.ui.LoginScreen
 import com.example.onetouchpromise.ui.MeetingDetailScreen
 import com.example.onetouchpromise.ui.SignUpScreen
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun OneTouchPromiseNavHost(
@@ -47,8 +48,20 @@ fun OneTouchPromiseNavHost(
 
         composable(OneTouchPromiseScreen.HOME) {
             HomeScreen(
+                onLogoutClick = {
+                    FirebaseAuth.getInstance().signOut()
+
+                    navController.navigate(OneTouchPromiseScreen.LOGIN) {
+                        popUpTo(OneTouchPromiseScreen.HOME) {
+                            inclusive = true
+                        }
+                    }
+                },
                 onMeetingClick = { meeting ->
-                    navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting.id}")
+                    navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting}")
+                },
+                onCreateMeetingClick = {
+                    navController.navigate(OneTouchPromiseScreen.CREATE_MEETING)
                 }
             )
         }
