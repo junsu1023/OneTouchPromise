@@ -1,10 +1,13 @@
 package com.example.data.di
 
 import com.example.domain.repository.AuthRepository
+import com.example.domain.repository.MeetingDetailRepository
 import com.example.domain.repository.MeetingRepository
+import com.example.domain.usecase.GetMeetingDetailUseCase
 import com.example.domain.usecase.GetMeetingsUseCase
 import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.SignUpUseCase
+import com.example.domain.usecase.SubmitVoteUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +33,16 @@ object UseCaseModule {
     fun provideLoginUseCase(
         authRepository: AuthRepository
     ): LoginUseCase = LoginUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetMeetingDetailUseCase(
+        meetingDetailRepository: MeetingDetailRepository
+    ): GetMeetingDetailUseCase = GetMeetingDetailUseCase(meetingDetailRepository)
+
+    @Provides
+    @Singleton
+    fun provideSubmitVoteUseCase(
+        meetingDetailRepository: MeetingDetailRepository
+    ): SubmitVoteUseCase = SubmitVoteUseCase(meetingDetailRepository)
 }
