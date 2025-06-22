@@ -25,43 +25,58 @@ class CreateMeetingViewModel @Inject constructor(
         uiState = uiState.copy(title = title)
     }
 
-    fun addDateOption(option: String) {
-        if(option.isNotBlank()) {
+    fun addDateOption(date: String) {
+        if(uiState.dateOptions.contains(date)) {
+            uiState = uiState.copy(error = CreateMeetingError.DuplicateDateOption)
+            return
+        }
+
+        if(date.isNotBlank()) {
             uiState = uiState.copy(
-                dateOptions = uiState.dateOptions + option,
+                dateOptions = uiState.dateOptions + date,
                 newDateOption = ""
             )
         }
     }
 
-    fun updateNewDateOption(input: String) {
-        uiState = uiState.copy(newDateOption = input)
+    fun removeDateOption(date: String) {
+        uiState = uiState.copy(dateOptions = uiState.dateOptions - date)
     }
 
-    fun addLocationOption(option: String) {
-        if (option.isNotBlank()) {
+    fun removeLocationOption(location: String) {
+        uiState = uiState.copy(locationOptions = uiState.locationOptions - location)
+    }
+
+    fun removeParticipant(email: String) {
+        uiState = uiState.copy(participants = uiState.participants - email)
+    }
+
+    fun addLocationOption(location: String) {
+        if(uiState.dateOptions.contains(location)) {
+            uiState = uiState.copy(error = CreateMeetingError.DuplicateLocationOption)
+            return
+        }
+
+        if (location.isNotBlank()) {
             uiState = uiState.copy(
-                locationOptions = uiState.locationOptions + option,
+                locationOptions = uiState.locationOptions + location,
                 newLocationOption = ""
             )
         }
     }
 
-    fun updateNewLocationOption(input: String) {
-        uiState = uiState.copy(newLocationOption = input)
-    }
-
     fun addParticipant(email: String) {
+        if(uiState.dateOptions.contains(email)) {
+            uiState = uiState.copy(error = CreateMeetingError.DuplicateParticipantOption)
+            return
+        }
+
         if (email.isNotBlank()) {
             uiState = uiState.copy(
                 participants = uiState.participants + email,
                 newParticipant = ""
             )
         }
-    }
-
-    fun updateNewParticipant(input: String) {
-        uiState = uiState.copy(newParticipant = input)
     }
 
     fun createMeeting(onSuccess: () -> Unit) {
