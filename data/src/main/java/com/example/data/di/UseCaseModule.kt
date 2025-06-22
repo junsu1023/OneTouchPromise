@@ -1,13 +1,16 @@
 package com.example.data.di
 
+import com.example.data.repository.HomeRepositoryImpl
 import com.example.domain.repository.AuthRepository
 import com.example.domain.repository.CreateMeetingRepository
+import com.example.domain.repository.HomeRepository
 import com.example.domain.repository.MeetingDetailRepository
 import com.example.domain.repository.MeetingRepository
 import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.domain.usecase.GetMeetingDetailUseCase
 import com.example.domain.usecase.GetMeetingsUseCase
 import com.example.domain.usecase.LoginUseCase
+import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.domain.usecase.SignUpUseCase
 import com.example.domain.usecase.SubmitVoteUseCase
 import dagger.Module
@@ -53,4 +56,10 @@ object UseCaseModule {
     fun provideCreateMeetingUseCase(
         createMeetingRepository: CreateMeetingRepository
     ): CreateMeetingUseCase = CreateMeetingUseCase(createMeetingRepository)
+
+    @Provides
+    @Singleton
+    fun provideObserveHomeMeetingUseCase(
+        homeRepository: HomeRepository
+    ): ObserveHomeMeetingsUseCase = ObserveHomeMeetingsUseCase(homeRepository)
 }

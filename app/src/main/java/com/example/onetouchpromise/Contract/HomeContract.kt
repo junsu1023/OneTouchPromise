@@ -1,10 +1,9 @@
 package com.example.onetouchpromise.Contract
 
-import com.example.domain.error.MeetingError
-import com.example.domain.model.MeetingModel
+import com.example.domain.model.HomeMeetingModel
 
 data class HomeUiState(
-    val meetings: List<MeetingModel> = emptyList(),
+    val meetings: List<HomeMeetingModel> = emptyList(),
     val isLoading: Boolean = true,
-    val error: MeetingError? = null
+    val error: String? = null
 )

@@ -47,8 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.domain.error.MeetingError
-import com.example.domain.model.MeetingModel
+import com.example.domain.model.HomeMeetingModel
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.util.basePadding
 import com.example.onetouchpromise.viewmodel.HomeViewModel
@@ -59,7 +58,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onLogoutClick: () -> Unit,
-    onMeetingClick: (MeetingModel) -> Unit,
+    onMeetingClick: (HomeMeetingModel) -> Unit,
     onCreateMeetingClick: () -> Unit
 ) {
     val uiState = viewModel.uiState
@@ -234,20 +233,20 @@ fun HomeLoadingView(modifier: Modifier) {
 
 @Composable
 fun HomeErrorMessageView(
-    error: MeetingError,
+    error: String,
     modifier: Modifier = Modifier
 ) {
-    val message = when(error) {
-        is MeetingError.UserNotLoggedIn -> stringResource(R.string.use_after_login)
-        is MeetingError.NetworkError -> "${stringResource(R.string.network_error)}: ${error.message}"
-        is MeetingError.Unknown -> stringResource(R.string.unknown)
-    }
+//    val message = when(error) {
+//        is MeetingError.UserNotLoggedIn -> stringResource(R.string.use_after_login)
+//        is MeetingError.NetworkError -> "${stringResource(R.string.network_error)}: ${error.message}"
+//        is MeetingError.Unknown -> stringResource(R.string.unknown)
+//    }
 
     Text(
-        text = message,
+        text = error,
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodyLarge,
-        modifier = modifier
+        modifier = modifier.padding(16.dp)
     )
 }
 
@@ -293,8 +292,8 @@ fun EmptyListView(
 
 @Composable
 fun MeetingListView(
-    meetings: List<MeetingModel>,
-    onMeetingClick: (MeetingModel) -> Unit
+    meetings: List<HomeMeetingModel>,
+    onMeetingClick: (HomeMeetingModel) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -314,7 +313,7 @@ fun MeetingListView(
 
 @Composable
 fun MeetingCard(
-    meeting: MeetingModel,
+    meeting: HomeMeetingModel,
     onClick: () -> Unit
 ) {
     Card(
@@ -333,8 +332,7 @@ fun MeetingCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = "${stringResource(R.string.date)}: ${meeting.date}")
-            Text(text = "${stringResource(R.string.participant_count)}: ${meeting.participantCount}명")
+            Text(text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}")
         }
     }
 }

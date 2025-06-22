@@ -36,6 +36,7 @@ android {
 dependencies {
     // firebase
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
