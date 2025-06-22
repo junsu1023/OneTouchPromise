@@ -4,54 +4,50 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.domain.error.MeetingError
-import com.example.domain.result.MeetingResult
-import com.example.domain.usecase.GetMeetingsUseCase
+import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.onetouchpromise.Contract.HomeUiState
+import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getMeetingsUseCase: GetMeetingsUseCase
+    private val observeHomeMeetingsUseCase: ObserveHomeMeetingsUseCase
 ): ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
         private set
 
+    private var listenerRegistration: ListenerRegistration? = null
+
     init {
-        loadMeetings()
+        observeMeetings()
     }
 
-    private fun loadMeetings() {
-        viewModelScope.launch {
-            getMeetingsUseCase()
-                .onEach { result ->
-                    when(result) {
-                        is MeetingResult.Success -> {
-                            uiState = uiState.copy(
-                                meetings = result.meetings,
-                                isLoading = false
-                            )
-                        }
-                        is MeetingResult.Failure -> {
-                            uiState = uiState.copy(
-                                error = result.error,
-                                isLoading = false
-                            )
-                        }
-                    }
-                }.catch { e ->
-                    uiState = uiState.copy(
-                        error = MeetingError.Unknown(e),
-                        isLoading = false
+    private fun observeMeetings() {
+        uiState = uiState.copy(isLoading = true)
+
+        listenerRegistration = observeHomeMeetingsUseCase { result ->
+            uiState = when {
+                result.isSuccess -> {
+                    val meetings = result.getOrNull().orEmpty()
+                    uiState.copy(
+                        meetings = meetings,
+                        isLoading = false,
+                        error = null
                     )
                 }
-                .collect()
+                else -> {
+                    uiState.copy(
+                        isLoading = false,
+                        error = result.exceptionOrNull()?.message ?: "알 수 없는 오류 발생"
+                    )
+                }
+            }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        listenerRegistration?.remove()
     }
 }

@@ -1,6 +1,6 @@
 package com.example.data.entity
 
-data class CreateMeetingEntity(
+data class HomeMeetingEntity(
     val id: String = "",
     val title: String = "",
     val ownerId: String = "",

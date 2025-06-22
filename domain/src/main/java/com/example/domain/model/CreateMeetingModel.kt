@@ -5,5 +5,6 @@ data class CreateMeetingModel(
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
     val participants: List<String> = emptyList(),
-    val creatorEmail: String = ""
+    val creatorEmail: String = "",
+    val dueDate: String = ""
 )

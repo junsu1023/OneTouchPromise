@@ -9,6 +9,7 @@ import com.example.domain.error.CreateMeetingError
 import com.example.domain.model.CreateMeetingModel
 import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.onetouchpromise.Contract.CreateMeetingUiState
+import com.example.onetouchpromise.Contract.toMeetingModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,6 +24,10 @@ class CreateMeetingViewModel @Inject constructor(
 
     fun updateTitle(title: String) {
         uiState = uiState.copy(title = title)
+    }
+
+    fun updateDueDate(dueDate: String) {
+        uiState = uiState.copy(dueDate = dueDate)
     }
 
     fun addDateOption(date: String) {
@@ -83,18 +88,11 @@ class CreateMeetingViewModel @Inject constructor(
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true, error = null)
 
-            val model = CreateMeetingModel(
-                title = uiState.title,
-                dateOptions = uiState.dateOptions,
-                locationOptions = uiState.locationOptions,
-                participants = uiState.participants,
-                creatorEmail = FirebaseAuth.getInstance().currentUser?.email.orEmpty()
-            )
-
+            val model = uiState.toMeetingModel()
             val result = createMeetingUseCase(model)
             uiState = if (result.isSuccess) {
                 onSuccess()
-                CreateMeetingUiState(isSuccess = true)
+                CreateMeetingUiState(isSuccess = true, isLoading = false)
             } else {
                 uiState.copy(
                     isLoading = false,

@@ -1,6 +1,7 @@
 package com.example.domain.error
 
 sealed class CreateMeetingError: Throwable() {
+    data object NotLoggedIn: CreateMeetingError()
     data object EmptyTitle: CreateMeetingError()
     data object NoVoteOptions: CreateMeetingError()
     data object NoParticipants: CreateMeetingError()
