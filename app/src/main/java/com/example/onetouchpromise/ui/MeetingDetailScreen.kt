@@ -1,137 +1,212 @@
 package com.example.onetouchpromise.ui
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import com.example.core.viewmodel.BaseViewModel
-import com.example.domain.model.MeetingModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.domain.error.MeetingDetailError
+import com.example.domain.model.MeetingDetailModel
+import com.example.domain.model.VoteOptionModel
+import com.example.domain.model.VoteType
 import com.example.onetouchpromise.R
-import com.example.onetouchpromise.component.DateChip
-import com.example.onetouchpromise.navigation.OneTouchPromiseScreen
-import com.example.onetouchpromise.util.basePadding
-import java.time.LocalDate
+import com.example.onetouchpromise.viewmodel.MeetingDetailViewModel
 
 @Composable
 fun MeetingDetailScreen(
-    navController: NavHostController,
+    viewModel: MeetingDetailViewModel = hiltViewModel(),
+    onBackClick: () -> Unit = {},
     meetingId: String
 ) {
-    BackHandler {
-        navController.popBackStack()
-        BaseViewModel.setCurrentScreen(OneTouchPromiseScreen.HOME)
+    val uiState = viewModel.uiState
+
+    LaunchedEffect(Unit) {
+        viewModel.loadMeetingDetail(meetingId)
     }
 
-    val meeting = remember {
-        MeetingModel(
-            id = meetingId,
-            title = "임시 제목",
-            dueDate = "2025-06-20",
-            votedCount = 3,
-            totalCount = 6
+    Scaffold(
+        topBar = { MeetingDetailTopBar(onBackClick) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            when {
+                uiState.isLoading -> {
+                    DetailLoadingView(modifier = Modifier.align(Alignment.Center))
+                }
+                uiState.error != null -> {
+                    DetailErrorMessageView(
+                        error = uiState.error,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                uiState.meeting != null -> {
+                    MeetingDetailContent(
+                        meeting = uiState.meeting,
+                        onVoteClick = { date, location ->
+                            viewModel.submitVote(meetingId, date, location)
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MeetingDetailTopBar(onBackClick: () -> Unit) {
+    TopAppBar(
+        title = { Text(text = stringResource(R.string.meeting_detail)) },
+        navigationIcon = {
+            IconButton(
+                onClick = onBackClick
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.go_back)
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun DetailLoadingView(modifier: Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator()
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = stringResource(R.string.getting_meeting_detail),
+            style = MaterialTheme.typography.bodyMedium
         )
     }
+}
 
-    val dateOptions = remember {
-        listOf(
-            LocalDate.of(2025, 6,  21),
-            LocalDate.of(2025, 6,  22),
-            LocalDate.of(2025, 6,  23)
-        )
+@Composable
+fun DetailErrorMessageView(
+    error: MeetingDetailError,
+    modifier: Modifier = Modifier
+) {
+    val message = when(error) {
+        is MeetingDetailError.NotLoggedIn -> stringResource(R.string.need_login)
+        is MeetingDetailError.NotFound -> stringResource(R.string.meeting_not_found)
+        is MeetingDetailError.UnKnown -> stringResource(R.string.unknown)
+        else -> stringResource(R.string.occur_error)
     }
 
-    val selectedDates = remember { mutableStateListOf<LocalDate>() }
+    Text(
+        text = message,
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun MeetingDetailContent(
+    meeting: MeetingDetailModel,
+    onVoteClick: (date: VoteOptionModel, location: VoteOptionModel) -> Unit
+) {
+    var selectedDate by remember { mutableStateOf<VoteOptionModel?>(null) }
+    var selectedLocation by remember { mutableStateOf<VoteOptionModel?>(null) }
 
     Column(
         modifier = Modifier
-            .basePadding()
-            .verticalScroll(rememberScrollState())
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         Text(
-            text = meeting.title,
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-            )
+            text = stringResource(R.string.meeting_title),
+            style = MaterialTheme.typography.titleLarge
         )
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "${stringResource(R.string.votes_due_date)} ${meeting.dueDate}"
+            text = stringResource(R.string.participant),
+            style = MaterialTheme.typography.titleMedium
         )
+        meeting.participants.forEach { participant ->
+            Text(text = "• $participant")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "${meeting.votedCount}/${meeting.totalCount}${stringResource(R.string.how_many_votes_complete)}"
+            text = stringResource(R.string.date_vote),
+            style = MaterialTheme.typography.titleMedium
         )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = stringResource(R.string.select_possible_date),
-            fontWeight = FontWeight.Medium
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            dateOptions.forEach { date ->
-                val selected = selectedDates.contains(date)
-
-                DateChip(
-                    date = date,
-                    selected = selected,
-                    onClick =  {
-                        if(selected) selectedDates.remove(date)
-                        else selectedDates.add(date)
-                    }
+        meeting.voteOptions.filter {
+            it.type == VoteType.DATE
+        }.forEach { option ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .selectable(
+                        selected = selectedDate == option,
+                        onClick = { selectedDate = option }
+                    )
+                    .padding(4.dp)
+            ) {
+                RadioButton(
+                    selected = selectedLocation == option,
+                    onClick = null
                 )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(text = "${option.option} (${option.votedUserIds.size}명")
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            modifier = Modifier.fillMaxWidth(),
             onClick = {
-                /* 투표 저장 */
-                navController.navigate("meeting_result/$meetingId")
+                if (selectedDate != null && selectedLocation != null) {
+                    onVoteClick(selectedDate!!, selectedLocation!!)
+                }
             },
-            enabled = selectedDates.isNotEmpty()
+            enabled = selectedDate != null && selectedLocation != null,
+            modifier = Modifier.align(Alignment.End)
         ) {
-            Text(
-                text = stringResource(R.string.submit_vote)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                navController.navigate("meeting_reuslt/$meetingId")
-            }
-        ) {
-            Text(
-                text = stringResource(R.string.view_voting_status)
-            )
+            Text(text = stringResource(R.string.progress_vote))
         }
     }
 }

@@ -75,7 +75,10 @@ fun OneTouchPromiseNavHost(
             arguments = listOf(navArgument("meetingId") { type = NavType.StringType })
         ) { backStackEntry ->
             val meetingId = backStackEntry.arguments?.getString("meetingId") ?: ""
-            MeetingDetailScreen(navController, meetingId)
+            MeetingDetailScreen(
+                onBackClick = { navController.popBackStack() },
+                meetingId = meetingId
+            )
         }
 
         composable(
