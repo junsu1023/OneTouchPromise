@@ -4,8 +4,11 @@
     <string name="home_title">모여라!</string>
     <string name="create_meeting">모임 생성</string>
     <string name="meeting_title">모임 제목</string>
-    <string name="date_candidate">날짜 후보</string>
+    <string name="date_candidate">날짜 투표 항목</string>
+    <string name="location_candidate">장소 투표 항목</string>
     <string name="add_date">날짜 추가</string>
+    <string name="add_location">장소 추가</string>
+    <string name="add_participant">참여자 추가</string>
     <string name="add">추가</string>
     <string name="vote_deadline">투표 마감일</string>
     <string name="select_date">날짜 선택</string>
@@ -39,6 +42,11 @@
     <string name="date_vote">날짜 투표</string>
     <string name="location_vote">장소 투표</string>
     <string name="progress_vote">투표 진행</string>
+    <string name="input_email">이메일 입력</string>
+    <string name="creating_meeting">생성 중...</string>
+    <string name="cancel">취소</string>
+    <string name="delete">삭제</string>
+    <string name="input_location">장소 입력</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>
@@ -51,4 +59,10 @@
     <string name="need_login">로그인이 필요합니다.</string>
     <string name="meeting_not_found">모임 정보를 찾을 수 없습니다.</string>
     <string name="occur_error">오류 발생</string>
+    <string name="empty_title">모임 제목을 입력해주세요.</string>
+    <string name="no_vote_options">날짜/장소 중 하나 이상의 항목을 추가해주세요.</string>
+    <string name="no_participants">참여자를 한 명 이상 추가해주세요.</string>
+    <string name="already_exist_date">이미 추가된 날짜입니다.</string>
+    <string name="already_exist_location">이미 추가된 장소입니다.</string>
+    <string name="already_exist_participant">이미 추가된 사용자입니다.</string>
 </resources>

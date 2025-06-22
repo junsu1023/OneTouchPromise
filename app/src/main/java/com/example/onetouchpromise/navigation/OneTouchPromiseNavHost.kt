@@ -67,7 +67,15 @@ fun OneTouchPromiseNavHost(
         }
 
         composable(OneTouchPromiseScreen.CREATE_MEETING) {
-            CreateMeetingScreen(navController)
+            CreateMeetingScreen(
+                onMeetingCreated = {
+                    navController.navigate(OneTouchPromiseScreen.HOME) {
+                        popUpTo(OneTouchPromiseScreen.HOME) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
 
         composable(
