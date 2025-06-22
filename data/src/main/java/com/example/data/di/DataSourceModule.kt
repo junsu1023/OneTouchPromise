@@ -1,6 +1,7 @@
 package com.example.data.di
 
 import com.example.data.datasource.AuthDataSource
+import com.example.data.datasource.CreateMeetingDataSource
 import com.example.data.datasource.MeetingDataSource
 import com.example.data.datasource.MeetingDetailRemoteDataSource
 import com.google.firebase.Firebase
@@ -33,4 +34,10 @@ object DataSourceModule {
     fun provideMeetingDetailDataSource(
         firestore: FirebaseFirestore
     ): MeetingDetailRemoteDataSource = MeetingDetailRemoteDataSource(firestore)
+
+    @Provides
+    @Singleton
+    fun provideCreateMeetingDataSource(
+        firestore: FirebaseFirestore
+    ): CreateMeetingDataSource = CreateMeetingDataSource(firestore)
 }
