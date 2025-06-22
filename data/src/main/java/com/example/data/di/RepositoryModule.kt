@@ -1,12 +1,15 @@
 package com.example.data.di
 
 import com.example.data.datasource.AuthDataSource
+import com.example.data.datasource.CreateMeetingDataSource
 import com.example.data.datasource.MeetingDataSource
 import com.example.data.datasource.MeetingDetailRemoteDataSource
 import com.example.data.repository.AuthRepositoryImpl
+import com.example.data.repository.CreateMeetingRepositoryImpl
 import com.example.data.repository.MeetingDetailRepositoryImpl
 import com.example.data.repository.MeetingRepositoryImpl
 import com.example.domain.repository.AuthRepository
+import com.example.domain.repository.CreateMeetingRepository
 import com.example.domain.repository.MeetingDetailRepository
 import com.example.domain.repository.MeetingRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -36,4 +39,11 @@ object RepositoryModule {
         meetingDetailRemoteDataSource: MeetingDetailRemoteDataSource,
         auth: FirebaseAuth
     ): MeetingDetailRepository = MeetingDetailRepositoryImpl(meetingDetailRemoteDataSource, auth)
+
+    @Provides
+    @Singleton
+    fun provideCreateMeetingRepository(
+        dataSource: CreateMeetingDataSource,
+        auth: FirebaseAuth
+    ): CreateMeetingRepository = CreateMeetingRepositoryImpl(dataSource, auth)
 }

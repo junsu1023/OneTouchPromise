@@ -1,8 +1,10 @@
 package com.example.data.di
 
 import com.example.domain.repository.AuthRepository
+import com.example.domain.repository.CreateMeetingRepository
 import com.example.domain.repository.MeetingDetailRepository
 import com.example.domain.repository.MeetingRepository
+import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.domain.usecase.GetMeetingDetailUseCase
 import com.example.domain.usecase.GetMeetingsUseCase
 import com.example.domain.usecase.LoginUseCase
@@ -45,4 +47,10 @@ object UseCaseModule {
     fun provideSubmitVoteUseCase(
         meetingDetailRepository: MeetingDetailRepository
     ): SubmitVoteUseCase = SubmitVoteUseCase(meetingDetailRepository)
+
+    @Provides
+    @Singleton
+    fun provideCreateMeetingUseCase(
+        createMeetingRepository: CreateMeetingRepository
+    ): CreateMeetingUseCase = CreateMeetingUseCase(createMeetingRepository)
 }
