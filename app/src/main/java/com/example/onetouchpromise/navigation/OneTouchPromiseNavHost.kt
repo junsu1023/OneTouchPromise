@@ -11,6 +11,7 @@ import com.example.onetouchpromise.ui.HomeScreen
 import com.example.onetouchpromise.ui.LoginScreen
 import com.example.onetouchpromise.ui.MeetingDetailScreen
 import com.example.onetouchpromise.ui.SignUpScreen
+import com.example.onetouchpromise.ui.SplashScreen
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -19,8 +20,27 @@ fun OneTouchPromiseNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = OneTouchPromiseScreen.LOGIN
+        startDestination = OneTouchPromiseScreen.SPLASH
     ) {
+        composable(OneTouchPromiseScreen.SPLASH) {
+            SplashScreen(
+                onNavigateToHome = {
+                    navController.navigate(OneTouchPromiseScreen.HOME) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.navigate(OneTouchPromiseScreen.LOGIN) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
         composable(OneTouchPromiseScreen.LOGIN) {
             LoginScreen(
                 onNavigateToSignUp = { navController.navigate(OneTouchPromiseScreen.SIGNUP) },
