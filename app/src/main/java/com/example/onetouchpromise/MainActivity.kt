@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.example.onetouchpromise.navigation.OneTouchPromiseNavHost
+import com.example.onetouchpromise.ui.DecideStartDestination
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,6 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            DecideStartDestination(navController)
             OneTouchPromiseNavHost(navController)
         }
     }
