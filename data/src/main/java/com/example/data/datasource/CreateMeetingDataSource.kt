@@ -17,10 +17,16 @@ class CreateMeetingDataSource(
             val user = auth.currentUser?: return@withContext Result.failure(CreateMeetingError.NotLoggedIn)
 
             val document = firestore.collection("meetings").document()
+            val userEmail = user.email
             val meetingWithId = meeting.copy(
                 id = document.id,
                 ownerId = user.uid,
-                creatorEmail = user.email ?: "unknown"
+                creatorEmail = user.email ?: "unknown",
+                participants = if(userEmail !in meeting.participants) {
+                    meeting.participants + userEmail!!
+                } else {
+                    meeting.participants
+                }
             )
 
             document.set(meetingWithId).await()
