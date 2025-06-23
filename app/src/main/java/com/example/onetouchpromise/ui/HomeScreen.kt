@@ -236,12 +236,6 @@ fun HomeErrorMessageView(
     error: String,
     modifier: Modifier = Modifier
 ) {
-//    val message = when(error) {
-//        is MeetingError.UserNotLoggedIn -> stringResource(R.string.use_after_login)
-//        is MeetingError.NetworkError -> "${stringResource(R.string.network_error)}: ${error.message}"
-//        is MeetingError.Unknown -> stringResource(R.string.unknown)
-//    }
-
     Text(
         text = error,
         color = MaterialTheme.colorScheme.error,
