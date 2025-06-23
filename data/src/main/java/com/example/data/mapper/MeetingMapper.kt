@@ -4,6 +4,7 @@ import com.example.data.entity.CreateMeetingEntity
 import com.example.data.entity.HomeMeetingEntity
 import com.example.data.entity.MeetingDetailEntity
 import com.example.data.entity.MeetingEntity
+import com.example.data.entity.VoteOptionEntity
 import com.example.domain.model.CreateMeetingModel
 import com.example.domain.model.HomeMeetingModel
 import com.example.domain.model.MeetingDetailModel
@@ -47,13 +48,14 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
     title = this.title,
     creatorEmail = this.creatorEmail,
     participants = this.participants,
-    voteOptions = this.voteOptions.map {
-        VoteOptionModel(
-            type = VoteType.valueOf(it.type),
-            option = it.option,
-            votedUserIds = it.votedUserIds
-        )
-    }
+    voteOptions = this.voteOptions.map { it.toModel() },
+    dueDate = dueDate
+)
+
+fun VoteOptionEntity.toModel(): VoteOptionModel = VoteOptionModel(
+    type = VoteType.valueOf(type),
+    option = option,
+    votedUserIds = votedUserIds
 )
 
 fun CreateMeetingEntity.toHomeMeetingEntity(): HomeMeetingEntity {

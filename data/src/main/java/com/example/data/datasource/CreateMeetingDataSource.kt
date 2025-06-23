@@ -26,7 +26,8 @@ class CreateMeetingDataSource(
                     meeting.participants + userEmail!!
                 } else {
                     meeting.participants
-                }
+                },
+                dueDate = meeting.dueDate
             )
 
             document.set(meetingWithId).await()

@@ -229,6 +229,8 @@ fun SelectDueDateView(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
+
+        Spacer(Modifier.height(24.dp))
     }
 }
 
@@ -397,6 +399,7 @@ fun ErrorMessageView(
     val errorText =   when (error) {
         is CreateMeetingError.NotLoggedIn -> stringResource(R.string.need_login)
         is CreateMeetingError.EmptyTitle -> stringResource(R.string.empty_title)
+        is CreateMeetingError.EmptyDueDate -> stringResource(R.string.empty_duedate)
         is CreateMeetingError.NoVoteOptions -> stringResource(R.string.no_vote_options)
         is CreateMeetingError.NoParticipants -> stringResource(R.string.no_participants)
         is CreateMeetingError.DuplicateDateOption -> stringResource(R.string.already_exist_date)

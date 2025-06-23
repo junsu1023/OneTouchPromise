@@ -21,7 +21,8 @@ class CreateMeetingRepositoryImpl @Inject constructor(
             creatorEmail = user.email ?: "unknown",
             participants = model.participants,
             dateOptions = model.dateOptions,
-            locationOptions = model.locationOptions
+            locationOptions = model.locationOptions,
+            dueDate = model.dueDate
         )
 
         return createMeetingDataSource.createMeeting(entity)
