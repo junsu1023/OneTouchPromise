@@ -78,7 +78,7 @@ fun OneTouchPromiseNavHost(
                     }
                 },
                 onMeetingClick = { meeting ->
-                    navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting}")
+                    navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting.id}")
                 },
                 onCreateMeetingClick = {
                     navController.navigate(OneTouchPromiseScreen.CREATE_MEETING)
@@ -103,6 +103,7 @@ fun OneTouchPromiseNavHost(
             arguments = listOf(navArgument("meetingId") { type = NavType.StringType })
         ) { backStackEntry ->
             val meetingId = backStackEntry.arguments?.getString("meetingId") ?: ""
+            
             MeetingDetailScreen(
                 onBackClick = { navController.popBackStack() },
                 meetingId = meetingId
