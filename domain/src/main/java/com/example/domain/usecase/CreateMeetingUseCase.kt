@@ -11,6 +11,7 @@ class CreateMeetingUseCase @Inject constructor(
     suspend operator fun invoke(model: CreateMeetingModel): Result<Unit> {
         return when {
             model.title.isBlank() -> Result.failure(CreateMeetingError.EmptyTitle)
+            model.dueDate.isBlank() -> Result.failure(CreateMeetingError.EmptyDueDate)
             model.dateOptions.isEmpty() -> Result.failure(CreateMeetingError.NoVoteOptions)
             model.locationOptions.isEmpty() -> Result.failure(CreateMeetingError.NoVoteOptions)
             model.participants.isEmpty() -> Result.failure(CreateMeetingError.NoParticipants)
