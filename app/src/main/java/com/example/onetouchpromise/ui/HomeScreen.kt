@@ -31,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -43,7 +44,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -327,6 +330,22 @@ fun MeetingCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}")
+
+            Text(
+                text = "${stringResource(R.string.vote_rates)}: ${(meeting.voteRatio * 100).toInt()}%",
+                style = MaterialTheme.typography.bodySmall
+            )
+
+            println("test-kjs: voteRatio = ${meeting.voteRatio}")
+            LinearProgressIndicator(
+                progress = { meeting.voteRatio.coerceIn(0f, 1f) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp)),
+                color = colorResource(R.color.deep_indigo_blue),
+                trackColor = colorResource(R.color.pale_indigo_blue)
+            )
         }
     }
 }

@@ -12,4 +12,6 @@
     <color name="philippine_silver">#FFB7B7B7</color>
     <color name="apple">#FF4CAF50</color>
     <color name="pastel_blue">#FFE6F1FF</color>
+    <color name="deep_indigo_blue">#4F46E5</color>
+    <color name="pale_indigo_blue">#E0E7FF</color>
 </resources>

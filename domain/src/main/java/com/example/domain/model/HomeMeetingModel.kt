@@ -6,5 +6,6 @@ data class HomeMeetingModel(
     val creatorEmail: String = "",
     val dueDate: String = "",
     val dateOptions: List<String> = emptyList(),
-    val locationOptions: List<String> = emptyList()
+    val locationOptions: List<String> = emptyList(),
+    val voteRatio: Float = 0f
 )

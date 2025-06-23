@@ -32,16 +32,14 @@ fun CreateMeetingModel.toEntity(id: String, ownerId: String): CreateMeetingEntit
     createdAt = System.currentTimeMillis()
 )
 
-fun HomeMeetingEntity.toModel(): HomeMeetingModel {
-    return HomeMeetingModel(
-        id = id,
-        title = title,
-        creatorEmail = creatorEmail,
-        dateOptions = dateOptions,
-        locationOptions = locationOptions,
-        dueDate = dueDate
-    )
-}
+fun HomeMeetingEntity.toModel(): HomeMeetingModel = HomeMeetingModel(
+    id = id,
+    title = title,
+    creatorEmail = creatorEmail,
+    dateOptions = dateOptions,
+    locationOptions = locationOptions,
+    dueDate = dueDate
+)
 
 fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = MeetingDetailModel(
     id = meetingId,
@@ -51,6 +49,21 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
     voteOptions = this.voteOptions.map { it.toModel() },
     dueDate = dueDate
 )
+
+fun MeetingDetailModel.toHomeModel(): HomeMeetingModel {
+    val totalVotes = voteOptions.flatMap { it.votedUserIds }.distinct().size
+    val participantCount = participants.size.coerceAtLeast(1)
+
+    return HomeMeetingModel(
+        id = id,
+        title = title,
+        creatorEmail = creatorEmail,
+        dueDate = dueDate,
+        dateOptions = voteOptions.filter { it.type == VoteType.DATE }.map { it.option },
+        locationOptions = voteOptions.filter { it.type == VoteType.LOCATION }.map { it.option },
+        voteRatio = totalVotes.toFloat() / participantCount
+    )
+}
 
 fun VoteOptionEntity.toModel(): VoteOptionModel = VoteOptionModel(
     type = VoteType.valueOf(type),
