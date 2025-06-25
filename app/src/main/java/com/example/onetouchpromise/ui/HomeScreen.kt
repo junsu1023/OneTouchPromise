@@ -336,7 +336,6 @@ fun MeetingCard(
                 style = MaterialTheme.typography.bodySmall
             )
 
-            println("test-kjs: voteRatio = ${meeting.voteRatio}")
             LinearProgressIndicator(
                 progress = { meeting.voteRatio.coerceIn(0f, 1f) },
                 modifier = Modifier
