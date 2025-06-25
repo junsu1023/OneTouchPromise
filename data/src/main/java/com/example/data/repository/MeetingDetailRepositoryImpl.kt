@@ -5,7 +5,6 @@ import com.example.data.mapper.toModel
 import com.example.domain.error.MeetingDetailError
 import com.example.domain.error.mapToMeetingError
 import com.example.domain.model.MeetingDetailModel
-import com.example.domain.model.VoteOptionModel
 import com.example.domain.repository.MeetingDetailRepository
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
@@ -23,15 +22,15 @@ class MeetingDetailRepositoryImpl @Inject constructor(
 
     override suspend fun submitVote(
         meetingId: String,
-        dateOption: VoteOptionModel,
-        locationOption: VoteOptionModel
+        dateOption: String,
+        locationOption: String
     ): Result<Unit> {
         val userId = auth.currentUser?.email ?: return Result.failure(MeetingDetailError.NotLoggedIn)
 
         return meetingDetailRemoteDataSource.submitVote(
             meetingId = meetingId,
-            dateOption = dateOption.option,
-            locationOption = locationOption.option,
+            dateOption = dateOption,
+            locationOption = locationOption,
             userId = userId
         ).mapCatching {
             it
