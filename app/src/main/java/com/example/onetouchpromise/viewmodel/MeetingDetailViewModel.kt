@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.error.MeetingDetailError
-import com.example.domain.model.VoteOptionModel
 import com.example.domain.usecase.GetMeetingDetailUseCase
 import com.example.domain.usecase.SubmitVoteUseCase
 import com.example.onetouchpromise.Contract.MeetingDetailUiState
@@ -45,18 +44,10 @@ class MeetingDetailViewModel @Inject constructor(
         }
     }
 
-    fun selectDate(option: VoteOptionModel) {
-        uiState = uiState.copy(selectedDateOption = option)
-    }
-
-    fun selectLocation(option: VoteOptionModel) {
-        uiState = uiState.copy(selectedLocationOption = option)
-    }
-
     fun submitVote(
         meetingId: String,
-        date: VoteOptionModel,
-        location: VoteOptionModel
+        date: String,
+        location: String
     ) {
         viewModelScope.launch {
             val result = submitVoteUseCase(meetingId, date, location)
