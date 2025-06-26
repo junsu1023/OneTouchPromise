@@ -7,4 +7,5 @@ data class MeetingDetailUiState(
     val isLoading: Boolean = true,
     val meeting: MeetingDetailModel? = null,
     val error: MeetingDetailError? = null,
+    val isVoteSuccess: Boolean = false
 )

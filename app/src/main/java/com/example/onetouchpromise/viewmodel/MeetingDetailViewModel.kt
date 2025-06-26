@@ -52,10 +52,10 @@ class MeetingDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val result = submitVoteUseCase(meetingId, date, location)
 
-            if(result.isSuccess) {
-                loadMeetingDetail(meetingId)
+            uiState = if(result.isSuccess) {
+                uiState.copy(isVoteSuccess = true)
             } else {
-                uiState = uiState.copy(error = result.exceptionOrNull() as MeetingDetailError)
+                uiState.copy(error = result.exceptionOrNull() as MeetingDetailError)
             }
         }
     }

@@ -105,8 +105,13 @@ fun OneTouchPromiseNavHost(
             val meetingId = backStackEntry.arguments?.getString("meetingId") ?: ""
             
             MeetingDetailScreen(
+                meetingId = meetingId,
                 onBackClick = { navController.popBackStack() },
-                meetingId = meetingId
+                onVoteSuccess = {
+                    navController.navigate(OneTouchPromiseScreen.HOME) {
+                        popUpTo(OneTouchPromiseScreen.HOME) { inclusive = true }
+                    }
+                }
             )
         }
 

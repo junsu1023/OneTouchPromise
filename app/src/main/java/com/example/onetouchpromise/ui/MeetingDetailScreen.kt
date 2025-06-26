@@ -45,14 +45,20 @@ import com.example.onetouchpromise.viewmodel.MeetingDetailViewModel
 @Composable
 fun MeetingDetailScreen(
     viewModel: MeetingDetailViewModel = hiltViewModel(),
+    meetingId: String,
     onBackClick: () -> Unit = {},
-    meetingId: String
+    onVoteSuccess: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    println("test-kjs: uiState = ${uiState.meeting?.dateOptions}")
 
     LaunchedEffect(Unit) {
         viewModel.loadMeetingDetail(meetingId)
+    }
+
+    LaunchedEffect(uiState.isVoteSuccess) {
+        if(uiState.isVoteSuccess) {
+            onVoteSuccess()
+        }
     }
 
     Scaffold(
