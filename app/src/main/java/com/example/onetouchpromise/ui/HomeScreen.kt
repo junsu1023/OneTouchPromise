@@ -51,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.model.HomeMeetingModel
+import com.example.domain.model.MeetingModel
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.util.basePadding
 import com.example.onetouchpromise.viewmodel.HomeViewModel

@@ -1,9 +1,16 @@
 package com.example.data.entity
 
+import com.example.domain.model.VoteOptionModel
+
 data class MeetingEntity(
     val id: String = "",
     val title: String = "",
-    val date: String = "",
-    val createdBy: String = "",
-    val participants: List<String> = emptyList()
+    val ownerId: String = "",
+    val creatorEmail: String = "",
+    val participants: List<String> = emptyList(),
+    val dateOptions: List<String> = emptyList(),
+    val locationOptions: List<String> = emptyList(),
+    val voteOptions: List<VoteOptionModel> = emptyList(),
+    val dueDate: String = "",
+    val createdAt: Long = System.currentTimeMillis()
 )

@@ -37,10 +37,7 @@ class CreateMeetingViewModel @Inject constructor(
         }
 
         if(date.isNotBlank()) {
-            uiState = uiState.copy(
-                dateOptions = uiState.dateOptions + date,
-                newDateOption = ""
-            )
+            uiState = uiState.copy(dateOptions = uiState.dateOptions + date)
         }
     }
 
@@ -63,10 +60,7 @@ class CreateMeetingViewModel @Inject constructor(
         }
 
         if (location.isNotBlank()) {
-            uiState = uiState.copy(
-                locationOptions = uiState.locationOptions + location,
-                newLocationOption = ""
-            )
+            uiState = uiState.copy(locationOptions = uiState.locationOptions + location)
         }
     }
 

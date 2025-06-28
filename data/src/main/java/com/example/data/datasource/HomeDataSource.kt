@@ -1,6 +1,6 @@
 package com.example.data.datasource
 
-import com.example.data.entity.HomeMeetingEntity
+import com.example.data.entity.MeetingEntity
 import com.example.domain.error.CreateMeetingError
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,7 +13,7 @@ class HomeDataSource @Inject constructor(
     private val auth: FirebaseAuth
 ) {
     fun observeUserMeetings(
-        onEvent: (Result<List<HomeMeetingEntity>>) -> Unit
+        onEvent: (Result<List<MeetingEntity>>) -> Unit
     ): ListenerRegistration {
         val email = auth.currentUser?.email
             ?: return DummyListenerRegistration(onEvent)
@@ -28,7 +28,7 @@ class HomeDataSource @Inject constructor(
                 }
 
                 val meetings = snapshot?.documents
-                    ?.mapNotNull { it.toObject(HomeMeetingEntity::class.java) }
+                    ?.mapNotNull { it.toObject(MeetingEntity::class.java) }
                     .orEmpty()
 
                 onEvent(Result.success(meetings))
@@ -36,7 +36,7 @@ class HomeDataSource @Inject constructor(
     }
 
     private fun DummyListenerRegistration(
-        onEvent: (Result<List<HomeMeetingEntity>>) -> Unit
+        onEvent: (Result<List<MeetingEntity>>) -> Unit
     ): ListenerRegistration {
         onEvent(Result.failure(CreateMeetingError.NotLoggedIn))
         return ListenerRegistration { }

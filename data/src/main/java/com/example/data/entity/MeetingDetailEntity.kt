@@ -9,9 +9,3 @@ data class MeetingDetailEntity(
     val voteOptions: List<VoteOptionEntity> = emptyList(),
     val dueDate: String = ""
 )
-
-data class VoteOptionEntity(
-    val type: String = "",
-    val option: String = "",
-    val votedUserIds: List<String> = emptyList()
-)
