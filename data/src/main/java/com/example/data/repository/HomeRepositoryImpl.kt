@@ -1,7 +1,7 @@
 package com.example.data.repository
 
 import com.example.data.datasource.HomeDataSource
-import com.example.data.mapper.toModel
+import com.example.data.mapper.toHomeMeetingModel
 import com.example.domain.model.HomeMeetingModel
 import com.example.domain.repository.HomeRepository
 import com.google.firebase.firestore.ListenerRegistration
@@ -12,7 +12,7 @@ class HomeRepositoryImpl @Inject constructor(
 ): HomeRepository {
     override fun observeUserMeeting(onEvent: (Result<List<HomeMeetingModel>>) -> Unit): ListenerRegistration =
         homeDataSource.observeUserMeetings { result ->
-            val mapped = result.map { list -> list.map { it.toModel() } }
+            val mapped = result.map { list -> list.map { it.toHomeMeetingModel() } }
             onEvent(mapped)
         }
 }

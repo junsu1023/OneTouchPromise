@@ -6,9 +6,7 @@ import com.example.domain.model.CreateMeetingModel
 data class CreateMeetingUiState(
     val title: String = "",
     val dateOptions: List<String> = emptyList(),
-    val newDateOption: String = "",
     val locationOptions: List<String> = emptyList(),
-    val newLocationOption: String = "",
     val participants: List<String> = emptyList(),
     val newParticipant: String = "",
     val dueDate: String = "",

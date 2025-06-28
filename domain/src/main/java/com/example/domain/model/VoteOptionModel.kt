@@ -1,6 +1,6 @@
-package com.example.data.entity
+package com.example.domain.model
 
-data class VoteOptionEntity(
+data class VoteOptionModel(
     val type: String = "",
     val option: String = "",
     val votedUserIds: List<String> = emptyList()

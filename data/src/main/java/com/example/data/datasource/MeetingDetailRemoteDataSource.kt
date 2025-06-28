@@ -1,5 +1,6 @@
 package com.example.data.datasource
 
+import android.util.Log
 import com.example.data.entity.MeetingDetailEntity
 import com.example.data.entity.MeetingEntity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,15 +30,22 @@ class MeetingDetailRemoteDataSource @Inject constructor(
         firestore.runTransaction { transaction ->
             val docRef = meetingCollection.document(meetingId)
             val snapshot = transaction[docRef]
-            val entity = snapshot.toObject(MeetingDetailEntity::class.java) ?: throw IllegalStateException("Meeting not found")
-            val updatedVoteOptions = entity.voteOptions.map {
-                val isDate = it.type == "DATE" && it.option == dateOption
-                val isLocation = it.type == "LOCATION" && it.option == locationOption
+            val entity = snapshot.toObject(MeetingDetailEntity::class.java)
+                ?: throw IllegalStateException("Meeting not found")
 
-                if(isDate || isLocation) {
-                    it.copy(votedUserIds = it.votedUserIds + userId)
+            val updatedVoteOptions = entity.voteOptions.map {
+                val shouldUpdate = (it.type == "DATE" && it.option == dateOption) || (it.type == "LOCATION" && it.option == locationOption)
+
+                if (shouldUpdate) {
+                    val updatedIds = it.votedUserIds.toSet() + userId
+                    it.copy(votedUserIds = updatedIds.toList())
                 } else it
             }
+
+
+            Log.d("submitVote", "Updating vote for userId: $userId, date: $dateOption, location: $locationOption")
+            Log.d("submitVote", "Before update: ${entity.voteOptions}")
+            Log.d("submitVote", "After update: $updatedVoteOptions")
 
             transaction.update(docRef, "voteOptions", updatedVoteOptions)
         }.await()

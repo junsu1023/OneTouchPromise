@@ -10,14 +10,28 @@ import com.example.domain.model.HomeMeetingModel
 import com.example.domain.model.MeetingDetailModel
 import com.example.domain.model.MeetingModel
 import com.example.domain.model.VoteOptionModel
-import com.example.domain.model.VoteType
 
 fun MeetingEntity.toModel(): MeetingModel {
     return MeetingModel(
         id = id,
         title = title,
-        date = date,
+        date = dueDate,
         participantCount = participants.size
+    )
+}
+
+fun MeetingEntity.toHomeMeetingModel(): HomeMeetingModel {
+    val totalVotes = dateOptions.size + locationOptions.size
+    val voteCount = 0f
+
+    return HomeMeetingModel(
+        id = id,
+        title = title,
+        creatorEmail = creatorEmail,
+        dueDate = dueDate,
+        dateOptions = dateOptions,
+        locationOptions = locationOptions,
+        voteRatio = voteCount / (totalVotes.takeIf { it != 0 } ?: 1)
     )
 }
 
@@ -38,7 +52,8 @@ fun HomeMeetingEntity.toModel(): HomeMeetingModel = HomeMeetingModel(
     creatorEmail = creatorEmail,
     dateOptions = dateOptions,
     locationOptions = locationOptions,
-    dueDate = dueDate
+    dueDate = dueDate,
+    voteRatio = if(voteOptions.isEmpty()) 0f else participants.size / voteOptions.size.toFloat()
 )
 
 fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = MeetingDetailModel(
@@ -53,7 +68,7 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
 )
 
 fun VoteOptionEntity.toModel(): VoteOptionModel = VoteOptionModel(
-    type = VoteType.valueOf(type),
+    type = type,
     option = option,
     votedUserIds = votedUserIds
 )

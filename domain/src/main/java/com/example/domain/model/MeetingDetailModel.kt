@@ -11,12 +11,6 @@ data class MeetingDetailModel(
     val dueDate: String = ""
 )
 
-data class VoteOptionModel(
-    val type: VoteType,
-    val option: String,
-    val votedUserIds: List<String>
-)
-
 enum class VoteType {
     DATE, LOCATION
 }
