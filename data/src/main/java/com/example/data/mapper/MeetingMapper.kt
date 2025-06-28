@@ -10,6 +10,7 @@ import com.example.domain.model.HomeMeetingModel
 import com.example.domain.model.MeetingDetailModel
 import com.example.domain.model.MeetingModel
 import com.example.domain.model.VoteOptionModel
+import com.example.domain.model.VoteType
 
 fun MeetingEntity.toModel(): MeetingModel {
     return MeetingModel(
@@ -61,14 +62,26 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
     title = title,
     creatorEmail = creatorEmail,
     participants = participants,
-    dateOptions = dateOptions,
-    locationOptions = locationOptions,
-    voteOptions = this.voteOptions.map { it.toModel() },
+    voteOptions = voteOptions.map { it.toModel() },
     dueDate = dueDate
 )
 
 fun VoteOptionEntity.toModel(): VoteOptionModel = VoteOptionModel(
-    type = type,
+    type = when (type) {
+        "DATE" -> VoteType.DATE
+        "LOCATION" -> VoteType.LOCATION
+        else -> throw IllegalArgumentException("Unknown vote type: $type")
+    },
     option = option,
     votedUserIds = votedUserIds
 )
+
+fun VoteOptionModel.toEntity(): VoteOptionEntity =
+    VoteOptionEntity(
+        type = when (type) {
+            VoteType.DATE -> "DATE"
+            VoteType.LOCATION -> "LOCATION"
+        },
+        option = option,
+        votedUserIds = votedUserIds
+    )
