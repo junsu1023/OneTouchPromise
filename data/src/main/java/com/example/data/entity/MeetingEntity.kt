@@ -1,7 +1,5 @@
 package com.example.data.entity
 
-import com.example.domain.model.VoteOptionModel
-
 data class MeetingEntity(
     val id: String = "",
     val title: String = "",
@@ -10,7 +8,7 @@ data class MeetingEntity(
     val participants: List<String> = emptyList(),
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
-    val voteOptions: List<VoteOptionModel> = emptyList(),
+    val voteOptions: List<VoteOptionEntity> = emptyList(),
     val dueDate: String = "",
     val createdAt: Long = System.currentTimeMillis()
 )

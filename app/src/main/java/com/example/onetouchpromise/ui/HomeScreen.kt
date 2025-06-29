@@ -50,7 +50,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.domain.model.HomeMeetingModel
 import com.example.domain.model.MeetingModel
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.util.basePadding
@@ -62,7 +61,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onLogoutClick: () -> Unit,
-    onMeetingClick: (HomeMeetingModel) -> Unit,
+    onMeetingClick: (MeetingModel) -> Unit,
     onCreateMeetingClick: () -> Unit
 ) {
     val uiState = viewModel.uiState
@@ -290,8 +289,8 @@ fun EmptyListView(
 
 @Composable
 fun MeetingListView(
-    meetings: List<HomeMeetingModel>,
-    onMeetingClick: (HomeMeetingModel) -> Unit
+    meetings: List<MeetingModel>,
+    onMeetingClick: (MeetingModel) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -311,9 +310,11 @@ fun MeetingListView(
 
 @Composable
 fun MeetingCard(
-    meeting: HomeMeetingModel,
+    meeting: MeetingModel,
     onClick: () -> Unit
 ) {
+    val voteRatio = if(meeting.voteOptions.isEmpty()) 0f else meeting.participants.size / meeting.voteOptions.size.toFloat()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -333,12 +334,12 @@ fun MeetingCard(
             Text(text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}")
 
             Text(
-                text = "${stringResource(R.string.vote_rates)}: ${(meeting.voteRatio * 100).toInt()}%",
+                text = "${stringResource(R.string.vote_rates)}: ${(voteRatio * 100).toInt()}%",
                 style = MaterialTheme.typography.bodySmall
             )
 
             LinearProgressIndicator(
-                progress = { meeting.voteRatio.coerceIn(0f, 1f) },
+                progress = { voteRatio.coerceIn(0f, 1f) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(6.dp)

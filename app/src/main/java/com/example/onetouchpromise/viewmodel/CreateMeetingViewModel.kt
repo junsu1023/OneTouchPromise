@@ -6,11 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.error.CreateMeetingError
-import com.example.domain.model.CreateMeetingModel
 import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.onetouchpromise.Contract.CreateMeetingUiState
 import com.example.onetouchpromise.Contract.toMeetingModel
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
