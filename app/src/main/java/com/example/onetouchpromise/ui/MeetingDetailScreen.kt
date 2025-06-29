@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.error.MeetingDetailError
 import com.example.domain.model.MeetingDetailModel
+import com.example.domain.model.VoteType
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.viewmodel.MeetingDetailViewModel
 
@@ -210,13 +211,22 @@ fun MeetingDetailContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            meeting.dateOptions.forEach { date ->
-                FilterChip(
-                    selected = selectedDate == date,
-                    onClick = { selectedDate = date },
-                    label = { Text(text = date) }
-                )
+            meeting.voteOptions.forEach { option ->
+                if(option.type == VoteType.DATE) {
+                    FilterChip(
+                        selected = selectedDate == option.option,
+                        onClick = { selectedDate = option.option },
+                        label = { Text(text = option.option) }
+                    )
+                }
             }
+//            meeting.dateOptions.forEach { date ->
+//                FilterChip(
+//                    selected = selectedDate == date,
+//                    onClick = { selectedDate = date },
+//                    label = { Text(text = date) }
+//                )
+//            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -230,13 +240,22 @@ fun MeetingDetailContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            meeting.locationOptions.forEach { location ->
-                FilterChip(
-                    selected = selectedLocation == location,
-                    onClick = { selectedLocation = location },
-                    label = { Text(text = location) }
-                )
+            meeting.voteOptions.forEach { option ->
+                if(option.type == VoteType.LOCATION) {
+                    FilterChip(
+                        selected = selectedDate == option.option,
+                        onClick = { selectedDate = option.option },
+                        label = { Text(text = option.option) }
+                    )
+                }
             }
+//            meeting.locationOptions.forEach { location ->
+//                FilterChip(
+//                    selected = selectedLocation == location,
+//                    onClick = { selectedLocation = location },
+//                    label = { Text(text = location) }
+//                )
+//            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))

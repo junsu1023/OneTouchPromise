@@ -1,10 +1,12 @@
 package com.example.domain.model
 
 data class CreateMeetingModel(
+    val id: String = "",
     val title: String = "",
+    val creatorEmail: String = "",
+    val participants: List<String> = emptyList(),
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
-    val participants: List<String> = emptyList(),
-    val creatorEmail: String = "",
-    val dueDate: String = ""
+    val dueDate: String = "",
+    val createdAt: Long = System.currentTimeMillis()
 )

@@ -16,7 +16,7 @@ class HomeDataSource @Inject constructor(
         onEvent: (Result<List<MeetingEntity>>) -> Unit
     ): ListenerRegistration {
         val email = auth.currentUser?.email
-            ?: return DummyListenerRegistration(onEvent)
+            ?: return dummyListenerRegistration(onEvent)
 
         return firestore.collection("meetings")
             .whereArrayContains("participants", email)
@@ -35,7 +35,7 @@ class HomeDataSource @Inject constructor(
             }
     }
 
-    private fun DummyListenerRegistration(
+    private fun dummyListenerRegistration(
         onEvent: (Result<List<MeetingEntity>>) -> Unit
     ): ListenerRegistration {
         onEvent(Result.failure(CreateMeetingError.NotLoggedIn))

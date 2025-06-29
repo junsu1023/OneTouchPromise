@@ -13,11 +13,22 @@ import com.example.domain.model.VoteOptionModel
 import com.example.domain.model.VoteType
 
 fun MeetingEntity.toModel(): MeetingModel {
+    val voteOptions = dateOptions.map {
+        VoteOptionEntity(type = "DATE", option = it, votedUserIds = emptyList())
+    } + locationOptions.map {
+        VoteOptionEntity(type = "LOCATION", option = it, votedUserIds = emptyList())
+    }
+
     return MeetingModel(
         id = id,
         title = title,
-        date = dueDate,
-        participantCount = participants.size
+        creatorEmail = creatorEmail,
+        participants = participants,
+        dateOptions = dateOptions,
+        locationOptions = locationOptions,
+        voteOptions = voteOptions.map { it.toModel() },
+        dueDate = dueDate,
+        createdAt = createdAt
     )
 }
 
@@ -36,16 +47,25 @@ fun MeetingEntity.toHomeMeetingModel(): HomeMeetingModel {
     )
 }
 
-fun CreateMeetingModel.toEntity(id: String, ownerId: String): CreateMeetingEntity = CreateMeetingEntity(
-    id = id,
-    title = title,
-    ownerId = ownerId,
-    creatorEmail = creatorEmail,
-    participants = participants,
-    dateOptions = dateOptions,
-    locationOptions = locationOptions,
-    createdAt = System.currentTimeMillis()
-)
+fun CreateMeetingModel.toEntity(id: String, creatorEmail: String): CreateMeetingEntity {
+    val voteOptions = dateOptions.map {
+        VoteOptionEntity(type = "DATE", option = it, votedUserIds = emptyList())
+    } + locationOptions.map {
+        VoteOptionEntity(type = "LOCATION", option = it, votedUserIds = emptyList())
+    }
+
+    return CreateMeetingEntity(
+        id = id,
+        title = title,
+        ownerId = id,
+        creatorEmail = creatorEmail,
+        participants = participants,
+        dateOptions = dateOptions,
+        locationOptions = locationOptions,
+        voteOptions = voteOptions,
+        createdAt = System.currentTimeMillis()
+    )
+}
 
 fun HomeMeetingEntity.toModel(): HomeMeetingModel = HomeMeetingModel(
     id = id,
@@ -66,6 +86,45 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
     dueDate = dueDate
 )
 
+fun CreateMeetingModel.toMeetingModel(): MeetingModel {
+    val voteOptions = dateOptions.map {
+        VoteOptionModel(type = VoteType.DATE, option = it, votedUserIds = emptyList())
+    } + locationOptions.map {
+        VoteOptionModel(type = VoteType.LOCATION, option = it, votedUserIds = emptyList())
+    }
+
+    return MeetingModel(
+        id = id,
+        title = title,
+        creatorEmail = creatorEmail,
+        participants = participants,
+        dateOptions = dateOptions,
+        locationOptions = locationOptions,
+        voteOptions = voteOptions,
+        dueDate = dueDate,
+        createdAt = createdAt
+    )
+}
+
+fun CreateMeetingEntity.toMeetingEntity(): MeetingEntity {
+    val voteOptions = dateOptions.map {
+        VoteOptionEntity(type = "DATE", option = it, votedUserIds = emptyList())
+    } + locationOptions.map {
+        VoteOptionEntity(type = "LOCATION", option = it, votedUserIds = emptyList())
+    }
+
+    return MeetingEntity(
+        id = id,
+        title = title,
+        ownerId = ownerId,
+        creatorEmail = creatorEmail,
+        participants = participants,
+        voteOptions = voteOptions,
+        dueDate = dueDate,
+        createdAt = createdAt
+    )
+}
+
 fun VoteOptionEntity.toModel(): VoteOptionModel = VoteOptionModel(
     type = when (type) {
         "DATE" -> VoteType.DATE
@@ -76,12 +135,11 @@ fun VoteOptionEntity.toModel(): VoteOptionModel = VoteOptionModel(
     votedUserIds = votedUserIds
 )
 
-fun VoteOptionModel.toEntity(): VoteOptionEntity =
-    VoteOptionEntity(
-        type = when (type) {
-            VoteType.DATE -> "DATE"
-            VoteType.LOCATION -> "LOCATION"
-        },
-        option = option,
-        votedUserIds = votedUserIds
-    )
+fun VoteOptionModel.toEntity(): VoteOptionEntity = VoteOptionEntity(
+    type = when (type) {
+        VoteType.DATE -> "DATE"
+        VoteType.LOCATION -> "LOCATION"
+    },
+    option = option,
+    votedUserIds = votedUserIds
+)
