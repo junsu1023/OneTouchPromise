@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.error.MeetingDetailError
 import com.example.domain.usecase.GetMeetingDetailUseCase
 import com.example.domain.usecase.SubmitVoteUseCase
-import com.example.onetouchpromise.Contract.MeetingDetailUiState
+import com.example.onetouchpromise.contract.MeetingDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

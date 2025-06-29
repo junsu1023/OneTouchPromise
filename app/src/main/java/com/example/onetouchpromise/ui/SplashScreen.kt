@@ -15,7 +15,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.onetouchpromise.Contract.SplashUiState
+import com.example.onetouchpromise.contract.SplashUiState
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.component.ShimmeringImage
 import com.example.onetouchpromise.viewmodel.SplashViewModel

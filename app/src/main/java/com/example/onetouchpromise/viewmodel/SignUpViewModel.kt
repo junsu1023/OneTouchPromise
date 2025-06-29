@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.error.AuthException
 import com.example.domain.usecase.SignUpUseCase
-import com.example.onetouchpromise.Contract.AuthUiState
+import com.example.onetouchpromise.contract.AuthUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

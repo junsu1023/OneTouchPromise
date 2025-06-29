@@ -1,4 +1,4 @@
-package com.example.onetouchpromise.Contract
+package com.example.onetouchpromise.contract
 
 sealed class SplashUiState {
     object Loading : SplashUiState()

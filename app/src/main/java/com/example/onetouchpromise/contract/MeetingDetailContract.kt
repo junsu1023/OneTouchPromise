@@ -1,4 +1,4 @@
-package com.example.onetouchpromise.Contract
+package com.example.onetouchpromise.contract
 
 import com.example.domain.error.MeetingDetailError
 import com.example.domain.model.MeetingDetailModel

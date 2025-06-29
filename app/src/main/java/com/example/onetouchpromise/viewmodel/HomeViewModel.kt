@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
-import com.example.onetouchpromise.Contract.HomeUiState
+import com.example.onetouchpromise.contract.HomeUiState
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
