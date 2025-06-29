@@ -82,6 +82,8 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
     title = title,
     creatorEmail = creatorEmail,
     participants = participants,
+    dateOptions = dateOptions,
+    locationOptions = locationOptions,
     voteOptions = voteOptions.map { it.toModel() },
     dueDate = dueDate
 )
