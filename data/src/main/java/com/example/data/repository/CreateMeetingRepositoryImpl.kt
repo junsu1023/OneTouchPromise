@@ -1,9 +1,7 @@
 package com.example.data.repository
 
 import com.example.data.datasource.CreateMeetingDataSource
-import com.example.data.entity.CreateMeetingEntity
 import com.example.data.mapper.toEntity
-import com.example.data.mapper.toMeetingModel
 import com.example.domain.error.CreateMeetingError
 import com.example.domain.model.CreateMeetingModel
 import com.example.domain.repository.CreateMeetingRepository

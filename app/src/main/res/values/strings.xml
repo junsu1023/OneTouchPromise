@@ -51,6 +51,7 @@
     <string name="due_date">마감일</string>
     <string name="entering_app">앱에 적송 중입니다...</string>
     <string name="vote_rates">투표 진행률</string>
+    <string name="expanded_status">확장 상태</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>
