@@ -1,19 +1,24 @@
 package com.example.onetouchpromise.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.error.MeetingDetailError
 import com.example.domain.model.MeetingDetailModel
-import com.example.domain.model.VoteType
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.viewmodel.MeetingDetailViewModel
 
@@ -169,6 +173,7 @@ fun MeetingDetailContent(
 ) {
     var selectedDate by remember { mutableStateOf("") }
     var selectedLocation by remember { mutableStateOf("") }
+    var isExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -183,20 +188,42 @@ fun MeetingDetailContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = stringResource(R.string.participant),
-            style = MaterialTheme.typography.titleMedium
-        )
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
 
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            meeting.participants.forEach {
-                AssistChip(
-                    onClick = { },
-                    label = { Text(text = it) }
+            ) {
+                Text(
+                    text = stringResource(R.string.participant),
+                    style = MaterialTheme.typography.titleMedium
                 )
+
+                Box(
+                    modifier = Modifier.clickable {
+                        isExpanded = !isExpanded
+                    }
+                ) {
+                    Icon(
+                        imageVector = if(isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                        contentDescription = stringResource(R.string.expanded_status),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            if(isExpanded) {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    meeting.participants.forEach {
+                        AssistChip(
+                            onClick = { },
+                            label = { Text(text = it) }
+                        )
+                    }
+                }
             }
         }
 
