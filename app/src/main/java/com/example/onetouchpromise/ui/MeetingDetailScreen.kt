@@ -1,6 +1,9 @@
 package com.example.onetouchpromise.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,12 +17,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,9 +41,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.error.MeetingDetailError
 import com.example.domain.model.MeetingDetailModel
@@ -174,6 +180,9 @@ fun MeetingDetailContent(
     var selectedDate by remember { mutableStateOf("") }
     var selectedLocation by remember { mutableStateOf("") }
     var isExpanded by remember { mutableStateOf(false) }
+    val votedList = meeting.voteOptions
+        .flatMap { it.votedUserIds }
+        .toMutableSet()
 
     Column(
         modifier = Modifier
@@ -218,9 +227,9 @@ fun MeetingDetailContent(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     meeting.participants.forEach {
-                        AssistChip(
-                            onClick = { },
-                            label = { Text(text = it) }
+                        ParticipantChip(
+                            text = it,
+                            isVoted = votedList.contains(it)
                         )
                     }
                 }
@@ -280,5 +289,42 @@ fun MeetingDetailContent(
         ) {
             Text(text = stringResource(R.string.progress_vote))
         }
+    }
+}
+
+@Composable
+fun ParticipantChip(
+    text: String,
+    isVoted: Boolean
+) {
+    val backgroundColor = if(isVoted) colorResource(R.color.deep_indigo_blue) else colorResource(R.color.white)
+    val textColor = if(isVoted) colorResource(R.color.white) else colorResource(R.color.black)
+    val borderColor = if(isVoted) colorResource(R.color.white) else colorResource(R.color.black)
+
+    Box(
+        modifier = Modifier
+            .padding(4.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(backgroundColor)
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = { }
+            )
+            .padding(
+                horizontal = 12.dp,
+                vertical = 6.dp
+            )
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            fontSize = 14.sp
+        )
     }
 }
