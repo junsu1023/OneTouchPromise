@@ -8,7 +8,8 @@ data class MeetingDetailModel(
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
     val voteOptions: List<VoteOptionModel> = emptyList(),
-    val dueDate: String = ""
+    val dueDate: String = "",
+    val alreadyVotes: List<String> = emptyList()
 )
 
 enum class VoteType {
