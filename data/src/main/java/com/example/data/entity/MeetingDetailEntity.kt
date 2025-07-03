@@ -7,5 +7,6 @@ data class MeetingDetailEntity(
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
     val voteOptions: List<VoteOptionEntity> = emptyList(),
-    val dueDate: String = ""
+    val dueDate: String = "",
+    val alreadyVotes: List<String> = emptyList()
 )

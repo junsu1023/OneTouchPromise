@@ -180,9 +180,7 @@ fun MeetingDetailContent(
     var selectedDate by remember { mutableStateOf("") }
     var selectedLocation by remember { mutableStateOf("") }
     var isExpanded by remember { mutableStateOf(false) }
-    val votedList = meeting.voteOptions
-        .flatMap { it.votedUserIds }
-        .toMutableSet()
+    val votedList = meeting.alreadyVotes
 
     Column(
         modifier = Modifier
