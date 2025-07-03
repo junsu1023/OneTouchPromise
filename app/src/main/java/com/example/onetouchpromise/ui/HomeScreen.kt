@@ -313,7 +313,7 @@ fun MeetingCard(
     meeting: MeetingModel,
     onClick: () -> Unit
 ) {
-    val voteRatio = if(meeting.voteOptions.isEmpty()) 0f else meeting.participants.size / meeting.voteOptions.size.toFloat()
+    val voteRatio = if(meeting.alreadyVotes.isEmpty()) 0f else meeting.alreadyVotes.size / meeting.participants.size.toFloat()
 
     Card(
         modifier = Modifier
