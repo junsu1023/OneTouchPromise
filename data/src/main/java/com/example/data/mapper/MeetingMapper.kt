@@ -57,7 +57,7 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
     participants = participants,
     dateOptions = dateOptions,
     locationOptions = locationOptions,
-    voteOptions = voteOptions.map { it.toModel() },
+    voteOptions = if(voteOptions.isEmpty()) createVoteOption(dateOptions, locationOptions) else voteOptions.map { it.toModel() },
     dueDate = dueDate
 )
 
@@ -71,3 +71,28 @@ fun VoteOptionEntity.toModel(): VoteOptionModel = VoteOptionModel(
     option = option,
     votedUserIds = votedUserIds
 )
+
+fun createVoteOption(dateOptions: List<String>, locationOptions: List<String>): List<VoteOptionModel> {
+    val list = mutableListOf<VoteOptionModel>()
+    dateOptions.forEach {
+        list.add(
+            VoteOptionModel(
+                type = VoteType.DATE,
+                option = it,
+                votedUserIds = emptyList()
+            )
+        )
+    }
+
+    locationOptions.forEach {
+        list.add(
+            VoteOptionModel(
+                type = VoteType.DATE,
+                option = it,
+                votedUserIds = emptyList()
+            )
+        )
+    }
+
+    return list
+}
