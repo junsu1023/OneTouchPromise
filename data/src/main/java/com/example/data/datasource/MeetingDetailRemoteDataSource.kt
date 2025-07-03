@@ -42,12 +42,10 @@ class MeetingDetailRemoteDataSource @Inject constructor(
                 } else it
             }
 
-
-            Log.d("submitVote", "Updating vote for userId: $userId, date: $dateOption, location: $locationOption")
-            Log.d("submitVote", "Before update: ${entity.voteOptions}")
-            Log.d("submitVote", "After update: $updatedVoteOptions")
+            val updateVotedList = entity.alreadyVotes + userId
 
             transaction.update(docRef, "voteOptions", updatedVoteOptions)
+            transaction.update(docRef, "alreadyVotes", updateVotedList)
         }.await()
 
         Result.success(Unit)
