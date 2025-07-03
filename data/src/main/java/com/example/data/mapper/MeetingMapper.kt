@@ -26,7 +26,8 @@ fun MeetingEntity.toModel(): MeetingModel {
         locationOptions = locationOptions,
         voteOptions = voteOptions.map { it.toModel() },
         dueDate = dueDate,
-        createdAt = createdAt
+        createdAt = createdAt,
+        alreadyVotes = alreadyVotes
     )
 }
 
