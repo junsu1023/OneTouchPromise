@@ -1,6 +1,7 @@
 package com.example.onetouchpromise.ui
 
 import android.app.DatePickerDialog
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,8 @@ import com.example.domain.error.CreateMeetingError
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.viewmodel.CreateMeetingViewModel
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -85,7 +88,8 @@ fun CreateMeetingScreen(
 
             SelectDueDateView(
                 dueDate = uiState.dueDate,
-                onDueDateSelected = { dueDate -> viewModel.updateDueDate(dueDate) }
+                onDueDateSelected = { dueDate -> viewModel.updateDueDate(dueDate) },
+                onFailedUpdateDueDate = { viewModel.updateFailedDueDate() }
             )
 
             InputDateView(
@@ -146,6 +150,8 @@ fun CalendarView(
                         val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
                             Date(millis)
                         )
+
+
                         addDateOption(formattedDate)
                     }
 
@@ -184,15 +190,24 @@ fun InputMeetingTitleView(
 @Composable
 fun SelectDueDateView(
     dueDate: String,
-    onDueDateSelected: (String) -> Unit
+    onDueDateSelected: (String) -> Unit,
+    onFailedUpdateDueDate: () -> Unit
 ) {
     val context = LocalContext.current
     val calendar = remember { Calendar.getInstance() }
+    val today = LocalDate.now()
     val datePickerDialog = remember {
         DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
-                onDueDateSelected(String.format("%02d-%02d-%02d", year, month + 1, dayOfMonth))
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val date = LocalDate.parse("%02d-%02d-%02d".format(year, month + 1, dayOfMonth), formatter)
+
+                if(date.isBefore(today)) {
+                    onFailedUpdateDueDate()
+                } else {
+                    onDueDateSelected(date.toString())
+                }
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -404,6 +419,7 @@ fun ErrorMessageView(
         is CreateMeetingError.DuplicateDateOption -> stringResource(R.string.already_exist_date)
         is CreateMeetingError.DuplicateLocationOption -> stringResource(R.string.already_exist_location)
         is CreateMeetingError.DuplicateParticipantOption -> stringResource(R.string.already_exist_participant)
+        is CreateMeetingError.NotAfterDate -> stringResource(R.string.is_not_after_date)
         is CreateMeetingError.Unknown -> "${stringResource(R.string.unknown)}: ${error.msg}"
     }
 

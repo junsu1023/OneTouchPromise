@@ -9,5 +9,6 @@ sealed class CreateMeetingError: Throwable() {
     data object DuplicateDateOption: CreateMeetingError()
     data object DuplicateLocationOption: CreateMeetingError()
     data object DuplicateParticipantOption: CreateMeetingError()
+    data object NotAfterDate: CreateMeetingError()
     data class Unknown(val msg: String?): CreateMeetingError()
 }
