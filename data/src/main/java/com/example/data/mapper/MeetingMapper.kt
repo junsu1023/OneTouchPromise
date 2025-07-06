@@ -7,7 +7,9 @@ import com.example.data.entity.VoteOptionEntity
 import com.example.domain.model.CreateMeetingModel
 import com.example.domain.model.MeetingDetailModel
 import com.example.domain.model.MeetingModel
+import com.example.domain.model.MeetingResultModel
 import com.example.domain.model.VoteOptionModel
+import com.example.domain.model.VoteResultItem
 import com.example.domain.model.VoteType
 
 fun MeetingEntity.toModel(): MeetingModel {
@@ -63,6 +65,34 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
     dueDate = dueDate,
     alreadyVotes = alreadyVotes
 )
+
+fun MeetingDetailModel.toMeetingResultModel(): MeetingResultModel {
+    val dateResults = voteOptions
+        .filter { it.type == VoteType.DATE }
+        .map {
+            VoteResultItem(
+                option = it.option,
+                voteCount = it.votedUserIds.size,
+                voters = it.votedUserIds
+            )
+        }
+
+    val locationResults = voteOptions
+        .filter { it.type == VoteType.LOCATION }
+        .map {
+            VoteResultItem(
+                option = it.option,
+                voteCount = it.votedUserIds.size,
+                voters = it.votedUserIds
+            )
+        }
+
+    return MeetingResultModel(
+        title = title,
+        dateResults = dateResults,
+        locationResults = locationResults
+    )
+}
 
 
 fun VoteOptionEntity.toModel(): VoteOptionModel = VoteOptionModel(

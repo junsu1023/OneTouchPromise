@@ -10,6 +10,7 @@ import com.example.onetouchpromise.ui.CreateMeetingScreen
 import com.example.onetouchpromise.ui.HomeScreen
 import com.example.onetouchpromise.ui.LoginScreen
 import com.example.onetouchpromise.ui.MeetingDetailScreen
+import com.example.onetouchpromise.ui.MeetingResultScreen
 import com.example.onetouchpromise.ui.SignUpScreen
 import com.example.onetouchpromise.ui.SplashScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -120,10 +121,15 @@ fun OneTouchPromiseNavHost(
         }
 
         composable(
-            route = OneTouchPromiseScreen.MEETING_RESULT,
+            route = "${OneTouchPromiseScreen.MEETING_RESULT}/{meetingId}",
             arguments = listOf(navArgument("meetingId") { type = NavType.StringType })
         ) { backStackEntry ->
             val meetingId = backStackEntry.arguments?.getString("meetingId") ?: ""
+
+            MeetingResultScreen(
+                meetingId = meetingId,
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable(OneTouchPromiseScreen.MEETING_CONFIRM) {
