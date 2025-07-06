@@ -88,8 +88,7 @@ fun CreateMeetingScreen(
 
             SelectDueDateView(
                 dueDate = uiState.dueDate,
-                onDueDateSelected = { dueDate -> viewModel.updateDueDate(dueDate) },
-                onFailedUpdateDueDate = { viewModel.updateFailedDueDate() }
+                onDueDateSelected = { dueDate -> viewModel.updateDueDate(dueDate) }
             )
 
             InputDateView(
@@ -190,12 +189,11 @@ fun InputMeetingTitleView(
 @Composable
 fun SelectDueDateView(
     dueDate: String,
-    onDueDateSelected: (String) -> Unit,
-    onFailedUpdateDueDate: () -> Unit
+    onDueDateSelected: (LocalDate) -> Unit
 ) {
     val context = LocalContext.current
     val calendar = remember { Calendar.getInstance() }
-    val today = LocalDate.now()
+
     val datePickerDialog = remember {
         DatePickerDialog(
             context,
@@ -203,11 +201,7 @@ fun SelectDueDateView(
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 val date = LocalDate.parse("%02d-%02d-%02d".format(year, month + 1, dayOfMonth), formatter)
 
-                if(date.isBefore(today)) {
-                    onFailedUpdateDueDate()
-                } else {
-                    onDueDateSelected(date.toString())
-                }
+                onDueDateSelected(date)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
