@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.domain.model.UserModel
+import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.onetouchpromise.contract.HomeUiState
 import com.google.firebase.firestore.ListenerRegistration
@@ -12,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val observeHomeMeetingsUseCase: ObserveHomeMeetingsUseCase
+    private val observeHomeMeetingsUseCase: ObserveHomeMeetingsUseCase,
+    private val getCurrentUserUserCase: GetCurrentUserUserCase
 ): ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
         private set
@@ -44,6 +47,21 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun checkUserVoted(
+        userEmail: String
+    ): Boolean {
+        val votedUserList = mutableSetOf<String>()
+        for(meeting in uiState.meetings) {
+            votedUserList.addAll(meeting.alreadyVotes)
+        }
+
+        return votedUserList.contains(userEmail)
+    }
+
+    fun getCurrentUSer(): UserModel? {
+        return getCurrentUserUserCase()
     }
 
     override fun onCleared() {
