@@ -41,6 +41,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,6 +70,7 @@ fun HomeScreen(
     val uiState = viewModel.uiState
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
+    val currentUser by remember { mutableStateOf(viewModel.getCurrentUSer()) }
 
     BackHandler(
         enabled = drawerState.isOpen
@@ -130,7 +134,13 @@ fun HomeScreen(
                     else -> {
                         MeetingListView(
                             meetings = uiState.meetings,
-                            onMeetingClick = { meeting -> onMeetingClick(meeting) }
+                            onMeetingClick = { meeting ->
+                                if(viewModel.checkUserVoted(currentUser!!.email)) {
+
+                                } else {
+                                    onMeetingClick(meeting)
+                                }
+                            }
                         )
                     }
                 }
@@ -300,7 +310,9 @@ fun MeetingListView(
         items(meetings) { meeting ->
             MeetingCard(
                 meeting = meeting,
-                onClick = { onMeetingClick(meeting) }
+                onClick = {
+                    onMeetingClick(meeting)
+                }
             )
 
             Spacer(modifier = Modifier.height(12.dp))

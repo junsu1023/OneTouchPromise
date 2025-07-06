@@ -7,6 +7,7 @@ import com.example.domain.repository.HomeRepository
 import com.example.domain.repository.MeetingDetailRepository
 import com.example.domain.repository.MeetingRepository
 import com.example.domain.usecase.CreateMeetingUseCase
+import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.GetMeetingDetailUseCase
 import com.example.domain.usecase.GetMeetingsUseCase
 import com.example.domain.usecase.LoginUseCase
@@ -62,4 +63,10 @@ object UseCaseModule {
     fun provideObserveHomeMeetingUseCase(
         homeRepository: HomeRepository
     ): ObserveHomeMeetingsUseCase = ObserveHomeMeetingsUseCase(homeRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetCurrentUserUseCase(
+        authRepository: AuthRepository
+    ): GetCurrentUserUserCase = GetCurrentUserUserCase(authRepository)
 }
