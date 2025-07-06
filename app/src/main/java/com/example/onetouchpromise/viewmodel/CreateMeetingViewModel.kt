@@ -11,6 +11,8 @@ import com.example.onetouchpromise.contract.CreateMeetingUiState
 import com.example.onetouchpromise.contract.toMeetingModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,8 +26,14 @@ class CreateMeetingViewModel @Inject constructor(
         uiState = uiState.copy(title = title)
     }
 
-    fun updateDueDate(dueDate: String) {
-        uiState = uiState.copy(dueDate = dueDate)
+    fun updateDueDate(dueDate: LocalDate) {
+        val today = LocalDate.now()
+
+        if(dueDate.isBefore(today)) {
+            uiState = uiState.copy(error = CreateMeetingError.NotAfterDate)
+        } else {
+            uiState = uiState.copy(dueDate = dueDate.toString())
+        }
     }
 
     fun addDateOption(date: String) {
