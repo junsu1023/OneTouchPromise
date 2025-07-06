@@ -64,7 +64,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onLogoutClick: () -> Unit,
-    onMeetingClick: (MeetingModel) -> Unit,
+    onMeetingClick: (Pair<Boolean, MeetingModel>) -> Unit,
     onCreateMeetingClick: () -> Unit
 ) {
     val uiState = viewModel.uiState
@@ -136,9 +136,9 @@ fun HomeScreen(
                             meetings = uiState.meetings,
                             onMeetingClick = { meeting ->
                                 if(viewModel.checkUserVoted(currentUser!!.email)) {
-
+                                    onMeetingClick(Pair(true, meeting))
                                 } else {
-                                    onMeetingClick(meeting)
+                                    onMeetingClick(Pair(false, meeting))
                                 }
                             }
                         )

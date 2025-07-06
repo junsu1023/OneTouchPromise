@@ -77,8 +77,12 @@ fun OneTouchPromiseNavHost(
                         }
                     }
                 },
-                onMeetingClick = { meeting ->
-                    navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting.id}")
+                onMeetingClick = { (isVoted, meeting) ->
+                    if(isVoted) {
+                        navController.navigate("${OneTouchPromiseScreen.MEETING_RESULT}/${meeting.id}")
+                    } else {
+                        navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting.id}")
+                    }
                 },
                 onCreateMeetingClick = {
                     navController.navigate(OneTouchPromiseScreen.CREATE_MEETING)
