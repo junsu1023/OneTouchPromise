@@ -192,8 +192,7 @@ fun SelectDueDateView(
         DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
-                val selectedDate = "${year}-${month + 1}-${dayOfMonth}"
-                onDueDateSelected(selectedDate)
+                onDueDateSelected(String.format("%02d-%02d-%02d", year, month + 1, dayOfMonth))
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -225,7 +224,7 @@ fun SelectDueDateView(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = if (dueDate.isNotEmpty()) dueDate else stringResource(R.string.select_date2),
+                text = dueDate.ifEmpty { stringResource(R.string.select_date2) },
                 style = MaterialTheme.typography.bodyLarge
             )
         }
