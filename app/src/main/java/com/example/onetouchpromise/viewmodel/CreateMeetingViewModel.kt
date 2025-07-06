@@ -39,6 +39,10 @@ class CreateMeetingViewModel @Inject constructor(
         }
     }
 
+    fun updateFailedDueDate() {
+        uiState = uiState.copy(error = CreateMeetingError.NotAfterDate)
+    }
+
     fun removeDateOption(date: String) {
         uiState = uiState.copy(dateOptions = uiState.dateOptions - date)
     }
