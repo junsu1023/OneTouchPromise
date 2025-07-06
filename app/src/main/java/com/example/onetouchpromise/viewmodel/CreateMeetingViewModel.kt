@@ -59,7 +59,7 @@ class CreateMeetingViewModel @Inject constructor(
     }
 
     fun addLocationOption(location: String) {
-        if(uiState.dateOptions.contains(location)) {
+        if(uiState.locationOptions.contains(location)) {
             uiState = uiState.copy(error = CreateMeetingError.DuplicateLocationOption)
             return
         }
