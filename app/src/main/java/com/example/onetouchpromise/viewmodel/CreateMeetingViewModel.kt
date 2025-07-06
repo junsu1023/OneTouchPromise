@@ -12,7 +12,6 @@ import com.example.onetouchpromise.contract.toMeetingModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,10 +46,6 @@ class CreateMeetingViewModel @Inject constructor(
         }
     }
 
-    fun updateFailedDueDate() {
-        uiState = uiState.copy(error = CreateMeetingError.NotAfterDate)
-    }
-
     fun removeDateOption(date: String) {
         uiState = uiState.copy(dateOptions = uiState.dateOptions - date)
     }
@@ -64,7 +59,7 @@ class CreateMeetingViewModel @Inject constructor(
     }
 
     fun addLocationOption(location: String) {
-        if(uiState.dateOptions.contains(location)) {
+        if(uiState.locationOptions.contains(location)) {
             uiState = uiState.copy(error = CreateMeetingError.DuplicateLocationOption)
             return
         }
