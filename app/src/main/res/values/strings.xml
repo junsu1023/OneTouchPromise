@@ -50,6 +50,7 @@
     <string name="cancel">취소</string>
     <string name="delete">삭제</string>
     <string name="input_location">장소 입력</string>
+    <string name="location">장소</string>
     <string name="due_date">마감일</string>
     <string name="entering_app">앱에 적송 중입니다...</string>
     <string name="vote_rates">투표 진행률</string>
@@ -58,6 +59,7 @@
     <string name="empty_participant">아직 투표한 사람이 없어요 😢</string>
     <string name="date_vote_result">📅 날짜 투표 결과</string>
     <string name="location_vote_result">📍 장소 투표 결과</string>
+    <string name="delete_all">모두 삭제</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>

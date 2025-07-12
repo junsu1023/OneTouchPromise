@@ -1,6 +1,7 @@
 package com.example.onetouchpromise.ui
 
 import android.app.DatePickerDialog
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,25 +16,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,19 +45,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.error.CreateMeetingError
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.viewmodel.CreateMeetingViewModel
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import androidx.compose.material3.DatePickerDialog as DatePickerDialog1
 
 @Composable
 fun CreateMeetingScreen(
@@ -62,16 +65,9 @@ fun CreateMeetingScreen(
     onMeetingCreated: () -> Unit
 ) {
     val uiState = viewModel.uiState
-    var isDatePickerVisible by remember { mutableStateOf(false) }
-
-    if (isDatePickerVisible) {
-        CalendarView(
-            setDatePickerVisible = { visible -> isDatePickerVisible = visible },
-            addDateOption = { date -> viewModel.addDateOption(date) }
-        )
-    }
 
     Scaffold(
+        containerColor = colorResource(R.color.main_background),
         topBar = {
             CreateMeetingTopBar()
         }
@@ -79,7 +75,8 @@ fun CreateMeetingScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(16.dp)
+                .padding(horizontal = 24.dp)
+                .background(colorResource(R.color.main_background))
                 .verticalScroll(rememberScrollState())
         ) {
             InputMeetingTitleView(
@@ -95,7 +92,7 @@ fun CreateMeetingScreen(
             InputDateView(
                 dateOptions = uiState.dateOptions,
                 onRemoveDate = { date -> viewModel.removeDateOption(date) },
-                setDatePickerVisible = { visible -> isDatePickerVisible = visible }
+                onDateSelected = { date -> viewModel.addDateOption(date) }
             )
 
             InputLocationView(
@@ -127,49 +124,16 @@ fun CreateMeetingScreen(
 @Composable
 fun CreateMeetingTopBar() {
     TopAppBar(
-        title = { Text(text = stringResource(R.string.create_meeting)) }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CalendarView(
-    setDatePickerVisible: (Boolean) -> Unit,
-    addDateOption: (String) -> Unit
-) {
-    val datePickerState = rememberDatePickerState()
-
-    DatePickerDialog1(
-        onDismissRequest = { setDatePickerVisible(false) },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    val millis = datePickerState.selectedDateMillis
-
-                    if (millis != null) {
-                        val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
-                            Date(millis)
-                        )
-
-
-                        addDateOption(formattedDate)
-                    }
-
-                    setDatePickerVisible(false)
-            }) {
-                Text(text = stringResource(R.string.add))
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = { setDatePickerVisible(false) }
-            ) {
-                Text(stringResource(R.string.cancel))
-            }
+        title = {
+            Text(
+                text = stringResource(R.string.create_meeting),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color)
+                )
+            )
         }
-    ) {
-        DatePicker(state = datePickerState)
-    }
+    )
 }
 
 @Composable
@@ -180,11 +144,39 @@ fun InputMeetingTitleView(
     OutlinedTextField(
         value = title,
         onValueChange = { onValueChange(it) },
-        label = { Text(text = stringResource(R.string.meeting_title)) },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        singleLine = true,
+        placeholder = {
+            Text(
+                text = stringResource(R.string.meeting_title),
+                style = TextStyle(
+                    color = colorResource(R.color.gray),
+                    fontSize = 16.sp
+                )
+            )
+        },
+        trailingIcon = {
+            if(title.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.delete_all),
+                    tint = colorResource(R.color.black),
+                    modifier = Modifier.clickable {
+                        onValueChange("")
+                    }
+                )
+            }
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = colorResource(R.color.outlined_focused_border),
+            unfocusedBorderColor = colorResource(R.color.outlined_unfocused_border),
+            focusedTextColor = colorResource(R.color.basic_text_color),
+            unfocusedTextColor = colorResource(R.color.basic_text_color)
+        )
     )
 
-    Spacer(Modifier.height(24.dp))
+    Spacer(modifier = Modifier.height(24.dp))
 }
 
 @Composable
@@ -210,37 +202,36 @@ fun SelectDueDateView(
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp))
-    {
-        Text(
-            text = stringResource(R.string.votes_due_date),
-            style = MaterialTheme.typography.titleMedium
+    Text(
+        text = stringResource(R.string.votes_due_date),
+        style = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.SemiBold,
+            color = colorResource(R.color.basic_text_color)
+        )
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable { datePickerDialog.show() }
+    ) {
+        Icon(
+            imageVector = Icons.Default.DateRange,
+            contentDescription = stringResource(R.string.votes_due_date),
+            tint = colorResource(R.color.gray)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.clickable { datePickerDialog.show() }
-        ) {
-            Icon(
-                imageVector = Icons.Default.DateRange,
-                contentDescription = stringResource(R.string.votes_due_date)
-
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = dueDate.ifEmpty { stringResource(R.string.select_date2) },
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-
-        Spacer(Modifier.height(24.dp))
+        Text(
+            text = dueDate.ifEmpty { stringResource(R.string.select_date2) },
+            style = MaterialTheme.typography.bodyLarge,
+            color = if(dueDate.isEmpty()) colorResource(R.color.gray) else colorResource(R.color.basic_text_color)
+        )
     }
+
+    Spacer(modifier = Modifier.height(24.dp))
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -248,21 +239,40 @@ fun SelectDueDateView(
 fun InputDateView(
     dateOptions: List<String>,
     onRemoveDate: (String) -> Unit,
-    setDatePickerVisible: (Boolean) -> Unit,
+    onDateSelected: (LocalDate) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val calendar = remember { Calendar.getInstance() }
+
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val date = LocalDate.parse("%02d-%02d-%02d".format(year, month + 1, dayOfMonth), formatter)
+                onDateSelected(date)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = stringResource(R.string.date_candidate),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = colorResource(R.color.basic_text_color)
+            )
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
-
         if(dateOptions.isEmpty()) {
+            Spacer(modifier = Modifier.width(8.dp))
+
             Box(
                 modifier = Modifier
                     .size(16.dp)
@@ -270,7 +280,8 @@ fun InputDateView(
             ) {
                 Icon(
                     imageVector = Icons.Default.Create,
-                    contentDescription = stringResource(R.string.add_date_candidate)
+                    contentDescription = stringResource(R.string.add_date_candidate),
+                    tint = colorResource(R.color.basic_icon_color)
                 )
             }
         }
@@ -280,8 +291,7 @@ fun InputDateView(
         Spacer(Modifier.height(8.dp))
 
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             dateOptions.forEach { date ->
                 ItemChip(
@@ -291,8 +301,13 @@ fun InputDateView(
             }
 
             AssistChip(
-                onClick = { setDatePickerVisible(true) },
-                label = { Text(text = stringResource(R.string.add_date)) },
+                onClick = { datePickerDialog.show() },
+                label = {
+                    Text(
+                        text = stringResource(R.string.add_date),
+                        color = colorResource(R.color.basic_text_color)
+                    )
+                },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -314,7 +329,6 @@ fun InputLocationView(
     onRemoveLocation: (String) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
-    var isAddingLocation by remember { mutableStateOf(false) }
     var newLocation by remember { mutableStateOf("") }
 
     Row(
@@ -322,7 +336,10 @@ fun InputLocationView(
     ) {
         Text(
             text = stringResource(R.string.location_candidate),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = colorResource(R.color.basic_text_color)
+            )
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -335,58 +352,69 @@ fun InputLocationView(
             ) {
                 Icon(
                     imageVector = Icons.Default.Create,
-                    contentDescription = stringResource(R.string.add_location_candidate)
+                    contentDescription = stringResource(R.string.add_location_candidate),
+                    tint = colorResource(R.color.basic_icon_color)
                 )
             }
         }
     }
 
     if(expanded.value) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = newLocation,
+            onValueChange = { newLocation = it },
+            shape = RoundedCornerShape(12.dp),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.input_location),
+                    style = TextStyle(
+                        color = colorResource(R.color.gray),
+                        fontSize = 16.sp
+                    )
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Place,
+                    contentDescription = stringResource(R.string.location)
+                )
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = colorResource(R.color.outlined_focused_border),
+                unfocusedBorderColor = colorResource(R.color.outlined_unfocused_border),
+                focusedTextColor = colorResource(R.color.basic_text_color),
+                unfocusedTextColor = colorResource(R.color.basic_text_color)
+            ),
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        if(newLocation.isNotEmpty()) {
+                            onAddLocation(newLocation)
+                            newLocation = ""
+                        }
+                    },
+                ) {
+                    Text(
+                        text = stringResource(R.string.add),
+                        color = if(newLocation.isEmpty()) colorResource(R.color.gray) else colorResource(R.color.basic_text_color)
+                    )
+                }
+            }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             locationOptions.forEach { location ->
                 ItemChip(
                     text = location,
                     onDeleteClick = { onRemoveLocation(location) }
-                )
-            }
-
-            if (isAddingLocation) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(
-                        value = newLocation,
-                        onValueChange = { newLocation = it },
-                        label = { Text(text = stringResource(R.string.input_location)) },
-                        singleLine = true,
-                        modifier = Modifier.width(50.dp)
-                    )
-
-                    Spacer(Modifier.width(8.dp))
-
-                    Button(
-                        onClick = {
-                            onAddLocation(newLocation)
-                            newLocation = ""
-                            isAddingLocation = false
-                        }
-                    ) {
-                        Text(text = stringResource(R.string.add))
-                    }
-                }
-            } else {
-                AssistChip(
-                    onClick = { isAddingLocation = true },
-                    label = { Text(text = stringResource(R.string.add_location)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null,
-                        )
-                    }
                 )
             }
         }
@@ -406,36 +434,54 @@ fun InputParticipantView(
 
     Text(
         text = stringResource(R.string.add_participant),
-        style = MaterialTheme.typography.titleMedium
+        style = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.SemiBold,
+            color = colorResource(R.color.basic_text_color)
+        )
     )
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedTextField(
-            value = newParticipant,
-            onValueChange = { newParticipant = it },
-            modifier = Modifier.weight(1f),
-            label = { Text(text = stringResource(R.string.input_email)) },
-            singleLine = true
-        )
+    Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(Modifier.width(8.dp))
-
-        Button(
-            onClick = {
-                onAddParticipant(newParticipant)
-                newParticipant = ""
+    OutlinedTextField(
+        value = newParticipant,
+        onValueChange = { newParticipant = it },
+        shape = RoundedCornerShape(12.dp),
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = {
+            Text(
+                text = stringResource(R.string.input_email),
+                style = TextStyle(
+                    color = colorResource(R.color.gray),
+                    fontSize = 16.sp
+                )
+            )
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = colorResource(R.color.outlined_focused_border),
+            unfocusedBorderColor = colorResource(R.color.outlined_unfocused_border),
+            focusedTextColor = colorResource(R.color.basic_text_color),
+            unfocusedTextColor = colorResource(R.color.basic_text_color)
+        ),
+        trailingIcon = {
+            IconButton(
+                onClick = {
+                    if(newParticipant.isNotEmpty()) {
+                        onAddParticipant(newParticipant)
+                        newParticipant = ""
+                    }
+                },
+            ) {
+                Text(
+                    text = stringResource(R.string.add),
+                    color = if(newParticipant.isEmpty()) colorResource(R.color.gray) else colorResource(R.color.basic_text_color)
+                )
             }
-        ) {
-            Text(text = stringResource(R.string.add))
         }
-    }
+    )
 
     FlowRow(
-        modifier = Modifier.padding(top = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         participants.forEach { participant ->
             ItemChip(
@@ -446,6 +492,61 @@ fun InputParticipantView(
     }
 
     Spacer(Modifier.height(24.dp))
+}
+
+@Composable
+fun CreateButtonView(
+    onCreateMeeting: () -> Unit,
+    isLoading: Boolean
+) {
+    Button(
+        onClick = { onCreateMeeting() },
+        enabled = !isLoading,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.button_container_color),
+            contentColor = colorResource(R.color.white)
+        )
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(20.dp))
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = stringResource(R.string.create_meeting),
+                fontWeight = FontWeight.Bold
+            )
+        } else {
+            Text(
+                text = stringResource(R.string.complete_create_meeting),
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun ItemChip(
+    text: String,
+    onDeleteClick: () -> Unit
+) {
+    AssistChip(
+        onClick = { },
+        label = { Text(text = text) },
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = stringResource(R.string.delete),
+                modifier = Modifier
+                    .size(18.dp)
+                    .clickable { onDeleteClick() }
+            )
+        }
+    )
 }
 
 @Composable
@@ -471,46 +572,4 @@ fun ErrorMessageView(
     )
 
     Spacer(Modifier.height(12.dp))
-}
-
-@Composable
-fun CreateButtonView(
-    onCreateMeeting: () -> Unit,
-    isLoading: Boolean
-) {
-    Button(
-        onClick = { onCreateMeeting() },
-        enabled = !isLoading,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.size(20.dp))
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(text = stringResource(R.string.create_meeting))
-        } else {
-            Text(text = stringResource(R.string.complete_create_meeting))
-        }
-    }
-}
-
-@Composable
-fun ItemChip(
-    text: String,
-    onDeleteClick: () -> Unit
-) {
-    AssistChip(
-        onClick = { },
-        label = { Text(text = text) },
-        trailingIcon = {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = stringResource(R.string.delete),
-                modifier = Modifier
-                    .size(18.dp)
-                    .clickable { onDeleteClick() }
-            )
-        }
-    )
 }

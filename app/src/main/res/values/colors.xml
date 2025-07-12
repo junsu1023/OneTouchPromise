@@ -7,6 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray">#FF888888</color>
 
     <color name="dark_slate_gary">#FF2A4759</color>
     <color name="philippine_silver">#FFB7B7B7</color>
@@ -14,4 +15,11 @@
     <color name="pastel_blue">#FFE6F1FF</color>
     <color name="deep_indigo_blue">#4F46E5</color>
     <color name="pale_indigo_blue">#E0E7FF</color>
+
+    <color name="main_background">#FFFAF9FE</color>
+    <color name="outlined_focused_border">#FF6200EE</color>
+    <color name="outlined_unfocused_border">#FFE0E0E0</color>
+    <color name="basic_text_color">#FF000000</color>
+    <color name="basic_icon_color">#FF000000</color>
+    <color name="button_container_color">#FF6200EE</color>
 </resources>
