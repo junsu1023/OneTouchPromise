@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.domain.model.MeetingModel
 import com.example.domain.model.UserModel
 import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
@@ -49,19 +50,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun checkUserVoted(
-        userEmail: String
-    ): Boolean {
-        val votedUserList = mutableSetOf<String>()
-        for(meeting in uiState.meetings) {
-            votedUserList.addAll(meeting.alreadyVotes)
-        }
-
-        return votedUserList.contains(userEmail)
-    }
-
     fun getCurrentUSer(): UserModel? {
         return getCurrentUserUserCase()
+    }
+
+    fun updateError(message: String) {
+        uiState = uiState.copy(error = message)
     }
 
     override fun onCleared() {

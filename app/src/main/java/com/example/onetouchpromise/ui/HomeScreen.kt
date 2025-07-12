@@ -132,13 +132,17 @@ fun HomeScreen(
                         )
                     }
                     else -> {
+                        val userNotFoundError = stringResource(R.string.user_not_found)
+
                         MeetingListView(
                             meetings = uiState.meetings,
                             onMeetingClick = { meeting ->
-                                if(viewModel.checkUserVoted(currentUser!!.email)) {
-                                    onMeetingClick(Pair(true, meeting))
-                                } else {
-                                    onMeetingClick(Pair(false, meeting))
+                                try {
+                                    val currentUserEmail = currentUser?.email
+                                    val isAlreadyVoted = meeting.alreadyVotes.contains(currentUserEmail)
+                                    onMeetingClick(Pair(isAlreadyVoted, meeting))
+                                } catch (e: NullPointerException) {
+                                    viewModel.updateError(userNotFoundError)
                                 }
                             }
                         )
