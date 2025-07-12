@@ -35,14 +35,21 @@ class CreateMeetingViewModel @Inject constructor(
         }
     }
 
-    fun addDateOption(date: String) {
-        if(uiState.dateOptions.contains(date)) {
+    fun addDateOption(date: LocalDate) {
+        val today = LocalDate.now()
+
+        if(date.isBefore(today)) {
+            uiState = uiState.copy(error = CreateMeetingError.NotAfterDate)
+            return
+        }
+
+        if(uiState.dateOptions.contains(date.toString())) {
             uiState = uiState.copy(error = CreateMeetingError.DuplicateDateOption)
             return
         }
 
-        if(date.isNotBlank()) {
-            uiState = uiState.copy(dateOptions = uiState.dateOptions + date)
+        if(date.toString().isNotBlank()) {
+            uiState = uiState.copy(dateOptions = uiState.dateOptions + date.toString())
         }
     }
 
