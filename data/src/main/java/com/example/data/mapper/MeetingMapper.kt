@@ -47,6 +47,7 @@ fun CreateMeetingModel.toEntity(id: String, creatorEmail: String): CreateMeeting
         creatorEmail = creatorEmail,
         participants = participants,
         dateOptions = dateOptions,
+        dueDate = dueDate,
         locationOptions = locationOptions,
         voteOptions = voteOptions,
         createdAt = System.currentTimeMillis(),

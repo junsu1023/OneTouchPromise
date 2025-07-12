@@ -104,7 +104,7 @@ fun CreateMeetingScreen(
             InputParticipantView(
                 participants = uiState.participants,
                 onAddParticipant = { participant -> viewModel.addParticipant(participant) },
-                onRemoveParticipant = { participatn -> viewModel.removeParticipant(participatn) }
+                onRemoveParticipant = { participant -> viewModel.removeParticipant(participant) }
             )
 
 
@@ -196,9 +196,9 @@ fun SelectDueDateView(
 
                 onDueDateSelected(date)
             },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
+            calendar[Calendar.YEAR],
+            calendar[Calendar.MONTH],
+            calendar[Calendar.DAY_OF_MONTH]
         )
     }
 
@@ -253,9 +253,9 @@ fun InputDateView(
                 val date = LocalDate.parse("%02d-%02d-%02d".format(year, month + 1, dayOfMonth), formatter)
                 onDateSelected(date)
             },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
+            calendar[Calendar.YEAR],
+            calendar[Calendar.MONTH],
+            calendar[Calendar.DAY_OF_MONTH]
         )
     }
 
