@@ -3,6 +3,7 @@ package com.example.onetouchpromise.ui
 import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -18,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -248,34 +250,57 @@ fun InputDateView(
     onRemoveDate: (String) -> Unit,
     setDatePickerVisible: (Boolean) -> Unit,
 ) {
-    Text(
-        text = stringResource(R.string.date_candidate),
-        style = MaterialTheme.typography.titleMedium
-    )
+    val expanded = remember { mutableStateOf(false) }
 
-    Spacer(Modifier.height(8.dp))
-
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    Row(
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        dateOptions.forEach { date ->
-            ItemChip(
-                text = date,
-                onDeleteClick = { onRemoveDate(date) }
-            )
-        }
+        Text(
+            text = stringResource(R.string.date_candidate),
+            style = MaterialTheme.typography.titleMedium
+        )
 
-        AssistChip(
-            onClick = { setDatePickerVisible(true) },
-            label = { Text(text = stringResource(R.string.add_date)) },
-            leadingIcon = {
+        Spacer(modifier = Modifier.width(8.dp))
+
+        if(dateOptions.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .size(16.dp)
+                    .clickable { expanded.value = !expanded.value }
+            ) {
                 Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null
+                    imageVector = Icons.Default.Create,
+                    contentDescription = stringResource(R.string.add_date_candidate)
                 )
             }
-        )
+        }
+    }
+
+    if(expanded.value) {
+        Spacer(Modifier.height(8.dp))
+
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            dateOptions.forEach { date ->
+                ItemChip(
+                    text = date,
+                    onDeleteClick = { onRemoveDate(date) }
+                )
+            }
+
+            AssistChip(
+                onClick = { setDatePickerVisible(true) },
+                label = { Text(text = stringResource(R.string.add_date)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
+                }
+            )
+        }
     }
 
     Spacer(Modifier.height(24.dp))
@@ -288,58 +313,82 @@ fun InputLocationView(
     onAddLocation: (String) -> Unit,
     onRemoveLocation: (String) -> Unit
 ) {
+    val expanded = remember { mutableStateOf(false) }
     var isAddingLocation by remember { mutableStateOf(false) }
     var newLocation by remember { mutableStateOf("") }
 
-    Text(
-        text = stringResource(R.string.location_candidate),
-        style = MaterialTheme.typography.titleMedium
-    )
-
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    Row(
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        locationOptions.forEach { location ->
-            ItemChip(
-                text = location,
-                onDeleteClick = { onRemoveLocation(location) }
-            )
-        }
+        Text(
+            text = stringResource(R.string.location_candidate),
+            style = MaterialTheme.typography.titleMedium
+        )
 
-        if (isAddingLocation) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                OutlinedTextField(
-                    value = newLocation,
-                    onValueChange = { newLocation = it },
-                    label = { Text(text = stringResource(R.string.input_location)) },
-                    singleLine = true,
-                    modifier = Modifier.width(200.dp)
+        Spacer(modifier = Modifier.width(8.dp))
+
+        if(locationOptions.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .size(16.dp)
+                    .clickable { expanded.value = !expanded.value }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Create,
+                    contentDescription = stringResource(R.string.add_location_candidate)
                 )
-
-                Spacer(Modifier.width(8.dp))
-
-                Button(
-                    onClick = {
-                        onAddLocation(newLocation)
-                        newLocation = ""
-                        isAddingLocation = false
-                    }
-                ) {
-                    Text(text = stringResource(R.string.add))
-                }
             }
-        } else {
-            AssistChip(
-                onClick = { isAddingLocation = true },
-                label = { Text(text = stringResource(R.string.add_location)) },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
+        }
+    }
+
+    if(expanded.value) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            locationOptions.forEach { location ->
+                ItemChip(
+                    text = location,
+                    onDeleteClick = { onRemoveLocation(location) }
+                )
+            }
+
+            if (isAddingLocation) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedTextField(
+                        value = newLocation,
+                        onValueChange = { newLocation = it },
+                        label = { Text(text = stringResource(R.string.input_location)) },
+                        singleLine = true,
+                        modifier = Modifier.width(50.dp)
                     )
+
+                    Spacer(Modifier.width(8.dp))
+
+                    Button(
+                        onClick = {
+                            onAddLocation(newLocation)
+                            newLocation = ""
+                            isAddingLocation = false
+                        }
+                    ) {
+                        Text(text = stringResource(R.string.add))
+                    }
                 }
-            )
+            } else {
+                AssistChip(
+                    onClick = { isAddingLocation = true },
+                    label = { Text(text = stringResource(R.string.add_location)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                        )
+                    }
+                )
+            }
         }
     }
 
