@@ -34,6 +34,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -42,6 +43,10 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -51,6 +56,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,9 +69,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.model.MeetingModel
 import com.example.onetouchpromise.R
+import com.example.onetouchpromise.component.HomeTabRow
 import com.example.onetouchpromise.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
@@ -355,25 +363,61 @@ fun EmptyListView(
     }
 }
 
+enum class MeetingTab {
+    ACTIVE,
+    CLOSED
+}
+
 @Composable
 fun MeetingListView(
     meetings: List<MeetingModel>,
     onMeetingClick: (MeetingModel) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .background(colorResource(R.color.main_background))
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(meetings) { meeting ->
-            MeetingCard(
-                meeting = meeting,
-                onClick = {
-                    onMeetingClick(meeting)
-                }
-            )
+    var selectedTab by remember { mutableStateOf(MeetingTab.ACTIVE) }
+    val filterMeetings = when(selectedTab) {
+        MeetingTab.ACTIVE -> meetings.filter { it.voteRatio < 100 || it.dueDate >= LocalDate.now().toString() }
+        MeetingTab.CLOSED -> meetings.filter { it.voteRatio >= 100 || it.dueDate < LocalDate.now().toString()}
+    }
+
+    Column {
+        HomeTabRow(
+            selectedTab = selectedTab,
+            tabWidth = 100.dp
+        ) {
+            MeetingTab.entries.forEachIndexed { index, tab ->
+                Tab(
+                    modifier = Modifier.background(colorResource(R.color.main_background)),
+                    selected = selectedTab.ordinal == index,
+                    onClick = { selectedTab = tab },
+                    text = {
+                        Text(
+                            text = if(tab == MeetingTab.ACTIVE) stringResource(R.string.in_progress) else stringResource(R.string.closed),
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = if(selectedTab.ordinal == index) colorResource(R.color.primary) else colorResource(R.color.basic_text_color2)
+                            )
+                        )
+                    }
+                )
+            }
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .background(colorResource(R.color.main_background))
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(filterMeetings) { meeting ->
+                MeetingCard(
+                    meeting = meeting,
+                    onClick = {
+                        onMeetingClick(meeting)
+                    }
+                )
+            }
         }
     }
 }
@@ -383,8 +427,6 @@ fun MeetingCard(
     meeting: MeetingModel,
     onClick: () -> Unit
 ) {
-    val voteRatio = if(meeting.alreadyVotes.isEmpty()) 0f else meeting.alreadyVotes.size / meeting.participants.size.toFloat()
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -416,7 +458,7 @@ fun MeetingCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "${stringResource(R.string.vote_rates)}: ${(voteRatio * 100).toInt()}%",
+                text = "${stringResource(R.string.vote_rates)}: ${(meeting.voteRatio * 100).toInt()}%",
                 style = TextStyle(
                     fontSize = 13.sp,
                     color = colorResource(R.color.primary),
@@ -427,7 +469,7 @@ fun MeetingCard(
             Spacer(modifier = Modifier.height(6.dp))
 
             LinearProgressIndicator(
-                progress = { voteRatio.coerceIn(0f, 1f) },
+                progress = { meeting.voteRatio.coerceIn(0f, 1f) },
                 color = colorResource(R.color.primary),
                 trackColor = colorResource(R.color.track_color),
                 modifier = Modifier

@@ -10,5 +10,6 @@ data class MeetingModel(
     val voteOptions: List<VoteOptionModel> = emptyList(),
     val dueDate: String = "",
     val createdAt: Long = System.currentTimeMillis(),
-    val alreadyVotes: List<String> = emptyList()
+    val alreadyVotes: List<String> = emptyList(),
+    val voteRatio: Float
 )
