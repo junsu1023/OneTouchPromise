@@ -73,6 +73,7 @@ import com.example.onetouchpromise.component.HomeTabRow
 import com.example.onetouchpromise.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
@@ -374,8 +375,8 @@ fun MeetingListView(
 ) {
     var selectedTab by remember { mutableStateOf(MeetingTab.ACTIVE) }
     val filterMeetings = when(selectedTab) {
-        MeetingTab.ACTIVE -> meetings.filter { it.voteRatio < 100 }
-        MeetingTab.CLOSED -> meetings.filter { it.voteRatio >= 100 }
+        MeetingTab.ACTIVE -> meetings.filter { it.voteRatio < 100 || it.dueDate >= LocalDate.now().toString() }
+        MeetingTab.CLOSED -> meetings.filter { it.voteRatio >= 100 || it.dueDate < LocalDate.now().toString()}
     }
 
     Column {
