@@ -29,7 +29,8 @@ fun MeetingEntity.toModel(): MeetingModel {
         voteOptions = voteOptions.map { it.toModel() },
         dueDate = dueDate,
         createdAt = createdAt,
-        alreadyVotes = alreadyVotes
+        alreadyVotes = alreadyVotes,
+        voteRatio = if(alreadyVotes.isEmpty()) 0f else alreadyVotes.size / participants.size.toFloat()
     )
 }
 

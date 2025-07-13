@@ -60,6 +60,8 @@
     <string name="date_vote_result">📅 날짜 투표 결과</string>
     <string name="location_vote_result">📍 장소 투표 결과</string>
     <string name="delete_all">모두 삭제</string>
+    <string name="in_progress">진행중</string>
+    <string name="closed">마감됨</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>
