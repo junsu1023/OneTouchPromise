@@ -29,7 +29,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.domain.error.AuthException
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.error.getAuthError
 import com.example.onetouchpromise.viewmodel.SignUpViewModel
