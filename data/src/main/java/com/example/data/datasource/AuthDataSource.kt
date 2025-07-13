@@ -1,11 +1,9 @@
 package com.example.data.datasource
 
-import android.net.Uri
 import com.example.data.entity.UserEntity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.storage
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.cancellation.CancellationException
 
