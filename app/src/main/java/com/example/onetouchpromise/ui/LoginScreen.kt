@@ -9,19 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,14 +29,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.onetouchpromise.R
+import com.example.onetouchpromise.component.EmailOutlinedTextField
+import com.example.onetouchpromise.component.PasswordOutlinedTextField
 import com.example.onetouchpromise.error.getAuthError
 import com.example.onetouchpromise.viewmodel.LoginViewModel
 
@@ -87,70 +76,18 @@ fun LoginScreen(
                 )
             )
 
-            OutlinedTextField(
-                value = state.email,
-                onValueChange = { viewModel.onEmailChange(it) },
-                placeholder = { Text(text = stringResource(R.string.email)) },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp),
-                trailingIcon = {
-                    if(state.email.isNotEmpty()) {
-                        IconButton(
-                            onClick = { viewModel.onEmailChange("") }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = stringResource(R.string.delete_all)
-                            )
-                        }
-                    }
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colorResource(R.color.outlined_focused_border),
-                    unfocusedBorderColor = colorResource(R.color.outlined_focused_border).copy(alpha = 0.3f)
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            EmailOutlinedTextField(
+                email = state.email,
+                onEmailChange = { viewModel.onEmailChange(it) }
             )
 
-            OutlinedTextField(
-                value = state.password,
-                onValueChange = { viewModel.onPasswordChange(it) },
-                placeholder = { Text(text = stringResource(R.string.password)) },
-                visualTransformation = if(passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(16.dp),
-                trailingIcon = {
-                    val icon = if(passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
-                    val description = if(passwordVisible) stringResource(R.string.hide_password) else stringResource(R.string.show_password)
-
-                    if(state.password.isNotEmpty()) {
-                        IconButton(
-                            onClick = { passwordVisible = !passwordVisible }
-                        ) {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = description
-                            )
-                        }
-                    }
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colorResource(R.color.outlined_focused_border),
-                    unfocusedBorderColor = colorResource(R.color.outlined_focused_border).copy(alpha = 0.3f)
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                )
+            PasswordOutlinedTextField(
+                password = state.password,
+                passwordVisible = passwordVisible,
+                onPasswordChange = { viewModel.onPasswordChange(it) },
+                onVisibleChange = { passwordVisible = it }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

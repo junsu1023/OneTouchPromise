@@ -1,6 +1,6 @@
 package com.example.onetouchpromise.ui
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,28 +8,33 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.onetouchpromise.R
+import com.example.onetouchpromise.component.EmailOutlinedTextField
+import com.example.onetouchpromise.component.NickNameOutlinedTextField
+import com.example.onetouchpromise.component.PasswordOutlinedTextField
 import com.example.onetouchpromise.error.getAuthError
 import com.example.onetouchpromise.viewmodel.SignUpViewModel
 
@@ -39,6 +44,7 @@ fun SignUpScreen(
     onSignUpSuccess: () -> Unit
 ) {
     val state = viewModel.uiState
+    var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.isSuccess) {
         if(state.isSuccess) {
@@ -46,69 +52,46 @@ fun SignUpScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = colorResource(R.color.login_background)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(
+                    horizontal = 32.dp,
+                    vertical = 48.dp
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Text(
                 text = stringResource(R.string.signup),
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
-
-            OutlinedTextField(
-                value = state.email,
-                onValueChange = viewModel::onEmailChange,
-                label = { Text(text = stringResource(R.string.email)) },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
+                style = TextStyle(
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color2)
                 )
             )
 
-            OutlinedTextField(
-                value = state.nickname,
-                onValueChange = viewModel::onNickNameChange,
-                label = { Text(text = stringResource(R.string.nickname)) },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            EmailOutlinedTextField(
+                email = state.email,
+                onEmailChange = { viewModel.onEmailChange(it) }
             )
 
-            OutlinedTextField(
-                value = state.password,
-                onValueChange = viewModel::onPasswordChange,
-                label = { Text(text = stringResource(R.string.password)) },
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                )
+            NickNameOutlinedTextField(
+                nickname = state.nickname,
+                onNicknameChange = { viewModel.onNickNameChange(it) }
+            )
+
+            PasswordOutlinedTextField(
+                password = state.password,
+                passwordVisible = passwordVisible,
+                onPasswordChange = { viewModel.onPasswordChange(it) },
+                onVisibleChange = { passwordVisible = it }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -118,7 +101,8 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.outlined_focused_border)),
                 enabled = !state.isLoading
             ) {
                 if (state.isLoading) {
