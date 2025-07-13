@@ -1,8 +1,10 @@
 package com.example.onetouchpromise.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -22,6 +25,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,6 +33,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -39,6 +44,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,14 +54,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.model.MeetingModel
 import com.example.onetouchpromise.R
-import com.example.onetouchpromise.util.basePadding
 import com.example.onetouchpromise.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -91,6 +98,9 @@ fun HomeScreen(
         }
     ) {
         Scaffold(
+            modifier = Modifier.background(colorResource(R.color.main_background)),
+            containerColor = colorResource(R.color.main_background),
+            contentColor = colorResource(R.color.main_background),
             topBar = {
                 HomeScreenTopBar(
                     scope = coroutineScope,
@@ -100,10 +110,14 @@ fun HomeScreen(
             floatingActionButton = {
                 if(uiState.meetings.isNotEmpty()) {
                     FloatingActionButton(
-                        onClick = onCreateMeetingClick
+                        onClick = onCreateMeetingClick,
+                        containerColor = colorResource(R.color.floating_button_color),
+                        contentColor = colorResource(R.color.black),
+                        shape = CircleShape,
+                        elevation = FloatingActionButtonDefaults.elevation(6.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Add,
+                            imageVector = Icons.Filled.Add,
                             contentDescription = stringResource(R.string.create_meeting)
                         )
                     }
@@ -114,6 +128,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .background(colorResource(R.color.main_background))
             ) {
                 when {
                     uiState.isLoading -> {
@@ -175,7 +190,8 @@ fun ModalDrawerSheet(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.go_back)
+                    contentDescription = stringResource(R.string.go_back),
+                    tint = colorResource(R.color.basic_icon_color)
                 )
             }
 
@@ -183,14 +199,17 @@ fun ModalDrawerSheet(
 
             Text(
                 text = stringResource(R.string.setting),
-                modifier = Modifier.padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color)
+                )
             )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
+            shape = RoundedCornerShape(16.dp),
             onClick = {
                 scope.launch {
                     drawerState.close()
@@ -199,9 +218,16 @@ fun ModalDrawerSheet(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(R.color.button_container_color),
+                contentColor = colorResource(R.color.white)
+            )
         ) {
-            Text(text = stringResource(R.string.logout))
+            Text(
+                text = stringResource(R.string.logout),
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -213,7 +239,16 @@ fun HomeScreenTopBar(
     drawerState: DrawerState
 ) {
     TopAppBar(
-        title = { Text(text = stringResource(R.string.meeting_schedule)) },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = colorResource(R.color.main_background)),
+        title = {
+            Text(
+                text = stringResource(R.string.meeting_schedule),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color)
+                )
+            )
+        },
         navigationIcon = {
             IconButton(
                 onClick = {
@@ -224,7 +259,8 @@ fun HomeScreenTopBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.Menu,
-                    contentDescription = stringResource(R.string.menu_open)
+                    contentDescription = stringResource(R.string.menu_open),
+                    tint = colorResource(R.color.black)
                 )
             }
         }
@@ -273,30 +309,48 @@ fun EmptyListView(
         Icon(
             imageVector = Icons.Default.DateRange,
             contentDescription = stringResource(R.string.is_blank_meeting),
-            modifier = Modifier.size(72.dp),
-            tint = MaterialTheme.colorScheme.primary
+            modifier = Modifier.size(80.dp),
+            tint = colorResource(R.color.primary)
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             text = stringResource(R.string.is_not_exist_meeting_yet),
-            style = MaterialTheme.typography.bodyLarge
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = colorResource(R.color.basic_text_color2)
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = stringResource(R.string.click_button_create_meeting),
-            style = MaterialTheme.typography.bodySmall
+            style = TextStyle(
+                fontSize = 14.sp,
+                color = colorResource(R.color.basic_text_color2)
+            )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedButton(
-            onClick = onCreateMeetingClick
+            onClick = onCreateMeetingClick,
+            border = BorderStroke(
+                width = 1.dp,
+                color = colorResource(R.color.button_container_color)
+            ),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = colorResource(R.color.button_container_color)
+            ),
+            shape = RoundedCornerShape(24.dp)
         ) {
-            Text(text = stringResource(R.string.create_meeting))
+            Text(
+                text = stringResource(R.string.create_meeting),
+                fontSize = 16.sp
+            )
         }
     }
 }
@@ -308,8 +362,10 @@ fun MeetingListView(
 ) {
     LazyColumn(
         modifier = Modifier
-            .basePadding()
-            .background(Color.White)
+            .background(colorResource(R.color.main_background))
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(meetings) { meeting ->
             MeetingCard(
@@ -318,8 +374,6 @@ fun MeetingListView(
                     onMeetingClick(meeting)
                 }
             )
-
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -334,34 +388,52 @@ fun MeetingCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.floating_button_color))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = meeting.title,
-                style = MaterialTheme.typography.titleMedium
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color2)
+                )
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}")
+            Text(
+                text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colorResource(R.color.sub_text_color)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = "${stringResource(R.string.vote_rates)}: ${(voteRatio * 100).toInt()}%",
-                style = MaterialTheme.typography.bodySmall
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colorResource(R.color.primary),
+                    fontWeight = FontWeight.Medium
+                )
             )
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             LinearProgressIndicator(
                 progress = { voteRatio.coerceIn(0f, 1f) },
+                color = colorResource(R.color.primary),
+                trackColor = colorResource(R.color.track_color),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(6.dp)
-                    .clip(RoundedCornerShape(3.dp)),
-                color = colorResource(R.color.deep_indigo_blue),
-                trackColor = colorResource(R.color.pale_indigo_blue)
+                    .clip(RoundedCornerShape(3.dp))
             )
         }
     }
