@@ -37,6 +37,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,6 +69,7 @@ fun CreateMeetingScreen(
 
     Scaffold(
         containerColor = colorResource(R.color.main_background),
+        contentColor = colorResource(R.color.main_background),
         topBar = {
             CreateMeetingTopBar()
         }
@@ -124,6 +126,7 @@ fun CreateMeetingScreen(
 @Composable
 fun CreateMeetingTopBar() {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = colorResource(R.color.main_background)),
         title = {
             Text(
                 text = stringResource(R.string.create_meeting),
@@ -527,6 +530,8 @@ fun CreateButtonView(
             )
         }
     }
+
+    Spacer(modifier = Modifier.height(12.dp))
 }
 
 @Composable

@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +54,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -62,7 +63,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.model.MeetingModel
 import com.example.onetouchpromise.R
-import com.example.onetouchpromise.util.basePadding
 import com.example.onetouchpromise.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -98,7 +98,9 @@ fun HomeScreen(
         }
     ) {
         Scaffold(
+            modifier = Modifier.background(colorResource(R.color.main_background)),
             containerColor = colorResource(R.color.main_background),
+            contentColor = colorResource(R.color.main_background),
             topBar = {
                 HomeScreenTopBar(
                     scope = coroutineScope,
@@ -126,6 +128,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .background(colorResource(R.color.main_background))
             ) {
                 when {
                     uiState.isLoading -> {
@@ -236,6 +239,7 @@ fun HomeScreenTopBar(
     drawerState: DrawerState
 ) {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = colorResource(R.color.main_background)),
         title = {
             Text(
                 text = stringResource(R.string.meeting_schedule),
@@ -316,7 +320,7 @@ fun EmptyListView(
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
-                color = colorResource(R.color.empty_screen_text_color)
+                color = colorResource(R.color.basic_text_color2)
             )
         )
 
@@ -326,7 +330,7 @@ fun EmptyListView(
             text = stringResource(R.string.click_button_create_meeting),
             style = TextStyle(
                 fontSize = 14.sp,
-                color = colorResource(R.color.empty_screen_text_color)
+                color = colorResource(R.color.basic_text_color2)
             )
         )
 
@@ -358,8 +362,10 @@ fun MeetingListView(
 ) {
     LazyColumn(
         modifier = Modifier
-            .basePadding()
-            .background(Color.White)
+            .background(colorResource(R.color.main_background))
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(meetings) { meeting ->
             MeetingCard(
@@ -368,8 +374,6 @@ fun MeetingListView(
                     onMeetingClick(meeting)
                 }
             )
-
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -384,34 +388,52 @@ fun MeetingCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.floating_button_color))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = meeting.title,
-                style = MaterialTheme.typography.titleMedium
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color2)
+                )
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}")
+            Text(
+                text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = colorResource(R.color.sub_text_color)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = "${stringResource(R.string.vote_rates)}: ${(voteRatio * 100).toInt()}%",
-                style = MaterialTheme.typography.bodySmall
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    color = colorResource(R.color.primary),
+                    fontWeight = FontWeight.Medium
+                )
             )
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             LinearProgressIndicator(
                 progress = { voteRatio.coerceIn(0f, 1f) },
+                color = colorResource(R.color.primary),
+                trackColor = colorResource(R.color.track_color),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(6.dp)
-                    .clip(RoundedCornerShape(3.dp)),
-                color = colorResource(R.color.deep_indigo_blue),
-                trackColor = colorResource(R.color.pale_indigo_blue)
+                    .clip(RoundedCornerShape(3.dp))
             )
         }
     }
