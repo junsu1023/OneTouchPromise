@@ -23,6 +23,7 @@
     <string name="submit_vote">투표 제출하기</string>
     <string name="view_voting_status">투표 현황 보기</string>
     <string name="email">이메일</string>
+    <string name="nickname">닉네임</string>
     <string name="password">비밀번호</string>
     <string name="signup">회원가입</string>
     <string name="error">에러</string>
@@ -68,7 +69,9 @@
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>
-    <string name="password_too_short">비밀번호는 6글자 이상이어야 합니다.</string>
+    <string name="nickname_too_short">닉네임은 2글자 이상이어야 합니다.</string>
+    <string name="invalid_nickname">한굴, 영문, 숫자만 사용 가능합니다.</string>
+    <string name="password_too_short">비밀번호는 8글자 이상이어야 합니다.</string>
     <string name="user_not_found">존재하지 않는 사용자입니다.</string>
     <string name="wrong_password">비밀번호가 틀렸습니다.</string>
     <string name="unknown">알 수 없는 오류가 발생했습니다.</string>

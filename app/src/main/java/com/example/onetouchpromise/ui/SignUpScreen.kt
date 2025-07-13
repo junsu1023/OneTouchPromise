@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.error.AuthException
 import com.example.onetouchpromise.R
+import com.example.onetouchpromise.error.getAuthError
 import com.example.onetouchpromise.viewmodel.SignUpViewModel
 
 @Composable
@@ -81,6 +82,21 @@ fun SignUpScreen(
             )
 
             OutlinedTextField(
+                value = state.nickname,
+                onValueChange = viewModel::onNickNameChange,
+                label = { Text(text = stringResource(R.string.nickname)) },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                )
+            )
+
+            OutlinedTextField(
                 value = state.password,
                 onValueChange = viewModel::onPasswordChange,
                 label = { Text(text = stringResource(R.string.password)) },
@@ -117,14 +133,7 @@ fun SignUpScreen(
                 }
             }
 
-            val errorMessage = when(state.error) {
-                is AuthException.EmailFormatInvalid -> stringResource(R.string.invalid_email)
-                is AuthException.PasswordTooShort -> stringResource(R.string.password_too_short)
-                is AuthException.UserNotFound -> stringResource(R.string.user_not_found)
-                is AuthException.WrongPassword -> stringResource(R.string.wrong_password)
-                is AuthException.Unknown -> state.error.message ?: stringResource(R.string.unknown)
-                null -> null
-            }
+            val errorMessage = getAuthError(state.error)
 
             errorMessage?.let {
                 Text(

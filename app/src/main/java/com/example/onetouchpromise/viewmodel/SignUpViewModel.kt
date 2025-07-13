@@ -23,6 +23,10 @@ class SignUpViewModel @Inject constructor(
         uiState = uiState.copy(email = email)
     }
 
+    fun onNickNameChange(nickname: String) {
+        uiState = uiState.copy(nickname = nickname)
+    }
+
     fun onPasswordChange(password: String) {
         uiState = uiState.copy(password = password)
     }
@@ -31,7 +35,12 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true)
 
-            val result = signUpUseCase(uiState.email, uiState.password)
+            val result = signUpUseCase(
+                email = uiState.email,
+                nickname = uiState.nickname,
+                password = uiState.password
+            )
+
             uiState = when {
                 result.isSuccess -> uiState.copy(isSuccess = true, isLoading = false)
                 else -> {
