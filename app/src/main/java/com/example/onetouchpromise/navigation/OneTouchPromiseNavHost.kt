@@ -1,11 +1,15 @@
 package com.example.onetouchpromise.navigation
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.onetouchpromise.R
 import com.example.onetouchpromise.ui.CreateMeetingScreen
 import com.example.onetouchpromise.ui.HomeScreen
 import com.example.onetouchpromise.ui.LoginScreen
@@ -68,6 +72,10 @@ fun OneTouchPromiseNavHost(
         }
 
         composable(OneTouchPromiseScreen.HOME) {
+            val context = LocalContext.current
+            val successWithDraw = stringResource(R.string.withdraw_success)
+            val failedWithDraw = stringResource(R.string.withdraw_failed)
+
             HomeScreen(
                 onLogoutClick = {
                     FirebaseAuth.getInstance().signOut()
@@ -75,6 +83,23 @@ fun OneTouchPromiseNavHost(
                     navController.navigate(OneTouchPromiseScreen.LOGIN) {
                         popUpTo(OneTouchPromiseScreen.HOME) {
                             inclusive = true
+                        }
+                    }
+                },
+                onWithDraw = {
+                    val auth = FirebaseAuth.getInstance()
+
+                    auth.currentUser?.delete()?.addOnCompleteListener { task ->
+                        if(task.isSuccessful) {
+                            Toast.makeText(context, successWithDraw, Toast.LENGTH_SHORT).show()
+
+                            navController.navigate(OneTouchPromiseScreen.LOGIN) {
+                                popUpTo(OneTouchPromiseScreen.HOME) {
+                                    inclusive = true
+                                }
+                            }
+                        } else {
+                            Toast.makeText(context, failedWithDraw, Toast.LENGTH_SHORT).show()
                         }
                     }
                 },
