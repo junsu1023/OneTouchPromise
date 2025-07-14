@@ -65,6 +65,7 @@ import com.example.onetouchpromise.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun HomeScreen(
@@ -149,14 +150,14 @@ fun HomeScreen(
                     }
                     else -> {
                         val userNotFoundError = stringResource(R.string.user_not_found)
+                        val currentUserEmail = currentUser?.email
 
                         MeetingListView(
                             meetings = uiState.meetings,
-                            onMeetingClick = { meeting ->
+                            currentUserEmail = currentUserEmail ?: "",
+                            onMeetingClick = { (isActive, meeting) ->
                                 try {
-                                    val currentUserEmail = currentUser?.email
-                                    val isAlreadyVoted = meeting.alreadyVotes.contains(currentUserEmail)
-                                    onMeetingClick(Pair(isAlreadyVoted, meeting))
+                                    onMeetingClick(Pair(isActive , meeting))
                                 } catch (e: NullPointerException) {
                                     viewModel.updateError(userNotFoundError)
                                 }
@@ -300,13 +301,16 @@ enum class MeetingTab {
 @Composable
 fun MeetingListView(
     meetings: List<MeetingModel>,
-    onMeetingClick: (MeetingModel) -> Unit
+    currentUserEmail: String,
+    onMeetingClick: (Pair<Boolean, MeetingModel>) -> Unit
 ) {
+    val today by remember { mutableStateOf(LocalDate.now().toString()) }
     var selectedTab by remember { mutableStateOf(MeetingTab.ACTIVE) }
     val filterMeetings = when(selectedTab) {
-        MeetingTab.ACTIVE -> meetings.filter { it.voteRatio < 100 || it.dueDate >= LocalDate.now().toString() }
-        MeetingTab.CLOSED -> meetings.filter { it.voteRatio >= 100 || it.dueDate < LocalDate.now().toString()}
+        MeetingTab.ACTIVE -> meetings.filter { it.voteRatio < 100 && it.dueDate >= today && !it.alreadyVotes.contains(currentUserEmail) }
+        MeetingTab.CLOSED -> meetings.filter { it.voteRatio >= 100 || it.dueDate < today || it.alreadyVotes.contains(currentUserEmail) }
     }
+    println("test-kjs: LocalDate = ${LocalDate.now()}")
 
     Column {
         HomeTabRow(
@@ -342,9 +346,7 @@ fun MeetingListView(
             items(filterMeetings) { meeting ->
                 MeetingCard(
                     meeting = meeting,
-                    onClick = {
-                        onMeetingClick(meeting)
-                    }
+                    onClick = { onMeetingClick(Pair(selectedTab == MeetingTab.ACTIVE, meeting)) }
                 )
             }
         }
