@@ -68,6 +68,9 @@
     <string name="withdraw_failed">회원탈퇴 중 문제가 발생했습니다.</string>
     <string name="hide_password">비밀번호 숨기기</string>
     <string name="show_password">비밀번호 보기</string>
+    <string name="my_information">내 정보</string>
+    <string name="collapse_my_information">내 정보 접기</string>
+    <string name="expand_my_information">내 정보 펼치기</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>

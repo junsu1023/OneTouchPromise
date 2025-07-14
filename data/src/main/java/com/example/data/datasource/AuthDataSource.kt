@@ -49,8 +49,9 @@ class AuthDataSource(
         val user = firebaseAuth.currentUser ?: return null
 
         return try {
-            val document = firestore.collection("users").document().get().await()
+            val document = firestore.collection("users").document(user.uid).get().await()
             val nickname = document.getString("nickname")
+
             UserEntity(user.uid, user.email, nickname)
         } catch (e: Exception) {
             null
