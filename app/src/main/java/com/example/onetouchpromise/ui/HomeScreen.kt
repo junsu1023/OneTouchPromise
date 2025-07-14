@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -312,7 +313,7 @@ fun MeetingListView(
     onMeetingClick: (Pair<Boolean, MeetingModel>) -> Unit
 ) {
     val today by remember { mutableStateOf(LocalDate.now().toString()) }
-    var selectedTab by remember { mutableStateOf(MeetingTab.ACTIVE) }
+    var selectedTab by rememberSaveable { mutableStateOf(MeetingTab.ACTIVE) }
     val filterMeetings = when(selectedTab) {
         MeetingTab.ACTIVE -> meetings.filter { it.voteRatio < 100 && it.dueDate >= today && !it.alreadyVotes.contains(currentUserEmail) }
         MeetingTab.CLOSED -> meetings.filter { it.voteRatio >= 100 || it.dueDate < today || it.alreadyVotes.contains(currentUserEmail) }
