@@ -317,7 +317,6 @@ fun MeetingListView(
         MeetingTab.ACTIVE -> meetings.filter { it.voteRatio < 100 && it.dueDate >= today && !it.alreadyVotes.contains(currentUserEmail) }
         MeetingTab.CLOSED -> meetings.filter { it.voteRatio >= 100 || it.dueDate < today || it.alreadyVotes.contains(currentUserEmail) }
     }
-    println("test-kjs: LocalDate = ${LocalDate.now()}")
 
     Column {
         HomeTabRow(
