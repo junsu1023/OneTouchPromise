@@ -1,6 +1,5 @@
 package com.example.data.di
 
-import com.example.data.repository.HomeRepositoryImpl
 import com.example.domain.repository.AuthRepository
 import com.example.domain.repository.CreateMeetingRepository
 import com.example.domain.repository.HomeRepository

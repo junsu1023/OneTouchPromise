@@ -1,10 +1,7 @@
 package com.example.data.datasource
 
-import android.util.Log
 import com.example.data.entity.MeetingDetailEntity
-import com.example.data.entity.MeetingEntity
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

@@ -156,17 +156,5 @@ fun OneTouchPromiseNavHost(
                 onBackClick = { navController.popBackStack() }
             )
         }
-
-        composable(OneTouchPromiseScreen.MEETING_CONFIRM) {
-
-        }
-
-        composable(OneTouchPromiseScreen.MY_MEETINGS) {
-
-        }
-
-        composable(OneTouchPromiseScreen.SETTINGS) {
-
-        }
     }
 }
