@@ -5,10 +5,8 @@ import com.example.data.datasource.CreateMeetingDataSource
 import com.example.data.datasource.HomeDataSource
 import com.example.data.datasource.MeetingDataSource
 import com.example.data.datasource.MeetingDetailRemoteDataSource
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
