@@ -14,6 +14,6 @@ class AuthRepositoryImpl(
     override suspend fun login(email: String, password: String): Result<UserModel> =
         authDataSource.login(email, password).map { it.toModel() }
 
-    override fun getCurrentUser(): UserModel? =
+    override suspend fun getCurrentUser(): UserModel? =
         authDataSource.getCurrentUser()?.toModel()
 }

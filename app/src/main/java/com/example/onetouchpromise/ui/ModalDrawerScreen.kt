@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -26,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.domain.model.UserModel
 import com.example.onetouchpromise.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -34,9 +39,12 @@ import kotlinx.coroutines.launch
 fun ModalDrawerScreen(
     scope: CoroutineScope,
     drawerState: DrawerState,
+    currentUser: UserModel?,
     onLogoutClick: () -> Unit,
     onWithDraw: () -> Unit
 ) {
+    val isInformationExpanded = remember { mutableStateOf(false) }
+
     ModalDrawerSheet {
         Row(
             modifier = Modifier
@@ -73,8 +81,61 @@ fun ModalDrawerScreen(
 
         Column(
             modifier = Modifier.padding(start = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.my_information),
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorResource(R.color.basic_text_color2)
+                    )
+                )
+
+                IconButton(
+                    onClick = { isInformationExpanded.value = !isInformationExpanded.value }
+                ) {
+                    Icon(
+                        imageVector = if(isInformationExpanded.value) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                        contentDescription = if(isInformationExpanded.value) stringResource(R.string.collapse_my_information) else stringResource(R.string.expand_my_information),
+                        tint = colorResource(R.color.basic_icon_color),
+                    )
+                }
+            }
+
+            if(isInformationExpanded.value) {
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    Text(
+                        text = "${stringResource(R.string.email)}:  ${currentUser?.email ?: stringResource(R.string.invalid_email)}",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colorResource(R.color.basic_text_color2)
+                        )
+                    )
+
+                    Text(
+                        text = "${stringResource(R.string.nickname)}:  ${currentUser?.nickname ?: stringResource(R.string.invalid_nickname)}",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colorResource(R.color.basic_text_color2)
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
             Text(
                 text = stringResource(R.string.logout),
                 style = TextStyle(
@@ -89,6 +150,8 @@ fun ModalDrawerScreen(
                     onLogoutClick()
                 }
             )
+
+            Spacer(modifier = Modifier.height(30.dp))
 
             Text(
                 text = stringResource(R.string.withdraw),
