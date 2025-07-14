@@ -195,7 +195,7 @@ fun SelectDueDateView(
             context,
             { _, year, month, dayOfMonth ->
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val date = LocalDate.parse("%02d-%02d-%02d".format(year, month + 1, dayOfMonth), formatter)
+                val date = LocalDate.parse("%04d-%02d-%02d".format(year, month + 1, dayOfMonth), formatter)
 
                 onDueDateSelected(date)
             },
@@ -253,7 +253,7 @@ fun InputDateView(
             context,
             { _, year, month, dayOfMonth ->
                 val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val date = LocalDate.parse("%02d-%02d-%02d".format(year, month + 1, dayOfMonth), formatter)
+                val date = LocalDate.parse("%04d-%02d-%02d".format(year, month + 1, dayOfMonth), formatter)
                 onDateSelected(date)
             },
             calendar[Calendar.YEAR],
