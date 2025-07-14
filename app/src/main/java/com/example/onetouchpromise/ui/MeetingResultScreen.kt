@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,14 +12,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -28,7 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.error.MeetingDetailError
 import com.example.domain.model.MeetingResultModel
@@ -49,6 +55,9 @@ fun MeetingResultScreen(
     }
 
     Scaffold(
+        modifier = Modifier.background(colorResource(R.color.main_background)),
+        containerColor = colorResource(R.color.main_background),
+        contentColor = colorResource(R.color.main_background),
         topBar = {
             ResultScreenTopBar(onBackClick = onBackClick)
         }
@@ -81,13 +90,22 @@ fun MeetingResultScreen(
 fun ResultScreenTopBar(
     onBackClick: () -> Unit
 ) {
-    TopAppBar(
-        title = { Text(text = stringResource(R.string.voted_result)) },
+    TopAppBar(colors = TopAppBarDefaults.topAppBarColors(containerColor = colorResource(R.color.main_background)),
+        title = {
+            Text(
+                text = stringResource(R.string.voted_result),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color)
+                )
+            )
+        },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.go_back)
+                    contentDescription = stringResource(R.string.go_back),
+                    tint = colorResource(R.color.basic_icon_color)
                 )
             }
         }
@@ -106,7 +124,11 @@ fun ResultLoadingView(modifier: Modifier) {
 
         Text(
             text = stringResource(R.string.getting_meeting_detail),
-            style = MaterialTheme.typography.bodyMedium
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = colorResource(R.color.basic_text_color2)
+            )
         )
     }
 }
@@ -126,7 +148,11 @@ fun ResultErrorMessageView(
     Text(
         text = message,
         color = MaterialTheme.colorScheme.error,
-        style = MaterialTheme.typography.bodyLarge,
+        style = TextStyle(
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium,
+            color = colorResource(R.color.basic_text_color2)
+        ),
         modifier = modifier.padding(16.dp)
     )
 }
@@ -143,7 +169,11 @@ fun ResultContent(
         item {
             Text(
                 text = meeting.title,
-                style = MaterialTheme.typography.headlineSmall,
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color2)
+                ),
                 modifier = Modifier.padding(bottom = 24.dp)
             )
         }
@@ -170,24 +200,29 @@ fun VoteResultSection(
     title: String,
     results: List<VoteResultItem>
 ) {
-    Column {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
+    val maxVotes = results.maxOf { it.voteCount }.coerceAtLeast(1)
 
-        if(results.isEmpty()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.result_card_color))
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
             Text(
-                text = stringResource(R.string.empty_participant),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = title,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.basic_text_color2)
+                )
             )
-        } else {
-            val maxVotes = results.maxOf { it.voteCount }.coerceAtLeast(1)
+
+            Spacer(modifier = Modifier.height(18.dp))
+
             results.forEach { item ->
                 VoteResultBar(item = item, maxVotes = maxVotes)
-                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -198,27 +233,26 @@ fun VoteResultBar(
     item: VoteResultItem,
     maxVotes: Int
 ) {
-    Column {
-        Text(
-            text = "${item.option} (${item.voteCount}표)",
-            style = MaterialTheme.typography.bodyMedium
+    Text(
+        text = "${item.option} (${item.voteCount}표)",
+        style = TextStyle(
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            color = colorResource(R.color.basic_text_color2)
         )
+    )
 
-        val progressRatio = item.voteCount.toFloat() / maxVotes
+    Spacer(modifier = Modifier.height(6.dp))
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(16.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(color = colorResource(R.color.pale_indigo_blue))
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(progressRatio)
-                    .background(color = colorResource(R.color.deep_indigo_blue))
-            )
-        }
-    }
+    LinearProgressIndicator(
+        progress = { item.voteCount.toFloat() / maxVotes },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(12.dp)
+            .clip(RoundedCornerShape(12.dp)),
+        color = colorResource(R.color.progress_indicator_bar_color),
+        trackColor = colorResource(R.color.progress_indicator_track_color)
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
 }

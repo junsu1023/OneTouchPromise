@@ -198,7 +198,7 @@ fun HomeScreenTopBar(
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = stringResource(R.string.menu_open),
-                    tint = colorResource(R.color.black)
+                    tint = colorResource(R.color.basic_icon_color)
                 )
             }
         }
@@ -217,7 +217,11 @@ fun HomeLoadingView(modifier: Modifier) {
 
         Text(
             text = stringResource(R.string.getting_meeting_list),
-            style = MaterialTheme.typography.bodyMedium
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = colorResource(R.color.basic_text_color2)
+            )
         )
     }
 }
