@@ -26,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.domain.model.UserModel
 import com.example.onetouchpromise.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -34,6 +35,7 @@ import kotlinx.coroutines.launch
 fun ModalDrawerScreen(
     scope: CoroutineScope,
     drawerState: DrawerState,
+    currentUser: UserModel?,
     onLogoutClick: () -> Unit,
     onWithDraw: () -> Unit
 ) {
@@ -75,6 +77,7 @@ fun ModalDrawerScreen(
             modifier = Modifier.padding(start = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+
             Text(
                 text = stringResource(R.string.logout),
                 style = TextStyle(

@@ -43,6 +43,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,7 +66,6 @@ import com.example.onetouchpromise.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun HomeScreen(
@@ -75,10 +75,13 @@ fun HomeScreen(
     onMeetingClick: (Pair<Boolean, MeetingModel>) -> Unit,
     onCreateMeetingClick: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.getCurrentUSer()
+    }
+
     val uiState = viewModel.uiState
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    val currentUser by remember { mutableStateOf(viewModel.getCurrentUSer()) }
 
     BackHandler(
         enabled = drawerState.isOpen
@@ -94,6 +97,7 @@ fun HomeScreen(
             ModalDrawerScreen(
                 scope = coroutineScope,
                 drawerState = drawerState,
+                currentUser = uiState.currentUser,
                 onLogoutClick = onLogoutClick,
                 onWithDraw = onWithDraw
             )
@@ -150,11 +154,10 @@ fun HomeScreen(
                     }
                     else -> {
                         val userNotFoundError = stringResource(R.string.user_not_found)
-                        val currentUserEmail = currentUser?.email
 
                         MeetingListView(
                             meetings = uiState.meetings,
-                            currentUserEmail = currentUserEmail ?: "",
+                            currentUserEmail = uiState.currentUser?.email ?: "",
                             onMeetingClick = { (isActive, meeting) ->
                                 try {
                                     onMeetingClick(Pair(isActive , meeting))

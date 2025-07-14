@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.domain.model.MeetingModel
 import com.example.domain.model.UserModel
 import com.example.domain.usecase.GetCurrentUserUserCase
@@ -11,6 +13,7 @@ import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.onetouchpromise.contract.HomeUiState
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,8 +53,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentUSer(): UserModel? {
-        return getCurrentUserUserCase()
+    fun getCurrentUSer() {
+        viewModelScope.launch {
+            val user = getCurrentUserUserCase()
+            uiState = uiState.copy(currentUser = user)
+        }
     }
 
     fun updateError(message: String) {

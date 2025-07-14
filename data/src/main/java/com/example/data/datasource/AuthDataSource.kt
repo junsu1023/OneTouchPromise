@@ -3,12 +3,14 @@ package com.example.data.datasource
 import com.example.data.entity.UserEntity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.cancellation.CancellationException
 
 class AuthDataSource(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ) {
     suspend fun signUp(
         email: String,
@@ -43,8 +45,15 @@ class AuthDataSource(
         Result.failure(e)
     }
 
-    fun getCurrentUser(): UserEntity? {
+    suspend fun getCurrentUser(): UserEntity? {
         val user = firebaseAuth.currentUser ?: return null
-        return UserEntity(user.uid, user.email, null)
+
+        return try {
+            val document = firestore.collection("users").document().get().await()
+            val nickname = document.getString("nickname")
+            UserEntity(user.uid, user.email, nickname)
+        } catch (e: Exception) {
+            null
+        }
     }
 }
