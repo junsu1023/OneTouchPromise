@@ -27,5 +27,8 @@
     <color name="basic_text_color2">#FF1C1B1F</color>
     <color name="sub_text_color">#FF757575</color>
     <color name="track_color">#FFD1C4E9</color>
-    <color name="login_background">#F7F3FD</color>
+    <color name="login_background">#FFF7F3FD</color>
+    <color name="result_card_color">#FFF0E8FF</color>
+    <color name="progress_indicator_bar_color">#FF7C4DFF</color>
+    <color name="progress_indicator_track_color">#FFE0D9F9</color>
 </resources>
