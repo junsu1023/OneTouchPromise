@@ -13,12 +13,6 @@ import com.example.domain.model.VoteResultItem
 import com.example.domain.model.VoteType
 
 fun MeetingEntity.toModel(today: String? = null): MeetingModel {
-    val voteOptions = dateOptions.map {
-        VoteOptionEntity(type = "DATE", option = it, votedUserIds = emptyList())
-    } + locationOptions.map {
-        VoteOptionEntity(type = "LOCATION", option = it, votedUserIds = emptyList())
-    }
-
     return MeetingModel(
         id = id,
         title = title,
@@ -26,12 +20,11 @@ fun MeetingEntity.toModel(today: String? = null): MeetingModel {
         participants = participants,
         dateOptions = dateOptions,
         locationOptions = locationOptions,
-        voteOptions = voteOptions.map { it.toModel() },
         dueDate = dueDate,
         createdAt = createdAt,
         alreadyVotes = alreadyVotes,
         voteRatio = if(alreadyVotes.isEmpty()) 0f else alreadyVotes.size / participants.size.toFloat(),
-        isClosed = (today != null && dueDate < today) || (alreadyVotes.isNotEmpty() && alreadyVotes.size / participants.size.toFloat() == 100f)
+        isClosed = (today != null && dueDate < today) || (alreadyVotes.isNotEmpty() && alreadyVotes.size / participants.size.toFloat() == 1f)
     )
 }
 
