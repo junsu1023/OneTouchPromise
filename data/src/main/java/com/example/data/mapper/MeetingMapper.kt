@@ -12,7 +12,7 @@ import com.example.domain.model.VoteOptionModel
 import com.example.domain.model.VoteResultItem
 import com.example.domain.model.VoteType
 
-fun MeetingEntity.toModel(): MeetingModel {
+fun MeetingEntity.toModel(today: String? = null): MeetingModel {
     val voteOptions = dateOptions.map {
         VoteOptionEntity(type = "DATE", option = it, votedUserIds = emptyList())
     } + locationOptions.map {
@@ -30,7 +30,8 @@ fun MeetingEntity.toModel(): MeetingModel {
         dueDate = dueDate,
         createdAt = createdAt,
         alreadyVotes = alreadyVotes,
-        voteRatio = if(alreadyVotes.isEmpty()) 0f else alreadyVotes.size / participants.size.toFloat()
+        voteRatio = if(alreadyVotes.isEmpty()) 0f else alreadyVotes.size / participants.size.toFloat(),
+        isClosed = (today != null && dueDate < today) || (alreadyVotes.isNotEmpty() && alreadyVotes.size / participants.size.toFloat() == 100f)
     )
 }
 

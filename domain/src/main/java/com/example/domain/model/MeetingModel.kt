@@ -11,5 +11,6 @@ data class MeetingModel(
     val dueDate: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val alreadyVotes: List<String> = emptyList(),
-    val voteRatio: Float
+    val voteRatio: Float,
+    val isClosed: Boolean
 )

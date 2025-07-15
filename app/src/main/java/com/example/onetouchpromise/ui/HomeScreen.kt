@@ -46,7 +46,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -66,7 +65,6 @@ import com.example.onetouchpromise.component.HomeTabRow
 import com.example.onetouchpromise.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
@@ -158,7 +156,6 @@ fun HomeScreen(
 
                         MeetingListView(
                             meetings = uiState.meetings,
-                            currentUserEmail = uiState.currentUser?.email ?: "",
                             onMeetingClick = { (isActive, meeting) ->
                                 try {
                                     onMeetingClick(Pair(isActive , meeting))
@@ -309,14 +306,12 @@ enum class MeetingTab {
 @Composable
 fun MeetingListView(
     meetings: List<MeetingModel>,
-    currentUserEmail: String,
     onMeetingClick: (Pair<Boolean, MeetingModel>) -> Unit
 ) {
-    val today by remember { mutableStateOf(LocalDate.now().toString()) }
     var selectedTab by rememberSaveable { mutableStateOf(MeetingTab.ACTIVE) }
     val filterMeetings = when(selectedTab) {
-        MeetingTab.ACTIVE -> meetings.filter { it.voteRatio < 100 && it.dueDate >= today && !it.alreadyVotes.contains(currentUserEmail) }
-        MeetingTab.CLOSED -> meetings.filter { it.voteRatio >= 100 || it.dueDate < today || it.alreadyVotes.contains(currentUserEmail) }
+        MeetingTab.ACTIVE -> meetings.filter { !it.isClosed }
+        MeetingTab.CLOSED -> meetings.filter { it.isClosed }
     }
 
     Column {

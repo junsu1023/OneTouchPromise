@@ -5,6 +5,7 @@ import com.google.firebase.firestore.ListenerRegistration
 
 interface HomeRepository {
     fun observeUserMeeting(
-        onEvent: (Result<List<MeetingModel>>) -> Unit
+        onEvent: (Result<List<MeetingModel>>) -> Unit,
+        today: String
     ): ListenerRegistration
 }
