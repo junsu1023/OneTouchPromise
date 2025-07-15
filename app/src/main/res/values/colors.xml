@@ -31,4 +31,6 @@
     <color name="result_card_color">#FFF0E8FF</color>
     <color name="progress_indicator_bar_color">#FF7C4DFF</color>
     <color name="progress_indicator_track_color">#FFE0D9F9</color>
+    <color name="compare_voted_text">#FFECE3FF</color>
+    <color name="voted_state_text">#FF6A1B9A</color>
 </resources>

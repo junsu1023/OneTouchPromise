@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -156,6 +157,7 @@ fun HomeScreen(
 
                         MeetingListView(
                             meetings = uiState.meetings,
+                            currentUserEmail = uiState.currentUser?.email ?: stringResource(R.string.invalid_email),
                             onMeetingClick = { (isActive, meeting) ->
                                 try {
                                     onMeetingClick(Pair(isActive , meeting))
@@ -306,6 +308,7 @@ enum class MeetingTab {
 @Composable
 fun MeetingListView(
     meetings: List<MeetingModel>,
+    currentUserEmail: String,
     onMeetingClick: (Pair<Boolean, MeetingModel>) -> Unit
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(MeetingTab.ACTIVE) }
@@ -348,6 +351,7 @@ fun MeetingListView(
             items(filterMeetings) { meeting ->
                 MeetingCard(
                     meeting = meeting,
+                    isVoted = meeting.alreadyVotes.contains(currentUserEmail),
                     onClick = { onMeetingClick(Pair(selectedTab == MeetingTab.ACTIVE, meeting)) }
                 )
             }
@@ -358,6 +362,7 @@ fun MeetingListView(
 @Composable
 fun MeetingCard(
     meeting: MeetingModel,
+    isVoted: Boolean,
     onClick: () -> Unit
 ) {
     Card(
@@ -368,48 +373,73 @@ fun MeetingCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.floating_button_color))
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = meeting.title,
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.basic_text_color2)
+        Box(modifier = Modifier.fillMaxWidth()) {
+            if(isVoted) {
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 12.dp, end = 12.dp)
+                        .background(
+                            color = colorResource(R.color.compare_voted_text),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "🗳️ 투표 완료",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colorResource(R.color.voted_state_text)
+                        )
+                    )
+                }
+            }
+
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = meeting.title,
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(R.color.basic_text_color2)
+                    )
                 )
-            )
 
-            Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            Text(
-                text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    color = colorResource(R.color.sub_text_color)
+                Text(
+                    text = "${stringResource(R.string.due_date)}: ${meeting.dueDate}",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = colorResource(R.color.sub_text_color)
+                    )
                 )
-            )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "${stringResource(R.string.vote_rates)}: ${(meeting.voteRatio * 100).toInt()}%",
-                style = TextStyle(
-                    fontSize = 13.sp,
+                Text(
+                    text = "${stringResource(R.string.vote_rates)}: ${(meeting.voteRatio * 100).toInt()}%",
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        color = colorResource(R.color.primary),
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                LinearProgressIndicator(
+                    progress = { meeting.voteRatio.coerceIn(0f, 1f) },
                     color = colorResource(R.color.primary),
-                    fontWeight = FontWeight.Medium
+                    trackColor = colorResource(R.color.track_color),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
                 )
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            LinearProgressIndicator(
-                progress = { meeting.voteRatio.coerceIn(0f, 1f) },
-                color = colorResource(R.color.primary),
-                trackColor = colorResource(R.color.track_color),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(3.dp))
-            )
+            }
         }
     }
 }

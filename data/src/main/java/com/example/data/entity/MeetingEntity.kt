@@ -8,7 +8,6 @@ data class MeetingEntity(
     val participants: List<String> = emptyList(),
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
-    val voteOptions: List<VoteOptionEntity> = emptyList(),
     val dueDate: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val alreadyVotes: List<String> = emptyList()
