@@ -109,7 +109,6 @@ fun CreateMeetingScreen(
                 onRemoveParticipant = { participant -> viewModel.removeParticipant(participant) }
             )
 
-
             if (uiState.error != null) {
                 ErrorMessageView(uiState.error)
             }

@@ -57,4 +57,17 @@ class AuthDataSource(
             null
         }
     }
+
+    suspend fun getUserByEmail(email: String): Result<UserEntity?> = try {
+        val query = firestore.collection("users")
+            .whereEqualTo("email", email)
+            .limit(1)
+            .get()
+            .await()
+
+        val document = query.documents.firstOrNull()
+        Result.success(document?.toObject(UserEntity::class.java))
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 }
