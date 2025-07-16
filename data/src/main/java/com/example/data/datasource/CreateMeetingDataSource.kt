@@ -16,21 +16,25 @@ class CreateMeetingDataSource(
         try {
             val user = auth.currentUser?: return@withContext Result.failure(CreateMeetingError.NotLoggedIn)
 
-            val document = firestore.collection("meetings").document()
+            val meetingDocument = firestore.collection("meetings").document()
             val userEmail = user.email
+
+            val userDocument = firestore.collection("users").document(user.uid).get().await()
+            val nickname = userDocument.getString("nickname") ?: ""
+
             val meetingWithId = meeting.copy(
-                id = document.id,
+                id = meetingDocument.id,
                 ownerId = user.uid,
                 creatorEmail = user.email ?: "unknown",
                 participants = if(userEmail !in meeting.participants.map { it }) {
-                    meeting.participants + userEmail!!
+                    meeting.participants + nickname
                 } else {
                     meeting.participants
                 },
                 dueDate = meeting.dueDate
             )
 
-            document.set(meetingWithId).await()
+            meetingDocument.set(meetingWithId).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(CreateMeetingError.Unknown(e.message))
