@@ -3,16 +3,15 @@ package com.example.data.mapper
 import com.example.data.entity.CreateMeetingEntity
 import com.example.data.entity.MeetingDetailEntity
 import com.example.data.entity.MeetingEntity
-import com.example.data.entity.UserEntity
 import com.example.data.entity.VoteOptionEntity
 import com.example.domain.model.CreateMeetingModel
 import com.example.domain.model.MeetingDetailModel
 import com.example.domain.model.MeetingModel
 import com.example.domain.model.MeetingResultModel
-import com.example.domain.model.UserModel
 import com.example.domain.model.VoteOptionModel
 import com.example.domain.model.VoteResultItem
 import com.example.domain.model.VoteType
+import com.google.firebase.auth.FirebaseUser
 
 fun MeetingEntity.toModel(today: String? = null): MeetingModel {
     return MeetingModel(
@@ -30,11 +29,26 @@ fun MeetingEntity.toModel(today: String? = null): MeetingModel {
     )
 }
 
-fun CreateMeetingModel.toEntity(id: String, creatorEmail: String): CreateMeetingEntity {
+fun CreateMeetingModel.toEntity(currentUser: FirebaseUser): CreateMeetingEntity {
     val voteOptions = dateOptions.map {
         VoteOptionEntity(type = "DATE", option = it, votedUserIds = emptyList())
     } + locationOptions.map {
         VoteOptionEntity(type = "LOCATION", option = it, votedUserIds = emptyList())
+    }
+
+    val participantEmails = participants.map { it.email }
+    val nicknameMap = participants.associate { it.email to it.nickname }
+
+    val finalEmailList = if(currentUser.email !in participantEmails) {
+        participantEmails + currentUser.email!!
+    } else {
+        participantEmails
+    }
+
+    val finalNicknameMap = if(currentUser.email !in nicknameMap) {
+        nicknameMap + (currentUser.email!! to (currentUser.displayName ?: "unknown"))
+    } else {
+        nicknameMap
     }
 
     return CreateMeetingEntity(
@@ -42,7 +56,8 @@ fun CreateMeetingModel.toEntity(id: String, creatorEmail: String): CreateMeeting
         title = title,
         ownerId = id,
         creatorEmail = creatorEmail,
-        participants = participants.map { it.nickname },
+        participants = finalEmailList,
+        participantNickNames = finalNicknameMap,
         dateOptions = dateOptions,
         dueDate = dueDate,
         locationOptions = locationOptions,
@@ -51,12 +66,6 @@ fun CreateMeetingModel.toEntity(id: String, creatorEmail: String): CreateMeeting
         alreadyVotes = alreadyVotes
     )
 }
-
-fun UserModel.toEntity(): UserEntity = UserEntity(
-    uid = id,
-    email = email,
-    nickname = nickname
-)
 
 fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = MeetingDetailModel(
     id = meetingId,

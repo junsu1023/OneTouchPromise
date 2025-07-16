@@ -15,26 +15,34 @@ class CreateMeetingDataSource(
     suspend fun createMeeting(meeting: CreateMeetingEntity): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val user = auth.currentUser?: return@withContext Result.failure(CreateMeetingError.NotLoggedIn)
+            val document = firestore.collection("meetings").document()
+            val userEmail = user.email ?: return@withContext Result.failure(CreateMeetingError.Unknown("No user email"))
 
-            val meetingDocument = firestore.collection("meetings").document()
-            val userEmail = user.email
+            val emailList = meeting.participants
+            val nicknameMap = meeting.participantNickNames
 
-            val userDocument = firestore.collection("users").document(user.uid).get().await()
-            val nickname = userDocument.getString("nickname") ?: ""
+            val finalEmailList = if(userEmail !in emailList) {
+                emailList + userEmail
+            } else {
+                emailList
+            }
+
+            val finalNicknameMap = if(!nicknameMap.containsKey(userEmail)) {
+                nicknameMap + (userEmail to (user.displayName ?: "unknown"))
+            } else {
+                nicknameMap
+            }
 
             val meetingWithId = meeting.copy(
-                id = meetingDocument.id,
+                id = document.id,
                 ownerId = user.uid,
                 creatorEmail = user.email ?: "unknown",
-                participants = if(userEmail !in meeting.participants.map { it }) {
-                    meeting.participants + nickname
-                } else {
-                    meeting.participants
-                },
+                participants = finalEmailList,
+                participantNickNames = finalNicknameMap,
                 dueDate = meeting.dueDate
             )
 
-            meetingDocument.set(meetingWithId).await()
+            document.set(meetingWithId).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(CreateMeetingError.Unknown(e.message))
