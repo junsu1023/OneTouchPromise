@@ -24,7 +24,6 @@ class CreateMeetingDataSource(
 
             val userDoc = firestore.collection("users").document(user.uid).get().await()
             val nickname = userDoc.getString("nickname") ?: "unknown"
-            Log.d("CreateMeeting", "유저 닉네임: $nickname")
 
             val finalEmailList = if(userEmail !in emailList) {
                 emailList + userEmail
@@ -33,7 +32,6 @@ class CreateMeetingDataSource(
             }
 
             val finalNicknameMap = nicknameMap.toMutableMap().apply { this[userEmail] = nickname }
-            Log.d("CreateMeeting", "최종 닉네임 맵: $finalNicknameMap")
 
             val meetingWithId = meeting.copy(
                 id = document.id,
@@ -43,7 +41,6 @@ class CreateMeetingDataSource(
                 participantNicknames = finalNicknameMap,
                 dueDate = meeting.dueDate
             )
-            Log.d("CreateMeeting", "최종 meetingWithId: $meetingWithId")
 
             document.set(meetingWithId).await()
             Result.success(Unit)

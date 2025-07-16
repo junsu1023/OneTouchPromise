@@ -227,7 +227,7 @@ fun MeetingDetailContent(
                     meeting.participantNicknames.forEach {
                         ParticipantChip(
                             text = it.value,
-                            isVoted = votedList.contains(it.value)
+                            isVoted = votedList.contains(it.key)
                         )
                     }
                 }
