@@ -57,7 +57,7 @@ fun CreateMeetingModel.toEntity(currentUser: FirebaseUser): CreateMeetingEntity 
         ownerId = id,
         creatorEmail = creatorEmail,
         participants = finalEmailList,
-        participantNickNames = finalNicknameMap,
+        participantNicknames = finalNicknameMap,
         dateOptions = dateOptions,
         dueDate = dueDate,
         locationOptions = locationOptions,

@@ -218,7 +218,7 @@ fun MeetingDetailContent(
                     )
                 }
             }
-            
+
             if(isExpanded) {
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -1,5 +1,6 @@
 package com.example.data.datasource
 
+import android.util.Log
 import com.example.data.entity.MeetingDetailEntity
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -12,7 +13,9 @@ class MeetingDetailRemoteDataSource @Inject constructor(
 
     suspend fun getMeetingDetail(meetingId: String): Result<MeetingDetailEntity> = try {
         val snapshot = meetingCollection.document(meetingId).get().await()
+        Log.d("Firebasessss", "Raw data: ${snapshot.data}")
         val entity = snapshot.toObject(MeetingDetailEntity::class.java) ?: throw IllegalStateException("Meeting not found")
+        Log.d("Firebasessss", "Parsed nicknames: ${entity?.participantNicknames}")
         Result.success(entity)
     } catch (e: Exception) {
         Result.failure(e)

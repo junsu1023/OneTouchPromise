@@ -19,7 +19,7 @@ class CreateMeetingDataSource(
             val userEmail = user.email ?: return@withContext Result.failure(CreateMeetingError.Unknown("No user email"))
 
             val emailList = meeting.participants
-            val nicknameMap = meeting.participantNickNames
+            val nicknameMap = meeting.participantNicknames
 
             val finalEmailList = if(userEmail !in emailList) {
                 emailList + userEmail
@@ -38,7 +38,7 @@ class CreateMeetingDataSource(
                 ownerId = user.uid,
                 creatorEmail = user.email ?: "unknown",
                 participants = finalEmailList,
-                participantNickNames = finalNicknameMap,
+                participantNicknames = finalNicknameMap,
                 dueDate = meeting.dueDate
             )
 
