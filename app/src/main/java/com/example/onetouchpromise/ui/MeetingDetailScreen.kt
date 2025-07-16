@@ -224,10 +224,10 @@ fun MeetingDetailContent(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    meeting.participants.forEach {
+                    meeting.participantNicknames.forEach {
                         ParticipantChip(
-                            text = it,
-                            isVoted = votedList.contains(it)
+                            text = it.value,
+                            isVoted = votedList.contains(it.key)
                         )
                     }
                 }

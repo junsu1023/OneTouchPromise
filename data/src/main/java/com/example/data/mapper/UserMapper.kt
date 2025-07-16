@@ -5,6 +5,6 @@ import com.example.domain.model.UserModel
 
 fun UserEntity.toModel(): UserModel = UserModel(
     id = this.uid,
-    email = this.email.orEmpty(),
-    nickname = this.nickname.orEmpty()
+    email = this.email,
+    nickname = this.nickname
 )

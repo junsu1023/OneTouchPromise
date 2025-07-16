@@ -104,11 +104,10 @@ fun CreateMeetingScreen(
             )
 
             InputParticipantView(
-                participants = uiState.participants,
+                participants = uiState.participants.map { it.nickname },
                 onAddParticipant = { participant -> viewModel.addParticipant(participant) },
                 onRemoveParticipant = { participant -> viewModel.removeParticipant(participant) }
             )
-
 
             if (uiState.error != null) {
                 ErrorMessageView(uiState.error)
@@ -568,6 +567,8 @@ fun ErrorMessageView(
         is CreateMeetingError.DuplicateLocationOption -> stringResource(R.string.already_exist_location)
         is CreateMeetingError.DuplicateParticipantOption -> stringResource(R.string.already_exist_participant)
         is CreateMeetingError.NotAfterDate -> stringResource(R.string.is_not_after_date)
+        is CreateMeetingError.UserNotFound -> stringResource(R.string.user_not_found)
+        is CreateMeetingError.NetworkError -> stringResource(R.string.network_error)
         is CreateMeetingError.Unknown -> "${stringResource(R.string.unknown)}: ${error.msg}"
     }
 

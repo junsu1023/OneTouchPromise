@@ -31,7 +31,7 @@ class AuthDataSource(
 
         Firebase.firestore.collection("users").document(uid).set(userMap).await()
 
-        Result.success(UserEntity(user.uid, user.email, nickname))
+        Result.success(UserEntity(user.uid, user.email ?: "", nickname))
     } catch(e: Exception) {
         if(e is CancellationException) throw e
         Result.failure(e)
@@ -39,7 +39,7 @@ class AuthDataSource(
 
     suspend fun login(email: String, password: String): Result<UserEntity> = try {
         val user = firebaseAuth.signInWithEmailAndPassword(email, password).await().user
-        Result.success(UserEntity(user!!.uid, user.email, null))
+        Result.success(UserEntity(user!!.uid, user.email ?: "", ""))
     } catch (e: Exception) {
         if(e is CancellationException) throw e
         Result.failure(e)
@@ -50,11 +50,24 @@ class AuthDataSource(
 
         return try {
             val document = firestore.collection("users").document(user.uid).get().await()
-            val nickname = document.getString("nickname")
+            val nickname = document.getString("nickname") ?: ""
 
-            UserEntity(user.uid, user.email, nickname)
+            UserEntity(user.uid, user.email ?: "", nickname)
         } catch (e: Exception) {
             null
         }
+    }
+
+    suspend fun getUserByEmail(email: String): Result<UserEntity?> = try {
+        val query = firestore.collection("users")
+            .whereEqualTo("email", email)
+            .limit(1)
+            .get()
+            .await()
+
+        val document = query.documents.firstOrNull()
+        Result.success(document?.toObject(UserEntity::class.java))
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 }

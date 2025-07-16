@@ -9,6 +9,7 @@ import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.GetMeetingDetailUseCase
 import com.example.domain.usecase.GetMeetingsUseCase
+import com.example.domain.usecase.GetUserByEmailUseCase
 import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.domain.usecase.SignUpUseCase
@@ -68,4 +69,10 @@ object UseCaseModule {
     fun provideGetCurrentUserUseCase(
         authRepository: AuthRepository
     ): GetCurrentUserUserCase = GetCurrentUserUserCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetUserByEmailUseCase(
+        authRepository: AuthRepository
+    ): GetUserByEmailUseCase = GetUserByEmailUseCase(authRepository)
 }

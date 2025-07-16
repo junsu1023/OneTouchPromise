@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.error.CreateMeetingError
 import com.example.domain.usecase.CreateMeetingUseCase
+import com.example.domain.usecase.GetUserByEmailUseCase
 import com.example.onetouchpromise.contract.CreateMeetingUiState
 import com.example.onetouchpromise.contract.toMeetingModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateMeetingViewModel @Inject constructor(
-    private val createMeetingUseCase: CreateMeetingUseCase
+    private val createMeetingUseCase: CreateMeetingUseCase,
+    private val getUserByEmailUseCase: GetUserByEmailUseCase
 ): ViewModel() {
     var uiState by mutableStateOf(CreateMeetingUiState())
         private set
@@ -62,7 +64,9 @@ class CreateMeetingViewModel @Inject constructor(
     }
 
     fun removeParticipant(email: String) {
-        uiState = uiState.copy(participants = uiState.participants - email)
+        uiState = uiState.copy(
+            participants = uiState.participants.filterNot { it.email == email }
+        )
     }
 
     fun addLocationOption(location: String) {
@@ -77,16 +81,26 @@ class CreateMeetingViewModel @Inject constructor(
     }
 
     fun addParticipant(email: String) {
-        if(uiState.dateOptions.contains(email)) {
-            uiState = uiState.copy(error = CreateMeetingError.DuplicateParticipantOption)
-            return
-        }
+        viewModelScope.launch {
+            val result = getUserByEmailUseCase(email)
 
-        if (email.isNotBlank()) {
-            uiState = uiState.copy(
-                participants = uiState.participants + email,
-                newParticipant = ""
-            )
+            result.onSuccess { user ->
+                if(user == null) {
+                    uiState = uiState.copy(error = CreateMeetingError.UserNotFound)
+                    return@onSuccess
+                }
+
+                if(uiState.participants.any { it.email == user.email }) {
+                    uiState = uiState.copy(error = CreateMeetingError.DuplicateParticipantOption)
+                    return@onSuccess
+                }
+
+                uiState = uiState.copy(
+                    participants = uiState.participants + user
+                )
+            }.onFailure {
+                uiState = uiState.copy(error = CreateMeetingError.NetworkError)
+            }
         }
     }
 

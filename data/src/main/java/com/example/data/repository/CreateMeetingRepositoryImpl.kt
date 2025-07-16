@@ -14,7 +14,7 @@ class CreateMeetingRepositoryImpl @Inject constructor(
 ): CreateMeetingRepository {
     override suspend fun createMeeting(model: CreateMeetingModel): Result<Unit> {
         val user = auth.currentUser ?: return Result.failure(CreateMeetingError.NotLoggedIn)
-        val entity = model.toEntity(user.uid, user.email ?:"unknown")
+        val entity = model.toEntity(user)
 
         return createMeetingDataSource.createMeeting(entity)
     }
