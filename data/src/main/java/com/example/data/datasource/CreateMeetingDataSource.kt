@@ -1,5 +1,6 @@
 package com.example.data.datasource
 
+import android.util.Log
 import com.example.data.entity.CreateMeetingEntity
 import com.example.domain.error.CreateMeetingError
 import com.google.firebase.auth.FirebaseAuth
@@ -21,17 +22,18 @@ class CreateMeetingDataSource(
             val emailList = meeting.participants
             val nicknameMap = meeting.participantNicknames
 
+            val userDoc = firestore.collection("users").document(user.uid).get().await()
+            val nickname = userDoc.getString("nickname") ?: "unknown"
+            Log.d("CreateMeeting", "유저 닉네임: $nickname")
+
             val finalEmailList = if(userEmail !in emailList) {
                 emailList + userEmail
             } else {
                 emailList
             }
 
-            val finalNicknameMap = if(!nicknameMap.containsKey(userEmail)) {
-                nicknameMap + (userEmail to (user.displayName ?: "unknown"))
-            } else {
-                nicknameMap
-            }
+            val finalNicknameMap = nicknameMap.toMutableMap().apply { this[userEmail] = nickname }
+            Log.d("CreateMeeting", "최종 닉네임 맵: $finalNicknameMap")
 
             val meetingWithId = meeting.copy(
                 id = document.id,
@@ -41,6 +43,7 @@ class CreateMeetingDataSource(
                 participantNicknames = finalNicknameMap,
                 dueDate = meeting.dueDate
             )
+            Log.d("CreateMeeting", "최종 meetingWithId: $meetingWithId")
 
             document.set(meetingWithId).await()
             Result.success(Unit)
