@@ -72,6 +72,7 @@ fun MeetingDetailEntity.toModel(meetingId: String): MeetingDetailModel = Meeting
     title = title,
     creatorEmail = creatorEmail,
     participants = participants,
+    participantNicknames = participantNicknames,
     dateOptions = dateOptions,
     locationOptions = locationOptions,
     voteOptions = if(voteOptions.isEmpty()) createVoteOption(dateOptions, locationOptions) else voteOptions.map { it.toModel() },

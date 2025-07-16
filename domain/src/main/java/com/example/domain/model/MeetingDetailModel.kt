@@ -5,6 +5,7 @@ data class MeetingDetailModel(
     val title: String = "",
     val creatorEmail: String = "",
     val participants: List<String> = emptyList(),
+    val participantNicknames: Map<String, String>,
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
     val voteOptions: List<VoteOptionModel> = emptyList(),
