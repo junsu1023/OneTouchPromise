@@ -5,7 +5,7 @@ data class CreateMeetingEntity(
     val title: String = "",
     val ownerId: String = "",
     val creatorEmail: String = "",
-    val participants: List<UserEntity> = emptyList(),
+    val participants: List<String> = emptyList(),
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
     val voteOptions: List<VoteOptionEntity> = emptyList(),

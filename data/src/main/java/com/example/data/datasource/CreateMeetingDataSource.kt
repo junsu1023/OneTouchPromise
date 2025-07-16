@@ -22,7 +22,7 @@ class CreateMeetingDataSource(
                 id = document.id,
                 ownerId = user.uid,
                 creatorEmail = user.email ?: "unknown",
-                participants = if(userEmail !in meeting.participants) {
+                participants = if(userEmail !in meeting.participants.map { it }) {
                     meeting.participants + userEmail!!
                 } else {
                     meeting.participants

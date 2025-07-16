@@ -9,7 +9,6 @@ data class CreateMeetingUiState(
     val dateOptions: List<String> = emptyList(),
     val locationOptions: List<String> = emptyList(),
     val participants: List<UserModel> = emptyList(),
-    val newParticipant: String = "",
     val dueDate: String = "",
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,

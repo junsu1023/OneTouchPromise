@@ -42,7 +42,7 @@ fun CreateMeetingModel.toEntity(id: String, creatorEmail: String): CreateMeeting
         title = title,
         ownerId = id,
         creatorEmail = creatorEmail,
-        participants = participants.map { it.toEntity() },
+        participants = participants.map { it.nickname },
         dateOptions = dateOptions,
         dueDate = dueDate,
         locationOptions = locationOptions,
