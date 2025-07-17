@@ -77,6 +77,8 @@
     <string name="change_password">비밀번호 변경</string>
     <string name="new_password">새 비밀번호</string>
     <string name="change">변경</string>
+    <string name="success_update_nickname">닉네임이 변경되었습니다.</string>
+    <string name="failed_update_nickname">닉네임 변경에 실패했습니다.</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>

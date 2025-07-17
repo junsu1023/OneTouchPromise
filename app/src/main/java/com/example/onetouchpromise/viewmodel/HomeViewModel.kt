@@ -77,6 +77,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun resetNickNameUpdateState() {
+        _updateNicknameState.update { null }
+    }
+
     override fun onCleared() {
         super.onCleared()
         listenerRegistration?.remove()
