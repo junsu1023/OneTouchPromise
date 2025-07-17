@@ -2,6 +2,7 @@ package com.example.data.datasource
 
 import com.example.data.entity.UserEntity
 import com.google.firebase.Firebase
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -69,5 +70,43 @@ class AuthDataSource(
         Result.success(document?.toObject(UserEntity::class.java))
     } catch (e: Exception) {
         Result.failure(e)
+    }
+
+    suspend fun updateNickname(newNickname: String): Result<Unit> {
+        return try {
+            val userId = firebaseAuth.currentUser?.uid ?: throw Exception("User not authenticated")
+            val document = firestore.collection("users").document(userId)
+
+            document.update("nickname", newNickname).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun changePasswordWithReAuth(
+        currentPassword: String,
+        newPassword: String
+    ): Result<Unit> {
+        val user = firebaseAuth.currentUser
+        val email = user?.email
+
+        val uid = user?.uid ?: return Result.failure(Exception("User not found"))
+        val document = firestore.collection("users").document(uid)
+
+        if(!email.isNullOrEmpty()) {
+            val credential = EmailAuthProvider.getCredential(email, currentPassword)
+
+            return try {
+                user.reauthenticate(credential).await()
+                user.updatePassword(newPassword).await()
+                document.update("password", newPassword).await()
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+        return Result.failure(Exception("User not authenticated"))
     }
 }

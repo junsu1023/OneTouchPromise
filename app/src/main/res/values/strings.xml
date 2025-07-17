@@ -72,6 +72,16 @@
     <string name="expand_my_information">내 정보 펼치기</string>
     <string name="is_progressing_meeting_yet">진행 중인 모임이 없어요.</string>
     <string name="is_closed_meeting_yet">마감된 모임이 없어요.</string>
+    <string name="change_nickname">닉네임 변경</string>
+    <string name="new_nickname">새 닉네임</string>
+    <string name="change_password">비밀번호 변경</string>
+    <string name="new_password">새 비밀번호</string>
+    <string name="current_password">현재 비밀번호</string>
+    <string name="change">변경</string>
+    <string name="success_update_nickname">닉네임이 변경되었습니다.</string>
+    <string name="failed_update_nickname">닉네임 변경에 실패했습니다.</string>
+    <string name="again_login">다시 로그인해주세요.</string>
+    <string name="failed_change_password">비밀번호 변경에 실패했습니다.</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>

@@ -5,6 +5,7 @@ import com.example.domain.repository.CreateMeetingRepository
 import com.example.domain.repository.HomeRepository
 import com.example.domain.repository.MeetingDetailRepository
 import com.example.domain.repository.MeetingRepository
+import com.example.domain.usecase.ChangePasswordWithReAuthUseCase
 import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.GetMeetingDetailUseCase
@@ -14,6 +15,7 @@ import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.domain.usecase.SignUpUseCase
 import com.example.domain.usecase.SubmitVoteUseCase
+import com.example.domain.usecase.UpdateNicknameUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -75,4 +77,16 @@ object UseCaseModule {
     fun provideGetUserByEmailUseCase(
         authRepository: AuthRepository
     ): GetUserByEmailUseCase = GetUserByEmailUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateNicknameUseCase(
+        authRepository: AuthRepository
+    ): UpdateNicknameUseCase = UpdateNicknameUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideChangePasswordWithReAuthUseCase(
+        authRepository: AuthRepository
+    ): ChangePasswordWithReAuthUseCase = ChangePasswordWithReAuthUseCase(authRepository)
 }

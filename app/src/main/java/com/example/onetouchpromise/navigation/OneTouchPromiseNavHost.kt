@@ -77,7 +77,7 @@ fun OneTouchPromiseNavHost(
             val failedWithDraw = stringResource(R.string.withdraw_failed)
 
             HomeScreen(
-                onLogoutClick = {
+                onLogout = {
                     FirebaseAuth.getInstance().signOut()
 
                     navController.navigate(OneTouchPromiseScreen.LOGIN) {

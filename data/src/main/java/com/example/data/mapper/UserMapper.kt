@@ -4,7 +4,7 @@ import com.example.data.entity.UserEntity
 import com.example.domain.model.UserModel
 
 fun UserEntity.toModel(): UserModel = UserModel(
-    id = this.uid,
-    email = this.email,
-    nickname = this.nickname
+    id = uid,
+    email = email,
+    nickname = nickname
 )
