@@ -39,7 +39,6 @@
     <string name="date">날짜</string>
     <string name="participant_count">참여자 수</string>
     <string name="getting_meeting_list">모임 정보를 불러오고 있어요...</string>
-    <string name="is_not_exist_meeting_yet">아직 생성된 모임이 없어요.</string>
     <string name="click_button_create_meeting">우측 하단 + 버튼을 눌러 첫 모임을 만들어보세요!</string>
     <string name="getting_meeting_detail">상세 정보를 불러오고 있어요...</string>
     <string name="participant">참여자</string>
@@ -71,6 +70,8 @@
     <string name="my_information">내 정보</string>
     <string name="collapse_my_information">내 정보 접기</string>
     <string name="expand_my_information">내 정보 펼치기</string>
+    <string name="is_progressing_meeting_yet">진행 중인 모임이 없어요.</string>
+    <string name="is_closed_meeting_yet">마감된 모임이 없어요.</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>
