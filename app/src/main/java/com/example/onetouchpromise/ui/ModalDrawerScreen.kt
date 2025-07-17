@@ -46,12 +46,13 @@ fun ModalDrawerScreen(
     onLogoutClick: () -> Unit,
     onWithDraw: () -> Unit,
     onChangeNickname: (String) -> Unit,
-    onChangePassword: (String) -> Unit
+    onChangePassword: (Pair<String, String>) -> Unit
 ) {
     val isInformationExpanded = remember { mutableStateOf(false) }
     val showNicknameDialog = remember { mutableStateOf(false) }
     val showPasswordDialog = remember { mutableStateOf(false) }
     val newNickname = remember { mutableStateOf("") }
+    val currentPassword = remember { mutableStateOf("") }
     val newPassword = remember { mutableStateOf("") }
 
     if(showNicknameDialog.value) {
@@ -74,10 +75,13 @@ fun ModalDrawerScreen(
             onDismissRequest = { showPasswordDialog.value = false },
             title = stringResource(R.string.change_password),
             value = newPassword.value,
+            value2 = currentPassword.value,
             onValueChange = { newPassword.value = it },
+            onValueChange2 = {currentPassword.value = it },
             labelText = stringResource(R.string.new_password),
+            labelText2 = stringResource(R.string.current_password),
             onConfirmClick = {
-                onChangePassword(newPassword.value)
+                onChangePassword(currentPassword.value to newPassword.value)
                 showPasswordDialog.value = false
             },
             onDismissClick = { showPasswordDialog.value = false }
@@ -239,8 +243,11 @@ fun ChangeDialog(
     onDismissRequest: () -> Unit,
     title: String,
     value: String,
+    value2: String = "",
     onValueChange: (String) -> Unit,
+    onValueChange2: ((String) -> Unit) = { },
     labelText: String,
+    labelText2: String = "",
     onConfirmClick: () -> Unit,
     onDismissClick: () -> Unit
 ) {
@@ -254,6 +261,20 @@ fun ChangeDialog(
         },
         text = {
             Column {
+                if(title == stringResource(R.string.change_password)) {
+                    OutlinedTextField(
+                        value = value2,
+                        onValueChange = { onValueChange2(it) },
+                        label = {
+                            Text(
+                                text = labelText2,
+                                color = colorResource(R.color.gray)
+                            )
+                        },
+                        singleLine = true
+                    )
+                }
+
                 OutlinedTextField(
                     value = value,
                     onValueChange = { onValueChange(it) },

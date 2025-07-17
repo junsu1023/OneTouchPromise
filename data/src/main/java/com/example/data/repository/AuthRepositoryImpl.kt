@@ -23,6 +23,6 @@ class AuthRepositoryImpl(
     override suspend fun updateNickname(newNickname:String): Result<Unit> =
         authDataSource.updateNickname(newNickname)
 
-    override suspend fun changePassword(newPassword: String): Result<Unit> =
-        authDataSource.changePassword(newPassword)
+    override suspend fun changePasswordWithReAuth(changePassword: String, newPassword: String): Result<Unit> =
+        authDataSource.changePasswordWithReAuth(changePassword, newPassword)
 }

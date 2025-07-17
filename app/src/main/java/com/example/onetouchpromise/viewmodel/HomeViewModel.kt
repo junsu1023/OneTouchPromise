@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.ChangePasswordUseCase
+import com.example.domain.usecase.ChangePasswordWithReAuthUseCase
 import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.domain.usecase.UpdateNicknameUseCase
@@ -24,7 +24,7 @@ class HomeViewModel @Inject constructor(
     private val observeHomeMeetingsUseCase: ObserveHomeMeetingsUseCase,
     private val getCurrentUserUserCase: GetCurrentUserUserCase,
     private val updateNicknameUseCase: UpdateNicknameUseCase,
-    private val changePasswordUseCase: ChangePasswordUseCase
+    private val changePasswordWithReAuthUseCase: ChangePasswordWithReAuthUseCase
 ): ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
         private set
@@ -86,9 +86,9 @@ class HomeViewModel @Inject constructor(
         _updateNicknameState.update { null }
     }
 
-    fun changePassword(newPassword: String) {
+    fun changePassword(currentPassword: String, newPassword: String) {
         viewModelScope.launch {
-            val changeResult = changePasswordUseCase(newPassword)
+            val changeResult = changePasswordWithReAuthUseCase(currentPassword, newPassword)
             _changePasswordState.update { changeResult }
         }
     }

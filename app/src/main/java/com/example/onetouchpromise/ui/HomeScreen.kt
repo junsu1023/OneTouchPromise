@@ -100,6 +100,7 @@ fun HomeScreen(
         changePasswordState?.let { result ->
             if(result.isSuccess) {
                 Toast.makeText(context, getString(context, R.string.again_login), Toast.LENGTH_SHORT).show()
+                onLogout()
             } else {
                 Toast.makeText(context, getString(context, R.string.failed_change_password), Toast.LENGTH_SHORT).show()
             }
@@ -135,8 +136,11 @@ fun HomeScreen(
                         getCurrentUSer()
                     }
                 },
-                onChangePassword = { newPassword ->
-                    viewModel.changePassword(newPassword)
+                onChangePassword = { (currentPassword, newPassword) ->
+                    viewModel.changePassword(
+                        currentPassword = currentPassword,
+                        newPassword = newPassword
+                    )
                 }
             )
         }

@@ -8,5 +8,5 @@ interface AuthRepository {
     suspend fun getCurrentUser(): UserModel?
     suspend fun getUserByEmail(email: String): Result<UserModel?>
     suspend fun updateNickname(newNickname: String): Result<Unit>
-    suspend fun changePassword(newPassword: String): Result<Unit>
+    suspend fun changePasswordWithReAuth(changePassword: String, newPassword: String): Result<Unit>
 }
