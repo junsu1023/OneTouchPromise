@@ -19,4 +19,7 @@ class AuthRepositoryImpl(
 
     override suspend fun getUserByEmail(email: String): Result<UserModel?> =
         authDataSource.getUserByEmail(email).map { it?.toModel() }
+
+    override suspend fun updateNickname(newNickname:String): Result<Unit> =
+        authDataSource.updateNickname(newNickname)
 }

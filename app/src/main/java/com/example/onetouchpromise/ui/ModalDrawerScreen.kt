@@ -13,12 +13,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,9 +44,43 @@ fun ModalDrawerScreen(
     drawerState: DrawerState,
     currentUser: UserModel?,
     onLogoutClick: () -> Unit,
-    onWithDraw: () -> Unit
+    onWithDraw: () -> Unit,
+    onChangeNickname: (String) -> Unit,
+    onChangePassword: (String) -> Unit
 ) {
     val isInformationExpanded = remember { mutableStateOf(false) }
+    val showNicknameDialog = remember { mutableStateOf(false) }
+    val showPasswordDialog = remember { mutableStateOf(false) }
+    val newNickname = remember { mutableStateOf("") }
+    val newPassword = remember { mutableStateOf("") }
+
+    if(showNicknameDialog.value) {
+        ChangeDialog(
+            onDismissRequest = { showNicknameDialog.value = false },
+            title = stringResource(R.string.change_nickname),
+            value = newNickname.value,
+            onValueChange = { newNickname.value = it },
+            onConfirmClick = {
+                onChangeNickname(newNickname.value)
+                showNicknameDialog.value = false
+            },
+            onDismissClick = { showNicknameDialog.value = false }
+        )
+    }
+
+    if(showPasswordDialog.value) {
+        ChangeDialog(
+            onDismissRequest = { showPasswordDialog.value = false },
+            title = stringResource(R.string.change_password),
+            value = newPassword.value,
+            onValueChange = { newPassword.value = it },
+            onConfirmClick = {
+                onChangePassword(newPassword.value)
+                showPasswordDialog.value = false
+            },
+            onDismissClick = { showPasswordDialog.value = false }
+        )
+    }
 
     ModalDrawerSheet {
         Row(
@@ -137,6 +174,30 @@ fun ModalDrawerScreen(
             Spacer(modifier = Modifier.height(30.dp))
 
             Text(
+                text = stringResource(R.string.change_nickname),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colorResource(R.color.basic_text_color2)
+                ),
+                modifier = Modifier.clickable { showNicknameDialog.value = true }
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = stringResource(R.string.change_password),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colorResource(R.color.basic_text_color2)
+                ),
+                modifier = Modifier.clickable { showPasswordDialog.value = true }
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
                 text = stringResource(R.string.logout),
                 style = TextStyle(
                     fontSize = 18.sp,
@@ -169,4 +230,57 @@ fun ModalDrawerScreen(
             )
         }
     }
+}
+
+@Composable
+fun ChangeDialog(
+    onDismissRequest: () -> Unit,
+    title: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    onConfirmClick: () -> Unit,
+    onDismissClick: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(
+                text = title,
+                color = colorResource(R.color.basic_text_color2)
+            )
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = value,
+                    onValueChange = { onValueChange(it) },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.new_nickname),
+                            color = colorResource(R.color.gray)
+                        )
+                    },
+                    singleLine = true
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirmClick
+            ) {
+                Text(
+                    text = stringResource(R.string.change)
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismissClick
+            ) {
+                Text(
+                    text = stringResource(R.string.cancel)
+                )
+            }
+        }
+    )
 }

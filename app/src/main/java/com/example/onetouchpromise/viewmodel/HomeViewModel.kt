@@ -7,19 +7,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
+import com.example.domain.usecase.UpdateNicknameUseCase
 import com.example.onetouchpromise.contract.HomeUiState
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val observeHomeMeetingsUseCase: ObserveHomeMeetingsUseCase,
-    private val getCurrentUserUserCase: GetCurrentUserUserCase
+    private val getCurrentUserUserCase: GetCurrentUserUserCase,
+    private val updateNicknameUseCase: UpdateNicknameUseCase
 ): ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
         private set
+
+    private val _updateNicknameState = MutableStateFlow<Result<Unit>?>(null)
+    val updateNicknameState: StateFlow<Result<Unit>?> get() = _updateNicknameState.asStateFlow()
 
     private var listenerRegistration: ListenerRegistration? = null
 
@@ -59,6 +68,13 @@ class HomeViewModel @Inject constructor(
 
     fun updateError(message: String) {
         uiState = uiState.copy(error = message)
+    }
+
+    fun updateNickname(newNickname: String) {
+        viewModelScope.launch {
+            val updateResult = updateNicknameUseCase(newNickname)
+            _updateNicknameState.update { updateResult }
+        }
     }
 
     override fun onCleared() {

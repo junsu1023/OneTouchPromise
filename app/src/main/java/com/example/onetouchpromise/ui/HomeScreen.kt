@@ -96,7 +96,14 @@ fun HomeScreen(
                 drawerState = drawerState,
                 currentUser = uiState.currentUser,
                 onLogoutClick = onLogoutClick,
-                onWithDraw = onWithDraw
+                onWithDraw = onWithDraw,
+                onChangeNickname = { newNickname ->
+                    viewModel.apply {
+                        updateNickname(newNickname)
+                        getCurrentUSer()
+                    }
+                },
+                onChangePassword = { }
             )
         }
     ) {

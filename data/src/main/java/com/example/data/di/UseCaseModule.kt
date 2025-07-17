@@ -14,6 +14,7 @@ import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.domain.usecase.SignUpUseCase
 import com.example.domain.usecase.SubmitVoteUseCase
+import com.example.domain.usecase.UpdateNicknameUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -75,4 +76,10 @@ object UseCaseModule {
     fun provideGetUserByEmailUseCase(
         authRepository: AuthRepository
     ): GetUserByEmailUseCase = GetUserByEmailUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateNicknameUseCase(
+        authRepository: AuthRepository
+    ): UpdateNicknameUseCase = UpdateNicknameUseCase(authRepository)
 }
