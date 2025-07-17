@@ -73,7 +73,7 @@ class AuthDataSource(
 
     suspend fun updateNickname(newNickname: String): Result<Unit> {
         return try {
-            val userId = firebaseAuth.currentUser?.uid ?: return Result.failure(Exception("User not authenticated"))
+            val userId = firebaseAuth.currentUser?.uid ?: throw Exception("User not authenticated")
             val document = firestore.collection("users").document(userId)
 
             document.update("nickname", newNickname).await()
