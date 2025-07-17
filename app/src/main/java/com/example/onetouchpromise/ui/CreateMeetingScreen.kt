@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.error.CreateMeetingError
+import com.example.domain.model.UserModel
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.viewmodel.CreateMeetingViewModel
 import java.time.LocalDate
@@ -104,7 +105,7 @@ fun CreateMeetingScreen(
             )
 
             InputParticipantView(
-                participants = uiState.participants.map { it.nickname },
+                participants = uiState.participants,
                 onAddParticipant = { participant -> viewModel.addParticipant(participant) },
                 onRemoveParticipant = { participant -> viewModel.removeParticipant(participant) }
             )
@@ -428,7 +429,7 @@ fun InputLocationView(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun InputParticipantView(
-    participants: List<String>,
+    participants: List<UserModel>,
     onAddParticipant: (String) -> Unit,
     onRemoveParticipant: (String) -> Unit
 ) {
@@ -487,8 +488,8 @@ fun InputParticipantView(
     ) {
         participants.forEach { participant ->
             ItemChip(
-                text = participant,
-                onDeleteClick = { onRemoveParticipant(participant) }
+                text = participant.nickname,
+                onDeleteClick = { onRemoveParticipant(participant.email) }
             )
         }
     }
