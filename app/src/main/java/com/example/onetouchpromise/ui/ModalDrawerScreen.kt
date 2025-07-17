@@ -60,6 +60,7 @@ fun ModalDrawerScreen(
             title = stringResource(R.string.change_nickname),
             value = newNickname.value,
             onValueChange = { newNickname.value = it },
+            labelText = stringResource(R.string.new_nickname),
             onConfirmClick = {
                 onChangeNickname(newNickname.value)
                 showNicknameDialog.value = false
@@ -74,6 +75,7 @@ fun ModalDrawerScreen(
             title = stringResource(R.string.change_password),
             value = newPassword.value,
             onValueChange = { newPassword.value = it },
+            labelText = stringResource(R.string.new_password),
             onConfirmClick = {
                 onChangePassword(newPassword.value)
                 showPasswordDialog.value = false
@@ -238,6 +240,7 @@ fun ChangeDialog(
     title: String,
     value: String,
     onValueChange: (String) -> Unit,
+    labelText: String,
     onConfirmClick: () -> Unit,
     onDismissClick: () -> Unit
 ) {
@@ -256,7 +259,7 @@ fun ChangeDialog(
                     onValueChange = { onValueChange(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.new_nickname),
+                            text = labelText,
                             color = colorResource(R.color.gray)
                         )
                     },

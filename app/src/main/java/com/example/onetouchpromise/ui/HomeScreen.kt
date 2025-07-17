@@ -71,27 +71,40 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onLogoutClick: () -> Unit,
+    onLogout: () -> Unit,
     onWithDraw: () -> Unit,
     onMeetingClick: (Pair<Boolean, MeetingModel>) -> Unit,
     onCreateMeetingClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val updateNicknameState by viewModel.updateNicknameState.collectAsState()
+    val changePasswordState by viewModel.changePasswordState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getCurrentUSer()
     }
 
-    val updateNicknameState by viewModel.updateNicknameState.collectAsState()
     LaunchedEffect(updateNicknameState) {
         updateNicknameState?.let { result ->
             if(result.isSuccess) {
                 Toast.makeText(context, getString(context, R.string.success_update_nickname), Toast.LENGTH_SHORT).show()
-            }else {
+            } else {
                 Toast.makeText(context, getString(context, R.string.failed_update_nickname), Toast.LENGTH_SHORT).show()
             }
 
             viewModel.resetNickNameUpdateState()
+        }
+    }
+
+    LaunchedEffect(changePasswordState) {
+        changePasswordState?.let { result ->
+            if(result.isSuccess) {
+                Toast.makeText(context, getString(context, R.string.again_login), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, getString(context, R.string.failed_change_password), Toast.LENGTH_SHORT).show()
+            }
+
+            viewModel.resetPasswordChangeState()
         }
     }
 
@@ -114,7 +127,7 @@ fun HomeScreen(
                 scope = coroutineScope,
                 drawerState = drawerState,
                 currentUser = uiState.currentUser,
-                onLogoutClick = onLogoutClick,
+                onLogoutClick = onLogout,
                 onWithDraw = onWithDraw,
                 onChangeNickname = { newNickname ->
                     viewModel.apply {
@@ -122,7 +135,9 @@ fun HomeScreen(
                         getCurrentUSer()
                     }
                 },
-                onChangePassword = { }
+                onChangePassword = { newPassword ->
+                    viewModel.changePassword(newPassword)
+                }
             )
         }
     ) {

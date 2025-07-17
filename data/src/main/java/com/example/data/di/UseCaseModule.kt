@@ -5,6 +5,7 @@ import com.example.domain.repository.CreateMeetingRepository
 import com.example.domain.repository.HomeRepository
 import com.example.domain.repository.MeetingDetailRepository
 import com.example.domain.repository.MeetingRepository
+import com.example.domain.usecase.ChangePasswordUseCase
 import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.GetMeetingDetailUseCase
@@ -82,4 +83,10 @@ object UseCaseModule {
     fun provideUpdateNicknameUseCase(
         authRepository: AuthRepository
     ): UpdateNicknameUseCase = UpdateNicknameUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideChangePasswordUseCase(
+        authRepository: AuthRepository
+    ): ChangePasswordUseCase = ChangePasswordUseCase(authRepository)
 }

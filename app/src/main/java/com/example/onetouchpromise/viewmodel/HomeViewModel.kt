@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.usecase.ChangePasswordUseCase
 import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.domain.usecase.UpdateNicknameUseCase
@@ -22,13 +23,17 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val observeHomeMeetingsUseCase: ObserveHomeMeetingsUseCase,
     private val getCurrentUserUserCase: GetCurrentUserUserCase,
-    private val updateNicknameUseCase: UpdateNicknameUseCase
+    private val updateNicknameUseCase: UpdateNicknameUseCase,
+    private val changePasswordUseCase: ChangePasswordUseCase
 ): ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
         private set
 
     private val _updateNicknameState = MutableStateFlow<Result<Unit>?>(null)
     val updateNicknameState: StateFlow<Result<Unit>?> get() = _updateNicknameState.asStateFlow()
+
+    private val _changePasswordState = MutableStateFlow<Result<Unit>?>(null)
+    val changePasswordState: StateFlow<Result<Unit>?> get() = _changePasswordState.asStateFlow()
 
     private var listenerRegistration: ListenerRegistration? = null
 
@@ -79,6 +84,17 @@ class HomeViewModel @Inject constructor(
 
     fun resetNickNameUpdateState() {
         _updateNicknameState.update { null }
+    }
+
+    fun changePassword(newPassword: String) {
+        viewModelScope.launch {
+            val changeResult = changePasswordUseCase(newPassword)
+            _changePasswordState.update { changeResult }
+        }
+    }
+
+    fun resetPasswordChangeState() {
+        _changePasswordState.update { null }
     }
 
     override fun onCleared() {

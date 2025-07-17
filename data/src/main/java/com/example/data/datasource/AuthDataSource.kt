@@ -82,4 +82,14 @@ class AuthDataSource(
             Result.failure(e)
         }
     }
+
+    suspend fun changePassword(newPassword: String): Result<Unit> {
+        return try {
+            val user = firebaseAuth.currentUser ?: throw Exception("User is not logged in")
+            user.updatePassword(newPassword).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
