@@ -1,7 +1,6 @@
 package com.example.onetouchpromise.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,7 +34,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -146,12 +143,6 @@ fun HomeScreen(
                             modifier = Modifier.align(Alignment.Center)
                         )
                     }
-                    uiState.meetings.isEmpty() -> {
-                        EmptyListView(
-                            modifier = Modifier.align(Alignment.Center),
-                            onCreateMeetingClick = onCreateMeetingClick
-                        )
-                    }
                     else -> {
                         val userNotFoundError = stringResource(R.string.user_not_found)
 
@@ -245,7 +236,7 @@ fun HomeErrorMessageView(
 @Composable
 fun EmptyListView(
     modifier: Modifier,
-    onCreateMeetingClick: () -> Unit
+    isActive: Boolean
 ) {
     Column(
         modifier = modifier,
@@ -261,42 +252,13 @@ fun EmptyListView(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = stringResource(R.string.is_not_exist_meeting_yet),
+            text = if(isActive) stringResource(R.string.is_progressing_meeting_yet) else stringResource(R.string.is_closed_meeting_yet),
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = colorResource(R.color.basic_text_color2)
             )
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = stringResource(R.string.click_button_create_meeting),
-            style = TextStyle(
-                fontSize = 14.sp,
-                color = colorResource(R.color.basic_text_color2)
-            )
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            onClick = onCreateMeetingClick,
-            border = BorderStroke(
-                width = 1.dp,
-                color = colorResource(R.color.button_container_color)
-            ),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = colorResource(R.color.button_container_color)
-            ),
-            shape = RoundedCornerShape(24.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.create_meeting),
-                fontSize = 16.sp
-            )
-        }
     }
 }
 
@@ -341,19 +303,28 @@ fun MeetingListView(
             }
         }
 
-        LazyColumn(
-            modifier = Modifier
-                .background(colorResource(R.color.main_background))
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(filterMeetings) { meeting ->
-                MeetingCard(
-                    meeting = meeting,
-                    isVoted = meeting.alreadyVotes.contains(currentUserEmail),
-                    onClick = { onMeetingClick(Pair(selectedTab == MeetingTab.ACTIVE, meeting)) }
+        if(filterMeetings.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                EmptyListView(
+                    modifier = Modifier.align(Alignment.Center),
+                    isActive = selectedTab == MeetingTab.ACTIVE
                 )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .background(colorResource(R.color.main_background))
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(filterMeetings) { meeting ->
+                    MeetingCard(
+                        meeting = meeting,
+                        isVoted = meeting.alreadyVotes.contains(currentUserEmail),
+                        onClick = { onMeetingClick(Pair(selectedTab == MeetingTab.ACTIVE, meeting)) }
+                    )
+                }
             }
         }
     }
