@@ -25,4 +25,10 @@ class AuthRepositoryImpl(
 
     override suspend fun changePasswordWithReAuth(changePassword: String, newPassword: String): Result<Unit> =
         authDataSource.changePasswordWithReAuth(changePassword, newPassword)
+
+    override suspend fun saveFcmToken(token: String) =
+        authDataSource.saveFcmToken(token)
+
+    override suspend fun getFcmTokensByEmail(emails: List<String>): List<String> =
+        authDataSource.getTokensByEmail(emails)
 }

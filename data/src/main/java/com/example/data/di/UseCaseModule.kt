@@ -13,6 +13,7 @@ import com.example.domain.usecase.GetMeetingsUseCase
 import com.example.domain.usecase.GetUserByEmailUseCase
 import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
+import com.example.domain.usecase.SaveFcmTokenUseCase
 import com.example.domain.usecase.SignUpUseCase
 import com.example.domain.usecase.SubmitVoteUseCase
 import com.example.domain.usecase.UpdateNicknameUseCase
@@ -89,4 +90,10 @@ object UseCaseModule {
     fun provideChangePasswordWithReAuthUseCase(
         authRepository: AuthRepository
     ): ChangePasswordWithReAuthUseCase = ChangePasswordWithReAuthUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideSaveFcmTokenUseCase(
+        authRepository: AuthRepository
+    ): SaveFcmTokenUseCase = SaveFcmTokenUseCase(authRepository)
 }
