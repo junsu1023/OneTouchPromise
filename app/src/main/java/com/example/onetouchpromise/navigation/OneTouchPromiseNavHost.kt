@@ -2,12 +2,14 @@ package com.example.onetouchpromise.navigation
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.ui.CreateMeetingScreen
@@ -23,6 +25,42 @@ import com.google.firebase.auth.FirebaseAuth
 fun OneTouchPromiseNavHost(
     navController: NavHostController
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val curRoute = navBackStackEntry?.destination?.route
+
+    val onFriendshipClick: () -> Unit = {
+        navController.navigate(OneTouchPromiseScreen.FRIENDSHIP) {
+            popUpTo(0) {
+                saveState = true
+                inclusive = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    val onHomeClick: () -> Unit = {
+        navController.navigate(OneTouchPromiseScreen.HOME) {
+            popUpTo(0) {
+                saveState = true
+                inclusive = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    val onSettingClick: () -> Unit = {
+        navController.navigate(OneTouchPromiseScreen.SETTING) {
+            popUpTo(0) {
+                saveState = true
+                inclusive = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = OneTouchPromiseScreen.SPLASH
@@ -77,6 +115,7 @@ fun OneTouchPromiseNavHost(
             val failedWithDraw = stringResource(R.string.withdraw_failed)
 
             HomeScreen(
+                curRoute = curRoute,
                 onLogout = {
                     FirebaseAuth.getInstance().signOut()
 
@@ -112,7 +151,10 @@ fun OneTouchPromiseNavHost(
                 },
                 onCreateMeetingClick = {
                     navController.navigate(OneTouchPromiseScreen.CREATE_MEETING)
-                }
+                },
+                onFriendshipClick = onFriendshipClick,
+                onHomeClick = onHomeClick,
+                onSettingClick = onSettingClick
             )
         }
 
