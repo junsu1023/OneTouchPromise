@@ -83,6 +83,9 @@
     <string name="again_login">다시 로그인해주세요.</string>
     <string name="failed_change_password">비밀번호 변경에 실패했습니다.</string>
     <string name="friendship">친구</string>
+    <string name="search">검색</string>
+    <string name="add_friend">친구 추가</string>
+    <string name="add_friend_email">추가할 친구 이메일</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>
