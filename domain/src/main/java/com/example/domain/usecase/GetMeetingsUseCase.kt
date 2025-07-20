@@ -1,7 +1,7 @@
 package com.example.domain.usecase
 
 import com.example.domain.repository.MeetingRepository
-import com.example.domain.result.MeetingResult
+import com.example.domain.status.MeetingResult
 import kotlinx.coroutines.flow.Flow
 
 class GetMeetingsUseCase(

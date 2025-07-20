@@ -4,6 +4,7 @@ import com.example.data.datasource.AuthDataSource
 import com.example.data.mapper.toModel
 import com.example.domain.model.UserModel
 import com.example.domain.repository.AuthRepository
+import com.example.domain.status.FriendStatus
 
 class AuthRepositoryImpl(
     private val authDataSource: AuthDataSource
@@ -34,4 +35,10 @@ class AuthRepositoryImpl(
 
     override suspend fun searchUserByEmail(email: String): UserModel? =
         authDataSource.searchUserByEmail(email)?.toModel()
+
+    override suspend fun sendFriendRequest(toUid: String): Result<Unit> =
+        authDataSource.sendFriendRequest(toUid)
+
+    override suspend fun checkFriendShipStatus(fromUid: String, toUid: String): FriendStatus =
+        authDataSource.checkFriendStatus(fromUid, toUid)
 }

@@ -6,6 +6,7 @@ import com.example.domain.repository.HomeRepository
 import com.example.domain.repository.MeetingDetailRepository
 import com.example.domain.repository.MeetingRepository
 import com.example.domain.usecase.ChangePasswordWithReAuthUseCase
+import com.example.domain.usecase.CheckFriendshipUseCase
 import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.domain.usecase.GetCurrentUserUserCase
 import com.example.domain.usecase.GetMeetingDetailUseCase
@@ -14,6 +15,8 @@ import com.example.domain.usecase.GetUserByEmailUseCase
 import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
 import com.example.domain.usecase.SaveFcmTokenUseCase
+import com.example.domain.usecase.SearchUserByEmailUseCase
+import com.example.domain.usecase.SendFriendRequestUseCase
 import com.example.domain.usecase.SignUpUseCase
 import com.example.domain.usecase.SubmitVoteUseCase
 import com.example.domain.usecase.UpdateNicknameUseCase
@@ -96,4 +99,22 @@ object UseCaseModule {
     fun provideSaveFcmTokenUseCase(
         authRepository: AuthRepository
     ): SaveFcmTokenUseCase = SaveFcmTokenUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideSearchUserByEmailUseCase(
+        authRepository: AuthRepository
+    ): SearchUserByEmailUseCase = SearchUserByEmailUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideSendFriendRequestUseCase(
+        authRepository: AuthRepository
+    ): SendFriendRequestUseCase = SendFriendRequestUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideCheckFriendshipUseCase(
+        authRepository: AuthRepository
+    ): CheckFriendshipUseCase = CheckFriendshipUseCase(authRepository)
 }

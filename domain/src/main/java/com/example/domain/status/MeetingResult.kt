@@ -1,4 +1,4 @@
-package com.example.domain.result
+package com.example.domain.status
 
 import com.example.domain.error.MeetingError
 import com.example.domain.model.MeetingModel
