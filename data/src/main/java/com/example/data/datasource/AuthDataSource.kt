@@ -140,8 +140,7 @@ class AuthDataSource(
         return snapshot.documents.firstOrNull()?.toObject(UserEntity::class.java)
     }
 
-    suspend fun sendFriendRequest(toUid: String): Result<Unit> {
-        val fromUid = firebaseAuth.currentUser?.uid ?: return Result.failure(Exception("Not logged in"))
+    suspend fun sendFriendRequest(fromUid: String, toUid: String): Result<Unit> {
         val data = mapOf(
             "from" to fromUid,
             "to" to toUid,

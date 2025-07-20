@@ -6,7 +6,7 @@ import javax.inject.Inject
 class SendFriendRequestUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke(toUid: String): Result<Unit> {
-        return authRepository.sendFriendRequest(toUid)
+    suspend operator fun invoke(fromUid: String, toUid: String): Result<Unit> {
+        return authRepository.sendFriendRequest(fromUid, toUid)
     }
 }
