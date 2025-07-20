@@ -15,4 +15,6 @@ interface AuthRepository {
     suspend fun searchUserByEmail(email: String): UserModel?
     suspend fun sendFriendRequest(fromUid: String, toUid: String): Result<Unit>
     suspend fun checkFriendShipStatus(fromUid: String, toUid: String): FriendStatus
+    suspend fun acceptFriendRequest(myUid: String, fromUid: String)
+    suspend fun declineFriendRequest(myUid: String, fromUid: String)
 }

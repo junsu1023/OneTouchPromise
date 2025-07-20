@@ -14,6 +14,7 @@ import com.example.domain.usecase.GetMeetingsUseCase
 import com.example.domain.usecase.GetUserByEmailUseCase
 import com.example.domain.usecase.LoginUseCase
 import com.example.domain.usecase.ObserveHomeMeetingsUseCase
+import com.example.domain.usecase.RespondToFriendRequestUseCase
 import com.example.domain.usecase.SaveFcmTokenUseCase
 import com.example.domain.usecase.SearchUserByEmailUseCase
 import com.example.domain.usecase.SendFriendRequestUseCase
@@ -117,4 +118,10 @@ object UseCaseModule {
     fun provideCheckFriendshipUseCase(
         authRepository: AuthRepository
     ): CheckFriendshipUseCase = CheckFriendshipUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideRespondToFriendRequestUseCase(
+        authRepository: AuthRepository
+    ): RespondToFriendRequestUseCase = RespondToFriendRequestUseCase(authRepository)
 }

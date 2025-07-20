@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.model.UserModel
 import com.example.domain.status.FriendStatus
 import com.example.domain.usecase.CheckFriendshipUseCase
+import com.example.domain.usecase.RespondToFriendRequestUseCase
 import com.example.domain.usecase.SearchUserByEmailUseCase
 import com.example.domain.usecase.SendFriendRequestUseCase
 import com.example.onetouchpromise.contract.FriendRequestContract
@@ -22,6 +23,7 @@ class FriendViewModel @Inject constructor(
     private val searchUserByEmailUseCase: SearchUserByEmailUseCase,
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
     private val checkFriendshipUseCase: CheckFriendshipUseCase,
+    private val respondToFriendRequestUseCase: RespondToFriendRequestUseCase,
     private val auth: FirebaseAuth
 ): ViewModel() {
     private val _searchUserByEmailResult = MutableStateFlow<UserModel?>(null)
@@ -57,6 +59,14 @@ class FriendViewModel @Inject constructor(
                     sendFriendRequestUseCase(myUid, friendUid)
                 }
             }
+        }
+    }
+
+    fun onFriendRequestResponse(fromUid: String, accept: Boolean) {
+        val myUid = auth.currentUser?.uid ?: return
+
+        viewModelScope.launch {
+            respondToFriendRequestUseCase(myUid, fromUid, accept)
         }
     }
 }

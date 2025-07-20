@@ -172,4 +172,27 @@ class AuthDataSource(
             else -> FriendStatus.NONE
         }
     }
+
+    suspend fun acceptFriendRequest(myUid: String, fromUid: String) {
+        val myDoc = firestore.collection("users").document(myUid)
+        val fromDoc = firestore.collection("users").document(fromUid)
+
+        firestore.runBatch { batch ->
+            batch.update(myDoc, "myFriends", FieldValue.arrayUnion(fromUid))
+            batch.update(fromDoc, "myFriends", FieldValue.arrayUnion(myUid))
+
+            batch.update(myDoc, "friendRequestsReceived", FieldValue.arrayRemove(fromUid))
+            batch.update(fromDoc, "friendRequestsSent", FieldValue.arrayRemove(myUid))
+        }.await()
+    }
+
+    suspend fun declineFriendRequest(myUid: String, fromUid: String) {
+        val myDoc = firestore.collection("users").document(myUid)
+        val fromDoc = firestore.collection("users").document(fromUid)
+
+        firestore.runBatch { batch ->
+            batch.update(myDoc, "friendRequestsReceived", FieldValue.arrayRemove(fromUid))
+            batch.update(fromDoc, "friendRequestsSent", FieldValue.arrayRemove(myUid))
+        }.await()
+    }
 }

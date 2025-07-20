@@ -41,4 +41,10 @@ class AuthRepositoryImpl(
 
     override suspend fun checkFriendShipStatus(fromUid: String, toUid: String): FriendStatus =
         authDataSource.checkFriendStatus(fromUid, toUid)
+
+    override suspend fun acceptFriendRequest(myUid: String, fromUid: String) =
+        authDataSource.acceptFriendRequest(myUid, fromUid)
+
+    override suspend fun declineFriendRequest(myUid: String, fromUid: String) =
+        authDataSource.declineFriendRequest(myUid, fromUid)
 }
