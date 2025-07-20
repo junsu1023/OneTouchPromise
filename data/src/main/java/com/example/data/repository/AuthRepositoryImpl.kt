@@ -31,4 +31,7 @@ class AuthRepositoryImpl(
 
     override suspend fun getFcmTokensByEmail(emails: List<String>): List<String> =
         authDataSource.getTokensByEmail(emails)
+
+    override suspend fun searchUserByEmail(email: String): UserModel? =
+        authDataSource.searchUserByEmail(email)?.toModel()
 }

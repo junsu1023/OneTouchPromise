@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -125,5 +126,15 @@ class AuthDataSource(
             .await()
 
         return snapshot.documents.mapNotNull { it.getString("fcmToken") }
+    }
+
+    suspend fun searchUserByEmail(email: String): UserEntity? {
+        val snapshot = firestore.collection("users")
+            .whereEqualTo("email", email)
+            .limit(1)
+            .get()
+            .await()
+
+        return snapshot.documents.firstOrNull()?.toObject(UserEntity::class.java)
     }
 }

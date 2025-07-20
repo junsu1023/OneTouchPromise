@@ -11,4 +11,5 @@ interface AuthRepository {
     suspend fun changePasswordWithReAuth(changePassword: String, newPassword: String): Result<Unit>
     suspend fun saveFcmToken(token: String)
     suspend fun getFcmTokensByEmail(emails: List<String>): List<String>
+    suspend fun searchUserByEmail(email: String): UserModel?
 }
