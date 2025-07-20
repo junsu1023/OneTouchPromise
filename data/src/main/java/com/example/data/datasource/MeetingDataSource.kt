@@ -3,7 +3,7 @@ package com.example.data.datasource
 import com.example.data.entity.MeetingEntity
 import com.example.domain.error.MeetingError
 import com.example.data.mapper.toModel
-import com.example.domain.result.MeetingResult
+import com.example.domain.status.MeetingResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose

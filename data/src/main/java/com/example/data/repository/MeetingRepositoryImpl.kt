@@ -2,7 +2,7 @@ package com.example.data.repository
 
 import com.example.data.datasource.MeetingDataSource
 import com.example.domain.repository.MeetingRepository
-import com.example.domain.result.MeetingResult
+import com.example.domain.status.MeetingResult
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
