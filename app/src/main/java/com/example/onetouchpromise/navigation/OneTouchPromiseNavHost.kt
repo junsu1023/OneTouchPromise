@@ -17,6 +17,7 @@ import com.example.onetouchpromise.ui.HomeScreen
 import com.example.onetouchpromise.ui.LoginScreen
 import com.example.onetouchpromise.ui.MeetingDetailScreen
 import com.example.onetouchpromise.ui.MeetingResultScreen
+import com.example.onetouchpromise.ui.SettingScreen
 import com.example.onetouchpromise.ui.SignUpScreen
 import com.example.onetouchpromise.ui.SplashScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -31,33 +32,24 @@ fun OneTouchPromiseNavHost(
     val onFriendshipClick: () -> Unit = {
         navController.navigate(OneTouchPromiseScreen.FRIENDSHIP) {
             popUpTo(0) {
-                saveState = true
-                inclusive = true
+                inclusive = false
             }
-            launchSingleTop = true
-            restoreState = true
         }
     }
 
     val onHomeClick: () -> Unit = {
         navController.navigate(OneTouchPromiseScreen.HOME) {
             popUpTo(0) {
-                saveState = true
-                inclusive = true
+                inclusive = false
             }
-            launchSingleTop = true
-            restoreState = true
         }
     }
 
     val onSettingClick: () -> Unit = {
         navController.navigate(OneTouchPromiseScreen.SETTING) {
             popUpTo(0) {
-                saveState = true
                 inclusive = true
             }
-            launchSingleTop = true
-            restoreState = true
         }
     }
 
@@ -110,38 +102,8 @@ fun OneTouchPromiseNavHost(
         }
 
         composable(OneTouchPromiseScreen.HOME) {
-            val context = LocalContext.current
-            val successWithDraw = stringResource(R.string.withdraw_success)
-            val failedWithDraw = stringResource(R.string.withdraw_failed)
-
             HomeScreen(
                 curRoute = curRoute,
-                onLogout = {
-                    FirebaseAuth.getInstance().signOut()
-
-                    navController.navigate(OneTouchPromiseScreen.LOGIN) {
-                        popUpTo(OneTouchPromiseScreen.HOME) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onWithDraw = {
-                    val auth = FirebaseAuth.getInstance()
-
-                    auth.currentUser?.delete()?.addOnCompleteListener { task ->
-                        if(task.isSuccessful) {
-                            Toast.makeText(context, successWithDraw, Toast.LENGTH_SHORT).show()
-
-                            navController.navigate(OneTouchPromiseScreen.LOGIN) {
-                                popUpTo(OneTouchPromiseScreen.HOME) {
-                                    inclusive = true
-                                }
-                            }
-                        } else {
-                            Toast.makeText(context, failedWithDraw, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                },
                 onMeetingClick = { (isActive, meeting) ->
                     if(isActive) {
                         navController.navigate("${OneTouchPromiseScreen.MEETING_DETAIL}/${meeting.id}")
@@ -196,6 +158,45 @@ fun OneTouchPromiseNavHost(
             MeetingResultScreen(
                 meetingId = meetingId,
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable(OneTouchPromiseScreen.SETTING) {
+            val context = LocalContext.current
+            val successWithDraw = stringResource(R.string.withdraw_success)
+            val failedWithDraw = stringResource(R.string.withdraw_failed)
+
+            SettingScreen(
+                curRoute = curRoute,
+                onLogout = {
+                    FirebaseAuth.getInstance().signOut()
+
+                    navController.navigate(OneTouchPromiseScreen.LOGIN) {
+                        popUpTo(OneTouchPromiseScreen.HOME) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onWithDraw = {
+                    val auth = FirebaseAuth.getInstance()
+
+                    auth.currentUser?.delete()?.addOnCompleteListener { task ->
+                        if(task.isSuccessful) {
+                            Toast.makeText(context, successWithDraw, Toast.LENGTH_SHORT).show()
+
+                            navController.navigate(OneTouchPromiseScreen.LOGIN) {
+                                popUpTo(OneTouchPromiseScreen.HOME) {
+                                    inclusive = true
+                                }
+                            }
+                        } else {
+                            Toast.makeText(context, failedWithDraw, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
+                onFriendshipClick = onFriendshipClick,
+                onHomeClick = onHomeClick,
+                onSettingClick = onSettingClick
             )
         }
     }
