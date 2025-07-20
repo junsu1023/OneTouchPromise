@@ -1,5 +1,6 @@
 package com.example.onetouchpromise.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import com.example.onetouchpromise.component.EmailOutlinedTextField
 import com.example.onetouchpromise.component.PasswordOutlinedTextField
 import com.example.onetouchpromise.error.getAuthError
 import com.example.onetouchpromise.viewmodel.LoginViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 
 @Composable
 fun LoginScreen(
@@ -49,6 +51,11 @@ fun LoginScreen(
 
     LaunchedEffect(state.isSuccess) {
         if(state.isSuccess) {
+            FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+                Log.d("FCM", "token = $token")
+                viewModel.saveFcmToken(token)
+            }
+
             onLoginSuccess()
         }
     }

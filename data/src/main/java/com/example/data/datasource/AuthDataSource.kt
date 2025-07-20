@@ -5,6 +5,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.cancellation.CancellationException
@@ -108,5 +109,21 @@ class AuthDataSource(
         }
 
         return Result.failure(Exception("User not authenticated"))
+    }
+
+    suspend fun saveFcmToken(token: String) {
+        val uid = firebaseAuth.currentUser?.uid ?: throw IllegalStateException("Not logged in")
+        firestore.collection("users").document(uid)
+            .set(mapOf("fcmToken" to token), SetOptions.merge())
+            .await()
+    }
+
+    suspend fun getTokensByEmail(emails: List<String>): List<String> {
+        val snapshot = firestore.collection("users")
+            .whereIn("email", emails)
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull { it.getString("fcmToken") }
     }
 }

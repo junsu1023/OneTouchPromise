@@ -1,9 +1,10 @@
 package com.example.data.datasource
 
-import android.util.Log
 import com.example.data.entity.CreateMeetingEntity
 import com.example.domain.error.CreateMeetingError
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -42,7 +43,14 @@ class CreateMeetingDataSource(
                 dueDate = meeting.dueDate
             )
 
+            val meetingMap = hashMapOf(
+                "title" to meeting.title,
+                "participants" to meeting.participants,
+                "timestamp" to FieldValue.serverTimestamp()
+            )
+
             document.set(meetingWithId).await()
+            firestore.collection("meetings").add(meetingMap).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(CreateMeetingError.Unknown(e.message))
