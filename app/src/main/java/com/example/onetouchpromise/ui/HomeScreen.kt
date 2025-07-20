@@ -63,6 +63,7 @@ import androidx.core.content.ContextCompat.getString
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.domain.model.MeetingModel
 import com.example.onetouchpromise.R
+import com.example.onetouchpromise.component.BottomNavigation
 import com.example.onetouchpromise.component.HomeTabRow
 import com.example.onetouchpromise.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -70,11 +71,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
+    curRoute: String?,
     viewModel: HomeViewModel = hiltViewModel(),
     onLogout: () -> Unit,
     onWithDraw: () -> Unit,
     onMeetingClick: (Pair<Boolean, MeetingModel>) -> Unit,
-    onCreateMeetingClick: () -> Unit
+    onCreateMeetingClick: () -> Unit,
+    onFriendshipClick: () -> Unit,
+    onHomeClick: () -> Unit,
+    onSettingClick: () -> Unit
 ) {
     val context = LocalContext.current
     val updateNicknameState by viewModel.updateNicknameState.collectAsState()
@@ -153,6 +158,14 @@ fun HomeScreen(
                 HomeScreenTopBar(
                     scope = coroutineScope,
                     drawerState = drawerState
+                )
+            },
+            bottomBar = {
+                BottomNavigation(
+                    curRoute = curRoute,
+                    onFriendshipClick = onFriendshipClick,
+                    onHomeClick = onHomeClick,
+                    onSettingClick = onSettingClick
                 )
             },
             floatingActionButton = {
