@@ -156,19 +156,17 @@ fun HomeScreen(
                 )
             },
             floatingActionButton = {
-                if(uiState.meetings.isNotEmpty()) {
-                    FloatingActionButton(
-                        onClick = onCreateMeetingClick,
-                        containerColor = colorResource(R.color.floating_button_color),
-                        contentColor = colorResource(R.color.black),
-                        shape = CircleShape,
-                        elevation = FloatingActionButtonDefaults.elevation(6.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = stringResource(R.string.create_meeting)
-                        )
-                    }
+                FloatingActionButton(
+                    onClick = onCreateMeetingClick,
+                    containerColor = colorResource(R.color.floating_button_color),
+                    contentColor = colorResource(R.color.black),
+                    shape = CircleShape,
+                    elevation = FloatingActionButtonDefaults.elevation(6.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = stringResource(R.string.create_meeting)
+                    )
                 }
             }
         ) { paddingValues ->
