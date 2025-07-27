@@ -30,6 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,24 +39,42 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.component.BottomNavigation
+import com.example.onetouchpromise.contract.FriendRequestContract
+import com.example.onetouchpromise.util.showToast
+import com.example.onetouchpromise.viewmodel.FriendViewModel
 
 @Composable
 fun FriendshipScreen(
     curRoute: String?,
     onFriendshipClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onSettingClick: () -> Unit
+    onSettingClick: () -> Unit,
+    friendViewModel: FriendViewModel = hiltViewModel()
 ) {
+    val state by friendViewModel.friendRequestState.collectAsState()
+    val context = LocalContext.current
     var isSearchMode by remember { mutableStateOf(false) }
     var isAddFriendMode by remember { mutableStateOf(false) }
+
+    LaunchedEffect(state) {
+        when(state) {
+            is FriendRequestContract.AlreadyFriends -> showToast(context, context.getString(R.string.is_already_friend))
+            is FriendRequestContract.AlreadySent -> showToast(context, context.getString(R.string.is_already_request))
+            is FriendRequestContract.AlreadyReceived -> showToast(context, context.getString(R.string.is_already_received))
+            is FriendRequestContract.Sent -> showToast(context, context.getString(R.string.success_sent))
+            else -> { }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.background(colorResource(R.color.main_background)),
