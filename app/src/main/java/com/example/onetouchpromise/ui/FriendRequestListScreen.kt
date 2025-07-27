@@ -57,6 +57,10 @@ fun FriendRequestListScreen(
     val state by friendRequestViewModel.friendRequestState.collectAsState()
     val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        friendRequestViewModel.fetchFriendRequests()
+    }
+
     LaunchedEffect(state) {
         when(state) {
             is FriendRequestContract.AlreadyFriends -> showToast(context, context.getString(R.string.is_already_friend))

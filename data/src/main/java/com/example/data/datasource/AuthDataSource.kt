@@ -153,7 +153,6 @@ class AuthDataSource(
             "timeStamp" to FieldValue.serverTimestamp(),
             "status" to "pending"
         )
-        println("test-kjs: data = $data")
 
         return try {
             firestore.collection("friendRequests")
@@ -206,42 +205,22 @@ class AuthDataSource(
     }
 
     fun getFriendRequests(myUid: String, onResult: (List<UserModel>) -> Unit) {
-        val userDoc = firestore.collection("users").document(myUid)
-
-        userDoc.addSnapshotListener { snapshot, _ ->
-            if (snapshot != null && snapshot.exists()) {
-                val receivedUIdsObject = snapshot.get("friendRequestReceived")
-                val receivedUIds: List<String> = when(receivedUIdsObject) {
-                    is List<*> -> {
-                        val tempList = mutableListOf<String>()
-                        for (item in receivedUIdsObject) {
-                            if (item is String) {
-                                tempList.add(item)
-                            } else {
-                                Log.w(
-                                    "FireStoreData",
-                                    "Non-String item found in friendRequestsReceived $item"
-                                )
-                            }
-                        }
-                        tempList
-                    }
-                    else -> emptyList()
-                }
-
-                if (receivedUIds.isEmpty()) {
-                    onResult(emptyList())
+        firestore.collection("friendRequests")
+            .whereEqualTo("to", myUid)
+            .addSnapshotListener { snapshot, error ->
+                if(error != null) {
+                    Log.w("FriendRequestListener", "Failed.", error)
                     return@addSnapshotListener
                 }
 
-                firestore.collection("users")
-                    .whereIn(FieldPath.documentId(), receivedUIds)
-                    .get()
-                    .addOnSuccessListener { querySnapshot ->
-                        val userList = querySnapshot.documents.mapNotNull { it.toObject(UserEntity::class.java) }
-                        onResult(userList.map { it.toModel() })
+                if(snapshot != null && !snapshot.isEmpty) {
+                    val uidList = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(UserEntity::class.java)
                     }
+                    onResult(uidList.map { it.toModel() })
+                } else {
+                    onResult(emptyList())
+                }
             }
-        }
     }
 }
