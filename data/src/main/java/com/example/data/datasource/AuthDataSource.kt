@@ -1,10 +1,14 @@
 package com.example.data.datasource
 
+import android.util.Log
 import com.example.data.entity.UserEntity
+import com.example.data.mapper.toModel
+import com.example.domain.model.UserModel
 import com.example.domain.status.FriendStatus
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -194,5 +198,45 @@ class AuthDataSource(
             batch.update(myDoc, "friendRequestsReceived", FieldValue.arrayRemove(fromUid))
             batch.update(fromDoc, "friendRequestsSent", FieldValue.arrayRemove(myUid))
         }.await()
+    }
+
+    fun getFriendRequests(myUid: String, onResult: (List<UserModel>) -> Unit) {
+        val userDoc = firestore.collection("users").document(myUid)
+
+        userDoc.addSnapshotListener { snapshot, _ ->
+            if (snapshot != null && snapshot.exists()) {
+                val receivedUIdsObject = snapshot.get("friendRequestReceived")
+                val receivedUIds: List<String> = when(receivedUIdsObject) {
+                    is List<*> -> {
+                        val tempList = mutableListOf<String>()
+                        for (item in receivedUIdsObject) {
+                            if (item is String) {
+                                tempList.add(item)
+                            } else {
+                                Log.w(
+                                    "FireStoreData",
+                                    "Non-String item found in friendRequestsReceived $item"
+                                )
+                            }
+                        }
+                        tempList
+                    }
+                    else -> emptyList()
+                }
+
+                if (receivedUIds.isEmpty()) {
+                    onResult(emptyList())
+                    return@addSnapshotListener
+                }
+
+                firestore.collection("users")
+                    .whereIn(FieldPath.documentId(), receivedUIds)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        val userList = querySnapshot.documents.mapNotNull { it.toObject(UserEntity::class.java) }
+                        onResult(userList.map { it.toModel() })
+                    }
+            }
+        }
     }
 }

@@ -17,4 +17,5 @@ interface AuthRepository {
     suspend fun checkFriendShipStatus(fromUid: String, toUid: String): FriendStatus
     suspend fun acceptFriendRequest(myUid: String, fromUid: String)
     suspend fun declineFriendRequest(myUid: String, fromUid: String)
+    fun getFriendRequests(myUid: String, onResult: (List<UserModel>) -> Unit)
 }

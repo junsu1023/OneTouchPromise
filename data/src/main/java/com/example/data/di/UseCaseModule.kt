@@ -9,6 +9,7 @@ import com.example.domain.usecase.ChangePasswordWithReAuthUseCase
 import com.example.domain.usecase.CheckFriendshipUseCase
 import com.example.domain.usecase.CreateMeetingUseCase
 import com.example.domain.usecase.GetCurrentUserUserCase
+import com.example.domain.usecase.GetFriendRequestUseCase
 import com.example.domain.usecase.GetMeetingDetailUseCase
 import com.example.domain.usecase.GetMeetingsUseCase
 import com.example.domain.usecase.GetUserByEmailUseCase
@@ -124,4 +125,10 @@ object UseCaseModule {
     fun provideRespondToFriendRequestUseCase(
         authRepository: AuthRepository
     ): RespondToFriendRequestUseCase = RespondToFriendRequestUseCase(authRepository)
+
+    @Provides
+    @Singleton
+    fun provideGetFriendRequestUseCase(
+        authRepository: AuthRepository
+    ): GetFriendRequestUseCase = GetFriendRequestUseCase(authRepository)
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.model.UserModel
 import com.example.domain.status.FriendStatus
 import com.example.domain.usecase.CheckFriendshipUseCase
+import com.example.domain.usecase.GetFriendRequestUseCase
 import com.example.domain.usecase.RespondToFriendRequestUseCase
 import com.example.domain.usecase.SearchUserByEmailUseCase
 import com.example.domain.usecase.SendFriendRequestUseCase
@@ -24,6 +25,7 @@ class FriendViewModel @Inject constructor(
     private val sendFriendRequestUseCase: SendFriendRequestUseCase,
     private val checkFriendshipUseCase: CheckFriendshipUseCase,
     private val respondToFriendRequestUseCase: RespondToFriendRequestUseCase,
+    private val getFriendRequestUseCase: GetFriendRequestUseCase,
     private val auth: FirebaseAuth
 ): ViewModel() {
     private val _searchUserByEmailResult = MutableStateFlow<UserModel?>(null)
@@ -31,6 +33,28 @@ class FriendViewModel @Inject constructor(
 
     private val _friendRequestState = MutableStateFlow<FriendRequestContract>(FriendRequestContract.Idle)
     val friendRequestState: StateFlow<FriendRequestContract> get() = _friendRequestState.asStateFlow()
+
+    private val _friendRequests = MutableStateFlow<List<UserModel>>(emptyList())
+    val friendRequests: StateFlow<List<UserModel>> get() = _friendRequests.asStateFlow()
+
+    init {
+        fetchFriendRequests()
+    }
+
+    private fun fetchFriendRequests() {
+        val myUid = auth.currentUser?.uid?: return
+        getFriendRequestUseCase(myUid) { result ->
+            _friendRequests.value = result
+        }
+    }
+
+    fun onFriendRequestResponse(fromUid: String, accept: Boolean) {
+        val myUid = auth.currentUser?.uid ?: return
+
+        viewModelScope.launch {
+            respondToFriendRequestUseCase(myUid, fromUid, accept)
+        }
+    }
 
     fun searchUserByEmail(email: String) {
         viewModelScope.launch {
@@ -59,14 +83,6 @@ class FriendViewModel @Inject constructor(
                     sendFriendRequestUseCase(myUid, friendUid)
                 }
             }
-        }
-    }
-
-    fun onFriendRequestResponse(fromUid: String, accept: Boolean) {
-        val myUid = auth.currentUser?.uid ?: return
-
-        viewModelScope.launch {
-            respondToFriendRequestUseCase(myUid, fromUid, accept)
         }
     }
 }

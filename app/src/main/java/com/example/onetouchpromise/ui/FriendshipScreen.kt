@@ -84,11 +84,11 @@ fun FriendshipScreen(
             FriendShipScreenTopBar(
                 onSearchClick = {
                     if(isAddFriendMode) isAddFriendMode = false
-                    isSearchMode = true
+                    isSearchMode = !isSearchMode
                 },
                 onAddFriendClick = {
                     if(isSearchMode) isSearchMode = false
-                    isAddFriendMode = true
+                    isAddFriendMode = !isAddFriendMode
                 }
             )
         },
