@@ -22,10 +22,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendViewModel @Inject constructor(
     private val searchUserByEmailUseCase: SearchUserByEmailUseCase,
-    private val sendFriendRequestUseCase: SendFriendRequestUseCase,
-    private val checkFriendshipUseCase: CheckFriendshipUseCase,
-    private val respondToFriendRequestUseCase: RespondToFriendRequestUseCase,
-    private val getFriendRequestUseCase: GetFriendRequestUseCase,
     private val auth: FirebaseAuth
 ): ViewModel() {
     private val _searchUserByEmailResult = MutableStateFlow<UserModel?>(null)
@@ -37,52 +33,10 @@ class FriendViewModel @Inject constructor(
     private val _friendRequests = MutableStateFlow<List<UserModel>>(emptyList())
     val friendRequests: StateFlow<List<UserModel>> get() = _friendRequests.asStateFlow()
 
-    init {
-        fetchFriendRequests()
-    }
-
-    private fun fetchFriendRequests() {
-        val myUid = auth.currentUser?.uid?: return
-        getFriendRequestUseCase(myUid) { result ->
-            _friendRequests.value = result
-        }
-    }
-
-    fun onFriendRequestResponse(fromUid: String, accept: Boolean) {
-        val myUid = auth.currentUser?.uid ?: return
-
-        viewModelScope.launch {
-            respondToFriendRequestUseCase(myUid, fromUid, accept)
-        }
-    }
-
     fun searchUserByEmail(email: String) {
         viewModelScope.launch {
             val result = searchUserByEmailUseCase(email)
             _searchUserByEmailResult.update { result }
-        }
-    }
-
-    fun onFriendRequestClick(friendUid: String) {
-        viewModelScope.launch {
-            val myUid = auth.currentUser?.uid ?: return@launch
-
-            _friendRequestState.update { FriendRequestContract.Loading }
-
-            when(val status = checkFriendshipUseCase(myUid, friendUid)) {
-                FriendStatus.FRIENDS -> {
-                    _friendRequestState.update { FriendRequestContract.AlreadyFriends }
-                }
-                FriendStatus.REQUEST_SENT -> {
-                    _friendRequestState.update { FriendRequestContract.AlreadySent }
-                }
-                FriendStatus.REQUEST_RECEIVED -> {
-                    _friendRequestState.update { FriendRequestContract.AlreadyReceived }
-                }
-                FriendStatus.NONE -> {
-                    sendFriendRequestUseCase(myUid, friendUid)
-                }
-            }
         }
     }
 }

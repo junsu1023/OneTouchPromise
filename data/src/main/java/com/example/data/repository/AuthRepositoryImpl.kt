@@ -36,11 +36,11 @@ class AuthRepositoryImpl(
     override suspend fun searchUserByEmail(email: String): UserModel? =
         authDataSource.searchUserByEmail(email)?.toModel()
 
-    override suspend fun sendFriendRequest(fromUid: String, toUid: String): Result<Unit> =
-        authDataSource.sendFriendRequest(fromUid, toUid)
+    override suspend fun sendFriendRequest(fromUid: String, toEmail: String): Result<Unit> =
+        authDataSource.sendFriendRequest(fromUid, toEmail)
 
-    override suspend fun checkFriendShipStatus(fromUid: String, toUid: String): FriendStatus =
-        authDataSource.checkFriendStatus(fromUid, toUid)
+    override suspend fun checkFriendShipStatus(fromUid: String, toEmail: String): FriendStatus =
+        authDataSource.checkFriendStatus(fromUid, toEmail)
 
     override suspend fun acceptFriendRequest(myUid: String, fromUid: String) =
         authDataSource.acceptFriendRequest(myUid, fromUid)

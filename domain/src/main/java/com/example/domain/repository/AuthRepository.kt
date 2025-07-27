@@ -13,8 +13,8 @@ interface AuthRepository {
     suspend fun saveFcmToken(token: String)
     suspend fun getFcmTokensByEmail(emails: List<String>): List<String>
     suspend fun searchUserByEmail(email: String): UserModel?
-    suspend fun sendFriendRequest(fromUid: String, toUid: String): Result<Unit>
-    suspend fun checkFriendShipStatus(fromUid: String, toUid: String): FriendStatus
+    suspend fun sendFriendRequest(fromUid: String, toEmail: String): Result<Unit>
+    suspend fun checkFriendShipStatus(fromUid: String, toEmail: String): FriendStatus
     suspend fun acceptFriendRequest(myUid: String, fromUid: String)
     suspend fun declineFriendRequest(myUid: String, fromUid: String)
     fun getFriendRequests(myUid: String, onResult: (List<UserModel>) -> Unit)

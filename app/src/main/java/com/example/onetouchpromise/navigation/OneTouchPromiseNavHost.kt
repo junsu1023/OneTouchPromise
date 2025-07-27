@@ -13,6 +13,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.ui.CreateMeetingScreen
+import com.example.onetouchpromise.ui.FriendRequestListScreen
 import com.example.onetouchpromise.ui.FriendshipScreen
 import com.example.onetouchpromise.ui.HomeScreen
 import com.example.onetouchpromise.ui.LoginScreen
@@ -206,8 +207,19 @@ fun OneTouchPromiseNavHost(
                 curRoute = curRoute,
                 onFriendshipClick = onFriendshipClick,
                 onHomeClick = onHomeClick,
-                onSettingClick = onSettingClick
+                onSettingClick = onSettingClick,
+                onAddFriendClick = {
+                    navController.navigate(OneTouchPromiseScreen.ADD_FRIEND) {
+                        popUpTo(OneTouchPromiseScreen.FRIENDSHIP) {
+                            inclusive = false
+                        }
+                    }
+                }
             )
+        }
+
+        composable(OneTouchPromiseScreen.ADD_FRIEND) {
+            FriendRequestListScreen()
         }
     }
 }

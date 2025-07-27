@@ -86,6 +86,9 @@
     <string name="search">검색</string>
     <string name="add_friend">친구 추가</string>
     <string name="add_friend_email">추가할 친구 이메일</string>
+    <string name="friend_request_list">친구 요청</string>
+    <string name="accept">수락</string>
+    <string name="refusal">거절</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>

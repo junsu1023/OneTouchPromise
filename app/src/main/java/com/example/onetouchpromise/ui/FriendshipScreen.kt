@@ -30,8 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +37,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -49,8 +46,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.component.BottomNavigation
-import com.example.onetouchpromise.contract.FriendRequestContract
-import com.example.onetouchpromise.util.showToast
 import com.example.onetouchpromise.viewmodel.FriendViewModel
 
 @Composable
@@ -59,22 +54,10 @@ fun FriendshipScreen(
     onFriendshipClick: () -> Unit,
     onHomeClick: () -> Unit,
     onSettingClick: () -> Unit,
+    onAddFriendClick: () -> Unit,
     friendViewModel: FriendViewModel = hiltViewModel()
 ) {
-    val state by friendViewModel.friendRequestState.collectAsState()
-    val context = LocalContext.current
     var isSearchMode by remember { mutableStateOf(false) }
-    var isAddFriendMode by remember { mutableStateOf(false) }
-
-    LaunchedEffect(state) {
-        when(state) {
-            is FriendRequestContract.AlreadyFriends -> showToast(context, context.getString(R.string.is_already_friend))
-            is FriendRequestContract.AlreadySent -> showToast(context, context.getString(R.string.is_already_request))
-            is FriendRequestContract.AlreadyReceived -> showToast(context, context.getString(R.string.is_already_received))
-            is FriendRequestContract.Sent -> showToast(context, context.getString(R.string.success_sent))
-            else -> { }
-        }
-    }
 
     Scaffold(
         modifier = Modifier.background(colorResource(R.color.main_background)),
@@ -83,12 +66,11 @@ fun FriendshipScreen(
         topBar = {
             FriendShipScreenTopBar(
                 onSearchClick = {
-                    if(isAddFriendMode) isAddFriendMode = false
                     isSearchMode = !isSearchMode
                 },
                 onAddFriendClick = {
                     if(isSearchMode) isSearchMode = false
-                    isAddFriendMode = !isAddFriendMode
+                    onAddFriendClick()
                 }
             )
         },
@@ -111,12 +93,6 @@ fun FriendshipScreen(
             if(isSearchMode) {
                 SearchFriendBar(
                     onBackClick = { isSearchMode = false }
-                )
-            }
-
-            if(isAddFriendMode) {
-                AddFriendBar(
-                    onBackClick = { isAddFriendMode = false }
                 )
             }
 
@@ -219,56 +195,6 @@ fun SearchFriendBar(
                     imageVector = Icons.Default.Search,
                     contentDescription = stringResource(R.string.search),
                     tint = if(searchNickName.isEmpty()) colorResource(R.color.gray) else colorResource(R.color.basic_icon_color)
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun AddFriendBar(
-    onBackClick: () -> Unit
-) {
-    BackHandler { onBackClick() }
-
-    var addFriendEmail by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        value = addFriendEmail,
-        onValueChange = { addFriendEmail = it },
-        shape = RoundedCornerShape(12.dp),
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = {
-            Text(
-                text = stringResource(R.string.add_friend_email),
-                style = TextStyle(
-                    color = colorResource(R.color.gray),
-                    fontSize = 16.sp
-                )
-            )
-        },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(R.color.outlined_focused_border),
-            unfocusedBorderColor = colorResource(R.color.outlined_unfocused_border),
-            focusedTextColor = colorResource(R.color.basic_text_color),
-            unfocusedTextColor = colorResource(R.color.basic_text_color)
-        ),
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    if(addFriendEmail.isNotEmpty()) {
-                        /*
-                        * TODO
-                        * 검색 시 포홤 혹은 일치하는 친구 목록 가져오기
-                        */
-                    }
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.add_friend_email),
-                    tint = if(addFriendEmail.isEmpty()) colorResource(R.color.gray) else colorResource(R.color.basic_icon_color)
                 )
             }
         }

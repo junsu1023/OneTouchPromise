@@ -144,13 +144,16 @@ class AuthDataSource(
         return snapshot.documents.firstOrNull()?.toObject(UserEntity::class.java)
     }
 
-    suspend fun sendFriendRequest(fromUid: String, toUid: String): Result<Unit> {
+    suspend fun sendFriendRequest(fromUid: String, toEmail: String): Result<Unit> {
+        val toUid = searchUserByEmail(toEmail)?.uid
+
         val data = mapOf(
             "from" to fromUid,
             "to" to toUid,
             "timeStamp" to FieldValue.serverTimestamp(),
             "status" to "pending"
         )
+        println("test-kjs: data = $data")
 
         return try {
             firestore.collection("friendRequests")
@@ -163,16 +166,18 @@ class AuthDataSource(
         }
     }
 
-    suspend fun checkFriendStatus(fromUid: String, toUid: String): FriendStatus {
+    suspend fun checkFriendStatus(fromUid: String, toEmail: String): FriendStatus {
         val currentUserDoc = firestore.collection("users").document(fromUid).get().await()
+        val toUid = searchUserByEmail(toEmail)?.uid
+
         val friends = currentUserDoc.get("friends") as? List<String> ?: emptyList()
         val outgoing = currentUserDoc.get("outgoingRequests") as? List<String> ?: emptyList()
         val incoming = currentUserDoc.get("incomingRequests") as? List<String> ?: emptyList()
 
-        return when {
-            toUid in friends -> FriendStatus.FRIENDS
-            toUid in outgoing -> FriendStatus.REQUEST_SENT
-            toUid in incoming -> FriendStatus.REQUEST_RECEIVED
+        return when (toUid) {
+            in friends -> FriendStatus.FRIENDS
+            in outgoing -> FriendStatus.REQUEST_SENT
+            in incoming -> FriendStatus.REQUEST_RECEIVED
             else -> FriendStatus.NONE
         }
     }
