@@ -89,6 +89,7 @@
     <string name="friend_request_list">친구 요청</string>
     <string name="accept">수락</string>
     <string name="refusal">거절</string>
+    <string name="request_list">요청 목록</string>
 
     <!-- 예외 -->
     <string name="invalid_email">올바른 이메일 형식이 아닙니다.</string>

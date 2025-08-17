@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -57,10 +59,6 @@ fun FriendRequestListScreen(
     val state by friendRequestViewModel.friendRequestState.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        friendRequestViewModel.fetchFriendRequests()
-    }
-
     LaunchedEffect(state) {
         when(state) {
             is FriendRequestContract.AlreadyFriends -> showToast(context, context.getString(R.string.is_already_friend))
@@ -76,7 +74,7 @@ fun FriendRequestListScreen(
         contentColor = colorResource(R.color.main_background),
         topBar = { FriendRequestTopBar() }
     ) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -86,6 +84,8 @@ fun FriendRequestListScreen(
                     friendRequestViewModel.onFriendRequest(email)
                 }
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             FriendRequestList(
                 requestList = requestList,
@@ -170,11 +170,21 @@ fun FriendRequestList(
     requestList: List<UserModel>,
     onButtonClick: (Pair<String, Boolean>) -> Unit
 ) {
+    Text(
+        text = stringResource(R.string.request_list),
+        style = TextStyle(
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Thin,
+            color = colorResource(R.color.gray)
+        ),
+        modifier = Modifier.padding(start = 16.dp)
+    )
+
     LazyColumn {
         items(requestList) { user ->
             Card(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(16.dp)
                     .fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
@@ -207,6 +217,7 @@ fun FriendRequestList(
                                 )
                             )
                         }
+
                         OutlinedButton(
                             onClick = { onButtonClick(Pair(user.id, false)) }
                         ) {

@@ -5,9 +5,11 @@ import com.example.data.entity.UserEntity
 import com.example.data.mapper.toModel
 import com.example.domain.model.UserModel
 import com.example.domain.status.FriendStatus
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -214,10 +216,16 @@ class AuthDataSource(
                 }
 
                 if(snapshot != null && !snapshot.isEmpty) {
-                    val uidList = snapshot.documents.mapNotNull { doc ->
-                        doc.toObject(UserEntity::class.java)
+                    val tasks = snapshot.documents.mapNotNull { doc ->
+                        val fromUid = doc.getString("from") ?: return@mapNotNull null
+                        firestore.collection("users").document(fromUid).get()
                     }
-                    onResult(uidList.map { it.toModel() })
+
+                    Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                        .addOnSuccessListener { docs ->
+                            val request = docs.mapNotNull { it.toObject(UserEntity::class.java)?.toModel() }
+                            onResult(request)
+                        }
                 } else {
                     onResult(emptyList())
                 }
