@@ -10,4 +10,5 @@ object OneTouchPromiseScreen {
     const val MEETING_RESULT = "meeting_result/{meetingId}"
     const val SETTING = "setting"
     const val FRIENDSHIP = "friend_ship"
+    const val ADD_FRIEND = "add_friend"
 }

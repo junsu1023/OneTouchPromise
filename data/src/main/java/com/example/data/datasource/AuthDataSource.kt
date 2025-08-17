@@ -1,10 +1,16 @@
 package com.example.data.datasource
 
+import android.util.Log
 import com.example.data.entity.UserEntity
+import com.example.data.mapper.toModel
+import com.example.domain.model.UserModel
 import com.example.domain.status.FriendStatus
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -140,7 +146,9 @@ class AuthDataSource(
         return snapshot.documents.firstOrNull()?.toObject(UserEntity::class.java)
     }
 
-    suspend fun sendFriendRequest(fromUid: String, toUid: String): Result<Unit> {
+    suspend fun sendFriendRequest(fromUid: String, toEmail: String): Result<Unit> {
+        val toUid = searchUserByEmail(toEmail)?.uid
+
         val data = mapOf(
             "from" to fromUid,
             "to" to toUid,
@@ -159,16 +167,18 @@ class AuthDataSource(
         }
     }
 
-    suspend fun checkFriendStatus(fromUid: String, toUid: String): FriendStatus {
+    suspend fun checkFriendStatus(fromUid: String, toEmail: String): FriendStatus {
         val currentUserDoc = firestore.collection("users").document(fromUid).get().await()
+        val toUid = searchUserByEmail(toEmail)?.uid
+
         val friends = currentUserDoc.get("friends") as? List<String> ?: emptyList()
         val outgoing = currentUserDoc.get("outgoingRequests") as? List<String> ?: emptyList()
         val incoming = currentUserDoc.get("incomingRequests") as? List<String> ?: emptyList()
 
-        return when {
-            toUid in friends -> FriendStatus.FRIENDS
-            toUid in outgoing -> FriendStatus.REQUEST_SENT
-            toUid in incoming -> FriendStatus.REQUEST_RECEIVED
+        return when (toUid) {
+            in friends -> FriendStatus.FRIENDS
+            in outgoing -> FriendStatus.REQUEST_SENT
+            in incoming -> FriendStatus.REQUEST_RECEIVED
             else -> FriendStatus.NONE
         }
     }
@@ -194,5 +204,31 @@ class AuthDataSource(
             batch.update(myDoc, "friendRequestsReceived", FieldValue.arrayRemove(fromUid))
             batch.update(fromDoc, "friendRequestsSent", FieldValue.arrayRemove(myUid))
         }.await()
+    }
+
+    fun getFriendRequests(myUid: String, onResult: (List<UserModel>) -> Unit) {
+        firestore.collection("friendRequests")
+            .whereEqualTo("to", myUid)
+            .addSnapshotListener { snapshot, error ->
+                if(error != null) {
+                    Log.w("FriendRequestListener", "Failed.", error)
+                    return@addSnapshotListener
+                }
+
+                if(snapshot != null && !snapshot.isEmpty) {
+                    val tasks = snapshot.documents.mapNotNull { doc ->
+                        val fromUid = doc.getString("from") ?: return@mapNotNull null
+                        firestore.collection("users").document(fromUid).get()
+                    }
+
+                    Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                        .addOnSuccessListener { docs ->
+                            val request = docs.mapNotNull { it.toObject(UserEntity::class.java)?.toModel() }
+                            onResult(request)
+                        }
+                } else {
+                    onResult(emptyList())
+                }
+            }
     }
 }

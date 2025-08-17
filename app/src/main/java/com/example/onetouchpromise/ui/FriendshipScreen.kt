@@ -43,18 +43,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.onetouchpromise.R
 import com.example.onetouchpromise.component.BottomNavigation
+import com.example.onetouchpromise.viewmodel.FriendViewModel
 
 @Composable
 fun FriendshipScreen(
     curRoute: String?,
     onFriendshipClick: () -> Unit,
     onHomeClick: () -> Unit,
-    onSettingClick: () -> Unit
+    onSettingClick: () -> Unit,
+    onAddFriendClick: () -> Unit,
+    friendViewModel: FriendViewModel = hiltViewModel()
 ) {
     var isSearchMode by remember { mutableStateOf(false) }
-    var isAddFriendMode by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.background(colorResource(R.color.main_background)),
@@ -63,12 +66,11 @@ fun FriendshipScreen(
         topBar = {
             FriendShipScreenTopBar(
                 onSearchClick = {
-                    if(isAddFriendMode) isAddFriendMode = false
-                    isSearchMode = true
+                    isSearchMode = !isSearchMode
                 },
                 onAddFriendClick = {
                     if(isSearchMode) isSearchMode = false
-                    isAddFriendMode = true
+                    onAddFriendClick()
                 }
             )
         },
@@ -91,12 +93,6 @@ fun FriendshipScreen(
             if(isSearchMode) {
                 SearchFriendBar(
                     onBackClick = { isSearchMode = false }
-                )
-            }
-
-            if(isAddFriendMode) {
-                AddFriendBar(
-                    onBackClick = { isAddFriendMode = false }
                 )
             }
 
@@ -199,56 +195,6 @@ fun SearchFriendBar(
                     imageVector = Icons.Default.Search,
                     contentDescription = stringResource(R.string.search),
                     tint = if(searchNickName.isEmpty()) colorResource(R.color.gray) else colorResource(R.color.basic_icon_color)
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun AddFriendBar(
-    onBackClick: () -> Unit
-) {
-    BackHandler { onBackClick() }
-
-    var addFriendEmail by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        value = addFriendEmail,
-        onValueChange = { addFriendEmail = it },
-        shape = RoundedCornerShape(12.dp),
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = {
-            Text(
-                text = stringResource(R.string.add_friend_email),
-                style = TextStyle(
-                    color = colorResource(R.color.gray),
-                    fontSize = 16.sp
-                )
-            )
-        },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(R.color.outlined_focused_border),
-            unfocusedBorderColor = colorResource(R.color.outlined_unfocused_border),
-            focusedTextColor = colorResource(R.color.basic_text_color),
-            unfocusedTextColor = colorResource(R.color.basic_text_color)
-        ),
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    if(addFriendEmail.isNotEmpty()) {
-                        /*
-                        * TODO
-                        * 검색 시 포홤 혹은 일치하는 친구 목록 가져오기
-                        */
-                    }
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.add_friend_email),
-                    tint = if(addFriendEmail.isEmpty()) colorResource(R.color.gray) else colorResource(R.color.basic_icon_color)
                 )
             }
         }

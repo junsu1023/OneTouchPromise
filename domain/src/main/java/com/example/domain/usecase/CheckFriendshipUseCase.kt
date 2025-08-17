@@ -7,5 +7,5 @@ import javax.inject.Inject
 class CheckFriendshipUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke(fromUid: String, toUid: String): FriendStatus = authRepository.checkFriendShipStatus(fromUid, toUid)
+    suspend operator fun invoke(fromUid: String, toEmail: String): FriendStatus = authRepository.checkFriendShipStatus(fromUid, toEmail)
 }
