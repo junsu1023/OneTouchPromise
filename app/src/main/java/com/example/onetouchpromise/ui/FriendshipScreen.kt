@@ -10,16 +10,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +64,7 @@ fun FriendshipScreen(
     friendViewModel: FriendViewModel = hiltViewModel()
 ) {
     var isSearchMode by remember { mutableStateOf(false) }
+    val friendList by friendViewModel.friendList.collectAsState()
 
     Scaffold(
         modifier = Modifier.background(colorResource(R.color.main_background)),
@@ -96,7 +103,7 @@ fun FriendshipScreen(
                 )
             }
 
-            FriendList()
+            FriendList(friendList)
         }
     }
 }
@@ -202,7 +209,9 @@ fun SearchFriendBar(
 }
 
 @Composable
-fun FriendList() {
+fun FriendList(
+    friendList: List<String>
+) {
     var isExpanded by rememberSaveable { mutableStateOf(true) }
 
     Column(
@@ -226,15 +235,47 @@ fun FriendList() {
             Icon(
                 imageVector = if(isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                 contentDescription = stringResource(R.string.expanded_status),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
+                tint = colorResource(R.color.gray)
             )
         }
 
         if(isExpanded) {
-            /*
-            TODO
-            친구 목록 가져오기
-             */
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                items(friendList) {
+                    FriendItem(it)
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun FriendItem(nickname: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(24.dp),
+
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = nickname,
+            style = TextStyle(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = colorResource(R.color.black)
+            )
+        )
+
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+        )
     }
 }

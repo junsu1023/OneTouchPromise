@@ -6,6 +6,7 @@ import com.example.domain.model.UserModel
 import com.example.domain.status.FriendStatus
 import com.example.domain.usecase.CheckFriendshipUseCase
 import com.example.domain.usecase.GetFriendRequestUseCase
+import com.example.domain.usecase.GetFriendsUseCase
 import com.example.domain.usecase.RespondToFriendRequestUseCase
 import com.example.domain.usecase.SearchUserByEmailUseCase
 import com.example.domain.usecase.SendFriendRequestUseCase
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendViewModel @Inject constructor(
     private val searchUserByEmailUseCase: SearchUserByEmailUseCase,
+    private val getFriendsUseCase: GetFriendsUseCase,
     private val auth: FirebaseAuth
 ): ViewModel() {
     private val _searchUserByEmailResult = MutableStateFlow<UserModel?>(null)
@@ -30,8 +32,22 @@ class FriendViewModel @Inject constructor(
     private val _friendRequestState = MutableStateFlow<FriendRequestContract>(FriendRequestContract.Idle)
     val friendRequestState: StateFlow<FriendRequestContract> get() = _friendRequestState.asStateFlow()
 
-    private val _friendRequests = MutableStateFlow<List<UserModel>>(emptyList())
-    val friendRequests: StateFlow<List<UserModel>> get() = _friendRequests.asStateFlow()
+    private val _friendList = MutableStateFlow<List<String>>(emptyList())
+    val friendList: StateFlow<List<String>> get() = _friendList.asStateFlow()
+
+    init {
+        getFriends()
+    }
+
+    private fun getFriends() {
+        val myUid = auth.currentUser?.uid ?: return
+
+        viewModelScope.launch {
+            getFriendsUseCase(myUid) { result ->
+                _friendList.value = result
+            }
+        }
+    }
 
     fun searchUserByEmail(email: String) {
         viewModelScope.launch {

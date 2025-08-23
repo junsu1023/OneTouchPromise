@@ -34,7 +34,6 @@ class FriendRequestViewModel @Inject constructor(
 
     init {
         fetchFriendRequests()
-        println("test-kjs: end init")
     }
 
     fun fetchFriendRequests() {

@@ -231,4 +231,22 @@ class AuthDataSource(
                 }
             }
     }
+
+    suspend fun getFriendList(myUid: String, onResult: (List<String>) -> Unit) {
+        firestore.collection("users").document(myUid)
+            .addSnapshotListener { snapshot, error ->
+
+                if(error != null) {
+                    onResult(emptyList())
+                    return@addSnapshotListener
+                }
+
+                if(snapshot != null && snapshot.exists()) {
+                    val friends = snapshot.get("myFriends") as? List<String> ?: emptyList()
+                    onResult(friends)
+                } else {
+                    onResult(emptyList())
+                }
+            }
+    }
 }
