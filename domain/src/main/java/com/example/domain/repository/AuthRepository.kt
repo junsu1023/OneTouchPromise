@@ -18,4 +18,5 @@ interface AuthRepository {
     suspend fun acceptFriendRequest(myUid: String, fromUid: String)
     suspend fun declineFriendRequest(myUid: String, fromUid: String)
     fun getFriendRequests(myUid: String, onResult: (List<UserModel>) -> Unit)
+    suspend fun getFriends(myUid: String, onResult: (List<String>) -> Unit)
 }

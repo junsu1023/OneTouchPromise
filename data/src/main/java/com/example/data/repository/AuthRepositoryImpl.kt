@@ -50,4 +50,7 @@ class AuthRepositoryImpl(
 
     override fun getFriendRequests(myUid: String, onResult: (List<UserModel>) -> Unit) =
         authDataSource.getFriendRequests(myUid, onResult)
+
+    override suspend fun getFriends(myUid: String, onResult: (List<String>) -> Unit) =
+        authDataSource.getFriendList(myUid, onResult)
 }
