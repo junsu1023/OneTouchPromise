@@ -40,10 +40,8 @@ class FriendRequestViewModel @Inject constructor(
     fun fetchFriendRequests() {
         val myUid = auth.currentUser?.uid?: return
         getFriendRequestUseCase(myUid) { result ->
-            println("test-kjs: result = $result")
             _friendRequests.value = result
         }
-        println("test-kjs: friendRequests = ${_friendRequests.value}")
     }
 
     fun onFriendRequestResponse(fromUid: String, accept: Boolean) {
